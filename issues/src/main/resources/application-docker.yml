@@ -1,0 +1,8 @@
+spring:
+  data:
+    mongodb:
+      host: buggy-mongo
+  rabbitmq:
+    host: buggy-rabbitmq
+    password: admin
+    username: admin

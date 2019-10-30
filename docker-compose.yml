@@ -1,0 +1,73 @@
+version: '3.5'
+
+networks:
+  buggy-networks:
+    driver: bridge
+
+
+services:
+
+  buggy-rabbitmq:
+    image: rabbitmq:3-management
+    container_name: buggy-rabbitmq
+    hostname: buggy-rabbitmq
+    ports:
+      - 5672
+      - 5671
+      - 15672
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+      RABBITMQ_DEFAULT_VHOST: buggy
+    networks:
+      - buggy-networks
+
+
+
+  buggy-mongo:
+    image: mongo:4.0.4
+    container_name: buggy-mongo
+    hostname: buggy-mongo
+    ports:
+      - 27017:27017
+    networks:
+      - buggy-networks
+
+
+
+  buggy-developer-service:
+    build:
+      context: ./developer
+      args:
+        JAR_FILE: build/libs/*.jar
+    depends_on:
+      - buggy-mongo
+      - buggy-rabbitmq
+    container_name: buggy-developer-service
+    hostname: buggy-developer-service
+    ports:
+      - 8080
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+    networks:
+      - buggy-networks
+
+  buggy-issues-service:
+    build:
+      context: ./issues
+      args:
+        JAR_FILE: build/libs/*.jar
+    depends_on:
+      - buggy-mongo
+      - buggy-rabbitmq
+    container_name: buggy-issues-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+    hostname: buggy-issues-service
+    ports:
+      - 8080
+    networks:
+      - buggy-networks
+

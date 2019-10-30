@@ -1,0 +1,78 @@
+spring:
+  main:
+    banner-mode: "off"
+  application:
+    name: bubby-planning-service
+  profiles:
+    active: local
+  jackson:
+    time-zone: UTC
+  cloud:
+    stream:
+      default:
+        destination:
+        contentType: application/json;charset=UTF-8
+        consumer:
+          maxAttempts: 1 # do not retry with internal message loop, instead use the DLQ for retry
+        group: planning
+      bindings:
+        developers-channel:
+          binder: buggy-rabbit
+          destination: developers
+        issues-channel:
+          binder: buggy-rabbit
+          destination: issues
+      rabbit:
+        bindings:
+          developers-channel:
+            binder: buggy-rabbit
+            consumer:
+              autoBindDlq: true
+              dlqTtl: 60000
+              republishToDlq: true
+              dlq-dead-letter-exchange:
+          issues-channel:
+            binder: buggy-rabbit
+            consumer:
+              autoBindDlq: true
+              dlqTtl: 60000
+              republishToDlq: true
+              dlq-dead-letter-exchange:
+      binders:
+        buggy-rabbit:
+          type: rabbit
+          environment:
+            spring:
+              rabbitmq:
+                host: ${spring.rabbitmq.host}
+                port: ${spring.rabbitmq.port}
+                username: ${spring.rabbitmq.username}
+                password: ${spring.rabbitmq.password}
+                virtual-host: ${spring.rabbitmq.virtualHost}
+  rabbitmq:
+    port: 5672
+    virtualHost: buggy
+    host: localhost
+    username: guest
+    password: guest #todo: use docker secret
+  data:
+    mongodb:
+      database: buggy-plannings
+
+server.use-forward-headers: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+      base-path: /
+  endpoint:
+    health:
+      show-details: always
+      enabled: true
+  trace:
+    http:
+      include: REQUEST_HEADERS,RESPONSE_HEADERS,TIME_TAKEN,PRINCIPAL
+
+logging.level.org.springframework.web: trace
