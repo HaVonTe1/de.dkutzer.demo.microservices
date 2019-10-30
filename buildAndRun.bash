@@ -13,5 +13,8 @@ popd
 pushd planning
 ./gradlew build
 popd
+pushd gateway
+./gradlew build
+popd
 docker-compose build
 docker-compose up -d

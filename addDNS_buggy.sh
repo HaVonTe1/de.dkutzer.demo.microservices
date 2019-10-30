@@ -22,6 +22,8 @@ modHostsForService buggy-mongo
 modHostsForService buggy-rabbitmq
 modHostsForService buggy-developer-service
 modHostsForService buggy-issues-service
+modHostsForService buggy-planning-service
+modHostsForService buggy-gateway-service
 
 echo "after"
 

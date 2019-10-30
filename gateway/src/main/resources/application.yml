@@ -1,0 +1,38 @@
+info:
+  component: A simple API Gateway Service
+
+spring:
+  main:
+    banner-mode: "off"
+  profiles:
+    active: local
+  application:
+    name: buggy-gateway-service
+  jackson:
+    time-zone: UTC
+#  cloud:
+#    gateway:
+#      default-filters:
+#      - PreserveHostHeader
+#      - SecureHeaders
+#      - name: Retry
+#        args:
+#          retries: 3
+#          statuses: BAD_GATEWAY
+#      redis-rate-limiter:
+#        config:
+#      x-forwarded:
+#        enabled: true
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+      base-path: /
+  endpoint:
+    health:
+      show-details: always
+      enabled: true
+

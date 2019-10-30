@@ -89,3 +89,21 @@ services:
     networks:
       - buggy-networks
 
+  buggy-gateway-service:
+    build:
+      context: ./gateway
+      args:
+        JAR_FILE: build/libs/*.jar
+    depends_on:
+      - buggy-developer-service
+      - buggy-issues-service
+      - buggy-planning-service
+    container_name: buggy-gateway-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+    hostname: buggy-gateway-service
+    ports:
+      - 8080
+    networks:
+      - buggy-networks

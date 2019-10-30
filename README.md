@@ -69,6 +69,7 @@ The planning-service is listening with his own Queue on the "Issues" Exchange an
 ### Blackbox
 TODO: add an api-gateway
 The endpoints and interfaces of all services are gathered and made public via a an api-gateway. A client (like any user interface or web app) would only access the endpoints via this gateway. Never directly via one of the services. This way it is very easy to add modify or delete the underlying services without changing the API in any way.
+TODO: add HATEOS
 
 ### Resilience
 
@@ -84,3 +85,30 @@ message can be handled correctly.
 ### Scaling
 Because every event/message can only be consumed by one instance of a service and all instances of one service share the same database there is not reason for manual 
 synchronisation. It is possible so spawn more instances on demand because they are stateless.
+
+### Logging and Monitoring
+
+#### Logging
+None of the services uses manual logging. There is not a single instance of any Logger. Beside that the services use the out-of-the box logging of Spring Boot.
+TOOD: configure meaningful logging level
+
+#### History
+The services handling the basic data domains are using [Javers](https://javers.org/) to persist informations about all changes made on the data. Including what was changed and how.
+
+#### Distributed Logging
+One of the hardest things when doing a distributed microservice driven project is debugging and analysing of the workflows. This is achieved via Sleuth.
+Every request (Rest and Messaging) is enriched with a spanId and a traceId. The spanId is used to identify the workflow of a request inside one service. Even with haevy 
+usage of multithreading and asynchronous processes. The traceId is used to track one request between multiple services.
+In most cases it is a wise idea to store all log messages of all services and instances in a central log storage like an ELK stack.
+
+#### Metrics 
+TODO: add prometheus / grafana
+
+### Security
+TODO: add Keycloak/spring security
+
+#### Auditing
+The services handling the basic data domains are using [Javers](https://javers.org/) to persist informations about which principal made which changed when.
+
+#### TLS 
+TODO: add TLS encryption

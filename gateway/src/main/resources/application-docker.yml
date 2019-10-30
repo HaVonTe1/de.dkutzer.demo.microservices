@@ -1,0 +1,25 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+      - id: developers
+        uri: http://buggy-developer-service:8080
+        predicates:
+        - Path=/developers/**
+      - id: issues
+        uri: http://buggy-issues-service:8080
+        predicates:
+        - Path=/stories/**, /bugs/**
+      - id: planning
+        uri: http://buggy-planning-service:8080
+        predicates:
+        - Path=/planning/**
+
+logging:
+  level:
+    root: debug
+    org.springframework.cloud.gateway: trace
+    org.springframework.http.server.reactive: trace
+    org.springframework.web.reactive: trace
+    reactor.ipc.netty: trace
+
