@@ -1,0 +1,26 @@
+@startuml
+
+actor client
+
+client -> gateway : POST dev
+activate gateway
+gateway -> "developer-service" : POST dev
+database "devs-db"
+activate "developer-service"
+"developer-service" -> "devs-db" : persist
+"developer-service" -> gateway : response 201
+gateway -> client : 201
+deactivate gateway
+control "broker"
+"developer-service" ->  "broker" : emit DevCreated Event
+deactivate "developer-service"
+
+broker -> "planning-service" : consume Event
+activate "planning-service"
+database "planning-db"
+"planning-service" -> "planning-db" : persist Dev
+
+deactivate "planning-service"
+
+
+@enduml
