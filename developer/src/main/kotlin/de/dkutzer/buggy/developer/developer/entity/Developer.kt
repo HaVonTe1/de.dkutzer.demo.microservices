@@ -4,7 +4,7 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.annotation.TypeAlias
 import org.springframework.data.mongodb.core.mapping.Document
 
-@Document(collection = "Developers")
+@Document(collection = "developers")
 @TypeAlias(value = "developer")
 data class Developer (
         @Id

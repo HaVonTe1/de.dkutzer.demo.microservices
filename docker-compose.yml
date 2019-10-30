@@ -71,3 +71,21 @@ services:
     networks:
       - buggy-networks
 
+  buggy-planning-service:
+    build:
+      context: ./planning
+      args:
+        JAR_FILE: build/libs/*.jar
+    depends_on:
+      - buggy-mongo
+      - buggy-rabbitmq
+    container_name: buggy-planning-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+    hostname: buggy-planning-service
+    ports:
+      - 8080
+    networks:
+      - buggy-networks
+

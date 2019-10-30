@@ -16,22 +16,22 @@ spring:
           maxAttempts: 1 # do not retry with internal message loop, instead use the DLQ for retry
         group: planning
       bindings:
-        developers-channel:
+        developers_channel:
           binder: buggy-rabbit
           destination: developers
-        issues-channel:
+        issues_channel:
           binder: buggy-rabbit
           destination: issues
       rabbit:
         bindings:
-          developers-channel:
+          developers_channel:
             binder: buggy-rabbit
             consumer:
               autoBindDlq: true
               dlqTtl: 60000
               republishToDlq: true
               dlq-dead-letter-exchange:
-          issues-channel:
+          issues_channel:
             binder: buggy-rabbit
             consumer:
               autoBindDlq: true

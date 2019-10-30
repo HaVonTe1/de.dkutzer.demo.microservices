@@ -35,7 +35,6 @@ data class Issue(
 data class Developer(
         @Id
         val id:String,
-        val firstName: String,
-        val lastName: String
+        val name: String
 
 )

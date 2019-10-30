@@ -12,13 +12,13 @@ import org.springframework.stereotype.Service
 class DevelopersMessageListener(val developerService: DeveloperServices, val issuesService: IssuesServices) {
 
     @StreamListener(target = DevelopersChannel.INPUT, condition = "headers['event']=='DeveloperCreated'")
-    fun handleDeveloperCreatedEvent(developerCreated: DeveloperCreated) = developerService.upsert(developerCreated)
+    fun handleDeveloperCreatedEvent(developerCreated: DeveloperCreated) {developerService.upsert(developerCreated)}
 
     @StreamListener(target = DevelopersChannel.INPUT, condition = "headers['event']=='DeveloperUpdated'")
-    fun handleDeveloperUpdatedEvent(developerUpdated: DeveloperUpdated) = developerService.upsert(developerUpdated)
+    fun handleDeveloperUpdatedEvent(developerUpdated: DeveloperUpdated) {developerService.upsert(developerUpdated)}
 
     @StreamListener(target = DevelopersChannel.INPUT, condition = "headers['event']=='DeveloperDeleted'")
-    fun handleDeveloperDeletedEvent(developerDeleted: DeveloperDeleted) = developerService.delete(developerDeleted)
+    fun handleDeveloperDeletedEvent(developerDeleted: DeveloperDeleted) {developerService.delete(developerDeleted)}
 
 }
 
@@ -27,12 +27,12 @@ class DevelopersMessageListener(val developerService: DeveloperServices, val iss
 class IssuesMessageListener(val issuesService: IssuesServices) {
 
     @StreamListener(target = IssuesChannel.INPUT, condition = "headers['event']=='IssueCreated'")
-    fun handleIssueCreatedEvent(issueCreated: IssueCreated) = issuesService.upsert(issueCreated)
+    fun handleIssueCreatedEvent(issueCreated: IssueCreated) {issuesService.upsert(issueCreated)}
 
     @StreamListener(target = IssuesChannel.INPUT, condition = "headers['event']=='IssueUpdated'")
-    fun handleIssueUpdatedEvent(issueUpdated: IssueUpdated) = issuesService.upsert(issueUpdated)
+    fun handleIssueUpdatedEvent(issueUpdated: IssueUpdated) {issuesService.upsert(issueUpdated)}
 
     @StreamListener(target = IssuesChannel.INPUT, condition = "headers['event']=='IssueDeleted'")
-    fun handleIssueDeletedEvent(issueDeleted: IssueDeleted) = issuesService.delete(issueDeleted)
+    fun handleIssueDeletedEvent(issueDeleted: IssueDeleted) {issuesService.delete(issueDeleted)}
     
 }

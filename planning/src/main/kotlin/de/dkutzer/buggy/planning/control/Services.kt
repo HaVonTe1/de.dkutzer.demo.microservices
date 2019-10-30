@@ -13,7 +13,7 @@ class DeveloperServices(val developerRepository: DeveloperRepository) {
 
 }
 
-private fun DeveloperEvent.toEntity(): Developer = Developer(id, firstName, lastName)
+private fun DeveloperEvent.toEntity(): Developer = Developer(id, "$firstName $lastName")
 
 @Service
 class IssuesServices(val issuesRepository: IssuesRepository) {
