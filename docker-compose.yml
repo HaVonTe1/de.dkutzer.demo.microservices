@@ -22,6 +22,12 @@ services:
     networks:
       - buggy-networks
 
+  buggy-mysql-zipkin:
+    image: openzipkin/zipkin-mysql
+    container_name: buggy-mysql-zipkin
+    hostname: buggy-mysql-zipkin
+    networks:
+      - buggy-networks
 
 
   buggy-mongo:
@@ -33,13 +39,33 @@ services:
     networks:
       - buggy-networks
 
-
+  buggy-zipkin:
+    image: openzipkin/zipkin
+    container_name: buggy-zipkin
+    # Environment settings are defined here https://github.com/openzipkin/zipkin/blob/master/zipkin-server/README.md#environment-variables
+    environment:
+      - STORAGE_TYPE=mysql
+      - MYSQL_HOST=buggy-mysql-zipkin
+      - RABBIT_ADDRESSES=buggy-rabbitmq
+      - RABBIT_USER=admin
+      - RABBIT_PASSWORD=admin
+      - RABBIT_VIRTUAL_HOST=buggy
+    ports:
+      # Port used for the Zipkin UI and HTTP Api
+      - 9411
+    depends_on:
+      - buggy-mysql-zipkin
+      - buggy-rabbitmq
+    networks:
+      - buggy-networks
 
   buggy-developer-service:
     build:
       context: ./developer
       args:
         JAR_FILE: build/libs/*.jar
+    deploy:
+      replicas: 2
     depends_on:
       - buggy-mongo
       - buggy-rabbitmq
@@ -58,6 +84,8 @@ services:
       context: ./issues
       args:
         JAR_FILE: build/libs/*.jar
+    deploy:
+      replicas: 2
     depends_on:
       - buggy-mongo
       - buggy-rabbitmq
@@ -76,6 +104,8 @@ services:
       context: ./planning
       args:
         JAR_FILE: build/libs/*.jar
+    deploy:
+      replicas: 2
     depends_on:
       - buggy-mongo
       - buggy-rabbitmq

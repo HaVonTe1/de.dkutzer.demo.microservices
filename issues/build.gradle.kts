@@ -32,7 +32,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
     implementation("org.springframework.cloud:spring-cloud-stream-binder-rabbit")
-
+    implementation ("org.springframework.cloud:spring-cloud-starter-zipkin")
 
     implementation( "org.javers:javers-spring-boot-starter-mongo:5.7.7" )
     testImplementation("org.springframework.boot:spring-boot-starter-test") {

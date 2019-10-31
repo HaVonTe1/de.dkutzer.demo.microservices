@@ -2,7 +2,7 @@ spring:
   main:
     banner-mode: "off"
   application:
-    name: bubby-developer-service
+    name: buggy-developer-service
   profiles:
     active: local
   jackson:
@@ -39,12 +39,18 @@ spring:
   rabbitmq:
     port: 5672
     virtualHost: buggy
-    host: localhost
-    username: guest
-    password: guest #todo: use docker secret
+
   data:
     mongodb:
       database: buggy-developers
+  zipkin:
+    sender:
+      type: rabbit
+  sleuth:
+    messaging:
+      enabled: true
+    sampler:
+      probability: 100
 
 server.use-forward-headers: true
 

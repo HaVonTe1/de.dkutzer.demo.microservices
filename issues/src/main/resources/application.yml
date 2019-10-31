@@ -2,7 +2,7 @@ spring:
   main:
     banner-mode: "off"
   application:
-    name: bubby-issues-service
+    name: buggy-issues-service
   profiles:
     active: local
   jackson:
@@ -45,7 +45,14 @@ spring:
   data:
     mongodb:
       database: buggy-issues
-
+  zipkin:
+    sender:
+      type: rabbit
+  sleuth:
+    messaging:
+      enabled: true
+    sampler:
+      probability: 100
 management:
   endpoints:
     web:

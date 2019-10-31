@@ -1,4 +1,8 @@
 spring:
+  rabbitmq:
+    host: buggy-rabbitmq
+    password: admin
+    username: admin
   cloud:
     gateway:
       routes:
@@ -14,12 +18,13 @@ spring:
         uri: http://buggy-planning-service:8080
         predicates:
         - Path=/planning/**
+  sleuth:
+    messaging:
+      enabled: true
+    sampler:
+      probability: 100
 
 logging:
   level:
-    root: debug
-    org.springframework.cloud.gateway: trace
-    org.springframework.http.server.reactive: trace
-    org.springframework.web.reactive: trace
-    reactor.ipc.netty: trace
+    root: info
 

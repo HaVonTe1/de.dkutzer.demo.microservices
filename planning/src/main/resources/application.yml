@@ -2,7 +2,7 @@ spring:
   main:
     banner-mode: "off"
   application:
-    name: bubby-planning-service
+    name: buggy-planning-service
   profiles:
     active: local
   jackson:
@@ -58,7 +58,14 @@ spring:
   data:
     mongodb:
       database: buggy-plannings
-
+  zipkin:
+    sender:
+      type: rabbit
+  sleuth:
+    messaging:
+      enabled: true
+    sampler:
+      probability: 100
 server.use-forward-headers: true
 
 management:

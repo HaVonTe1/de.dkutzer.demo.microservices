@@ -10,20 +10,12 @@ spring:
     name: buggy-gateway-service
   jackson:
     time-zone: UTC
-#  cloud:
-#    gateway:
-#      default-filters:
-#      - PreserveHostHeader
-#      - SecureHeaders
-#      - name: Retry
-#        args:
-#          retries: 3
-#          statuses: BAD_GATEWAY
-#      redis-rate-limiter:
-#        config:
-#      x-forwarded:
-#        enabled: true
-
+  zipkin:
+    sender:
+      type: rabbit
+  rabbitmq:
+    port: 5672
+    virtualHost: buggy
 
 management:
   endpoints:
