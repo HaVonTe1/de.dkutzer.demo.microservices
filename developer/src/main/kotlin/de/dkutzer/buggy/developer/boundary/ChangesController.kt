@@ -1,6 +1,6 @@
-package de.dkutzer.buggy.developer.developer.boundary
+package de.dkutzer.buggy.developer.boundary
 
-import de.dkutzer.buggy.developer.developer.entity.Developer
+import de.dkutzer.buggy.developer.entity.Developer
 import org.javers.core.Javers
 import org.javers.repository.jql.QueryBuilder
 import org.springframework.web.bind.annotation.GetMapping

@@ -1,6 +1,6 @@
-package de.dkutzer.buggy.developer.developer.entity
+package de.dkutzer.buggy.developer.entity
 
-import de.dkutzer.buggy.developer.developer.control.MessageGateway
+import de.dkutzer.buggy.developer.control.MessageGateway
 
 data class DeveloperCreated(
         val id: String,

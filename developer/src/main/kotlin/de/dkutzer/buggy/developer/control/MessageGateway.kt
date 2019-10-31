@@ -1,4 +1,4 @@
-package de.dkutzer.buggy.developer.developer.control
+package de.dkutzer.buggy.developer.control
 
 import org.springframework.cloud.stream.annotation.EnableBinding
 import org.springframework.cloud.stream.messaging.Source
