@@ -106,7 +106,8 @@ In most cases it is a wise idea to store all log messages of all services and in
 #### Zipkin
 [Zipkin](https://zipkin.io/) is a wonderful to visualize distributed requests inside a microservice system. 
 Here is an example of a creation of a new developer over the gateway in the developer-service. The DeveloperCreated Event is consumed by the planning-service.
-![](static/Screenshot_2019-10-31 Zipkin.png) 
+
+![](static/Screenshot_Zipkin.png) 
 
 
 #### Metrics 
