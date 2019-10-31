@@ -1,0 +1,18 @@
+@startuml
+component producer
+component consumerA
+component consumerB
+node exchange
+queue queueA
+queue queueB
+
+producer --> exchange : sends msg as event
+exchange --> queueA : push msg to binded queues
+exchange --> queueB
+
+queueA *--* consumerA
+queueB *--* consumerB
+
+
+
+@enduml
