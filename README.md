@@ -69,8 +69,8 @@ The planning-service is listening with his own Queue on the "Issues" Exchange an
 
 
 ### Blackbox
-TODO: add an api-gateway
 The endpoints and interfaces of all services are gathered and made public via a an api-gateway. A client (like any user interface or web app) would only access the endpoints via this gateway. Never directly via one of the services. This way it is very easy to add modify or delete the underlying services without changing the API in any way.
+
 TODO: add HATEOS
 
 ### Resilience
@@ -87,6 +87,9 @@ message can be handled correctly.
 ### Scaling
 Because every event/message can only be consumed by one instance of a service and all instances of one service share the same database there is not reason for manual 
 synchronisation. It is possible so spawn more instances on demand because they are stateless.
+Default all services are scaled to 1. This can be changed in the compose file (replicas=) or in CLI ```docker-compose up scale buggy-developer-service=2```
+
+![](static/scaled.png) 
 
 ### Logging and Monitoring
 
@@ -104,7 +107,7 @@ usage of multithreading and asynchronous processes. The traceId is used to track
 In most cases it is a wise idea to store all log messages of all services and instances in a central log storage like an ELK stack.
 
 #### Zipkin
-[Zipkin](https://zipkin.io/) is a wonderful to visualize distributed requests inside a microservice system. 
+[Zipkin](https://zipkin.io/) is a wonderful tool to visualize distributed requests inside a microservice system. 
 Here is an example of a creation of a new developer over the gateway in the developer-service. The DeveloperCreated Event is consumed by the planning-service.
 
 ![](static/Screenshot_Zipkin.png) 

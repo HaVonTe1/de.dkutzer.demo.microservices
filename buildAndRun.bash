@@ -16,5 +16,8 @@ popd
 pushd gateway
 ./gradlew build
 popd
+pushd sba-server
+./gradlew build
+popd
 docker-compose build
-docker-compose up -d
+docker-compose --compatibility up -d

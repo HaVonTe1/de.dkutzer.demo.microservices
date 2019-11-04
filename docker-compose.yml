@@ -42,6 +42,7 @@ services:
   buggy-zipkin:
     image: openzipkin/zipkin
     container_name: buggy-zipkin
+    hostname: buggy-zipkin
     # Environment settings are defined here https://github.com/openzipkin/zipkin/blob/master/zipkin-server/README.md#environment-variables
     environment:
       - STORAGE_TYPE=mysql
@@ -65,12 +66,10 @@ services:
       args:
         JAR_FILE: build/libs/*.jar
     deploy:
-      replicas: 2
+      replicas: 1
     depends_on:
       - buggy-mongo
       - buggy-rabbitmq
-    container_name: buggy-developer-service
-    hostname: buggy-developer-service
     ports:
       - 8080
     environment:
@@ -85,15 +84,13 @@ services:
       args:
         JAR_FILE: build/libs/*.jar
     deploy:
-      replicas: 2
+      replicas: 1
     depends_on:
       - buggy-mongo
       - buggy-rabbitmq
-    container_name: buggy-issues-service
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SERVER_PORT: 8080
-    hostname: buggy-issues-service
     ports:
       - 8080
     networks:
@@ -105,15 +102,13 @@ services:
       args:
         JAR_FILE: build/libs/*.jar
     deploy:
-      replicas: 2
+      replicas: 1
     depends_on:
       - buggy-mongo
       - buggy-rabbitmq
-    container_name: buggy-planning-service
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SERVER_PORT: 8080
-    hostname: buggy-planning-service
     ports:
       - 8080
     networks:
@@ -128,11 +123,24 @@ services:
       - buggy-developer-service
       - buggy-issues-service
       - buggy-planning-service
-    container_name: buggy-gateway-service
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SERVER_PORT: 8080
-    hostname: buggy-gateway-service
+    ports:
+      - 8080
+    networks:
+      - buggy-networks
+
+  buggy-sba-service:
+    build:
+      context: ./sba-server
+      args:
+        JAR_FILE: build/libs/*.jar
+    container_name: buggy-sba-service
+    hostname: buggy-sba-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
     ports:
       - 8080
     networks:

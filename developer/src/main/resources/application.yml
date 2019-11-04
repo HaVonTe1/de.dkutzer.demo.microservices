@@ -52,6 +52,8 @@ spring:
     sampler:
       probability: 100
 
+
+
 server.use-forward-headers: true
 
 management:

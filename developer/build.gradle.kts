@@ -14,6 +14,7 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
     mavenCentral()
+    maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
 }
 
 extra["snippetsDir"] = file("build/generated-snippets")
@@ -34,6 +35,7 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-stream-binder-rabbit")
     implementation("org.springframework.cloud:spring-cloud-stream-reactive")
     implementation( "org.javers:javers-spring-boot-starter-mongo:5.7.7" )
+    implementation( "de.codecentric:spring-boot-admin-starter-client:2.2.0-SNAPSHOT" )
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("org.springframework.cloud:spring-cloud-stream-test-support")
     testImplementation("org.springframework.amqp:spring-rabbit-test")

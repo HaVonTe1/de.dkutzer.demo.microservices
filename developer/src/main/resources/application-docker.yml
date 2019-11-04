@@ -6,3 +6,7 @@ spring:
     host: buggy-rabbitmq
     password: admin
     username: admin
+  boot:
+    admin:
+      client:
+        url: http://buggy-sba-service:8080
