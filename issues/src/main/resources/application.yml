@@ -67,4 +67,3 @@ management:
     http:
       include: REQUEST_HEADERS,RESPONSE_HEADERS,TIME_TAKEN,PRINCIPAL
 
-logging.level.org.springframework.web: trace

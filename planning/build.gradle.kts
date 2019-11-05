@@ -14,6 +14,7 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 repositories {
     mavenCentral()
     maven { url = uri("https://repo.spring.io/milestone") }
+    maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
 }
 
 extra["springCloudVersion"] = "Hoxton.RC1"
@@ -29,6 +30,7 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
     implementation("org.springframework.cloud:spring-cloud-stream-binder-rabbit")
     implementation ("org.springframework.cloud:spring-cloud-starter-zipkin")
+    implementation( "de.codecentric:spring-boot-admin-starter-client:2.2.0-SNAPSHOT" )
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }

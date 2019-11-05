@@ -117,7 +117,10 @@ Here is an example of a creation of a new developer over the gateway in the deve
 TODO: add prometheus / grafana
 
 #### Monitoring / Maintenance
-TODO: add Spring Boot Admin
+A first stepstone in monitoring a microservice system build with Spring Boot would be [Spring Boot Admin](https://codecentric.github.io/spring-boot-admin/current/).
+
+![](static/Screenshot_sba.png) 
+
 
 ### Security
 TODO: add Keycloak/spring security

@@ -23,8 +23,10 @@ spring:
       enabled: true
     sampler:
       probability: 100
-
-logging:
-  level:
-    root: info
-
+  boot:
+    admin:
+      client:
+        url: http://buggy-sba-service:8080
+        enabled: false # there seems to be a bug in current snapshot -- > npe when calling /health
+        instance:
+          prefer-ip: true
