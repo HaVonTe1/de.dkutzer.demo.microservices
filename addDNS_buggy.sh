@@ -2,7 +2,7 @@
 set -o errexit
 set -o pipefail
 set -o nounset
-#set -x
+set -x
 
 # run as root
 echo "before"

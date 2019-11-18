@@ -4,12 +4,15 @@ import de.dkutzer.buggy.issues.entity.*
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.data.rest.core.annotation.*
 import org.springframework.stereotype.Component
+import org.javers.spring.annotation.JaversSpringDataAuditable
 
 @RepositoryRestResource(collectionResourceRel = "issues", path = "stories")
+@JaversSpringDataAuditable
 interface StoryRestRepository : MongoRepository<Story, String> {
 }
 
 @RepositoryRestResource(collectionResourceRel = "issues", path = "bugs")
+@JaversSpringDataAuditable
 interface BugRestRepository : MongoRepository<Bug, String> {
 }
 

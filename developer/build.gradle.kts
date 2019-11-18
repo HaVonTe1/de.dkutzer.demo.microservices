@@ -34,7 +34,7 @@ dependencies {
     implementation ("org.springframework.cloud:spring-cloud-starter-zipkin")
     implementation("org.springframework.cloud:spring-cloud-stream-binder-rabbit")
     implementation("org.springframework.cloud:spring-cloud-stream-reactive")
-    implementation( "org.javers:javers-spring-boot-starter-mongo:5.7.7" )
+    implementation( "org.javers:javers-spring-boot-starter-mongo:5.8.5" )
     implementation( "de.codecentric:spring-boot-admin-starter-client:2.2.0-SNAPSHOT" )
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("org.springframework.cloud:spring-cloud-stream-test-support")
