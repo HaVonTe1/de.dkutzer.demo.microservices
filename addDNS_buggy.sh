@@ -47,6 +47,8 @@ modHostsForSingleService buggy-rabbitmq
 modHostsForSingleService buggy-mysql-zipkin
 modHostsForSingleService buggy-zipkin
 modHostsForSingleService buggy-sba-service
+modHostsForSingleService buggy-keycloak
+modHostsForSingleService buggy-postgres
 
 modHostsForScaledService buggy-developer-service
 modHostsForScaledService buggy-issues-service
