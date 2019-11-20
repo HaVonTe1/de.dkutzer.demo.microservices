@@ -35,7 +35,10 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-stream-binder-rabbit")
     implementation ("org.springframework.cloud:spring-cloud-starter-zipkin")
     implementation( "de.codecentric:spring-boot-admin-starter-client:2.2.0-SNAPSHOT" )
-    implementation( "org.javers:javers-spring-boot-starter-mongo:5.7.7" )
+    implementation( "org.javers:javers-spring-boot-starter-mongo:5.8.5" )
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.cloud:spring-cloud-starter-oauth2")
+    implementation("org.springframework.security.oauth:spring-security-oauth2")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
