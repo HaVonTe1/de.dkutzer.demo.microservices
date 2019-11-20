@@ -12,4 +12,11 @@ spring:
         url: http://buggy-sba-service:8080
         instance:
           prefer-ip: true
+  security:
+    oauth2:
+      resourceserver:
+        resourceid: buggyui
+        jwt:
+          verifierKey: -----BEGIN PUBLIC KEY----- MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3ILYSs0F8jbglywvqPQyJa2+EqmuMc5nylGMxKVs2W5HOzRBtnpXVKZsrFSxxmpRKFBamSMf44L67FrOYG7Hgr1ZbDAAXIPQSwfJIBh+hJCgx0cWxJpMaLVxkyN8o/wF0+vopbXplKsvwJyjNjhyqkgcgoSXu+N4orC/1EcnPuJGrHXrMr52VKttf/sltRCiudlcLcsh4VkVE6ZlH+F6DIVWmCFOY8wc4UYTxYK018obPFyUYdqtghO+mSpq+6MeXi7WUxi9sLYlgfGOJfpf1dioB9Ki2UCgrVwC+aXtwJtMLEw6h+VR1bcIi6nMdELA3bNj+Ga5j65QQ1/QEZpLJwIDAQAB -----END PUBLIC KEY-----
+
 
