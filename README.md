@@ -42,6 +42,7 @@ In this example of an issue tracker there a 3 buisness domains:
 * Developers: basic data about the developers 
 * Issues: basic data about a the things need be done
 * Planning: makeing a plan about doing all the work based on developers and issues
+
 A domain-service can handle multiple entities and controller.
 
 ### Decoupling and Messaging
@@ -52,6 +53,7 @@ Every services persists all data needed to do it's work. In the case of the plan
 * synchronous and slow processes
 * more memory consumption (the services would hold the data in-memory on every request)
 * no functionality if only one of the other services would be down for whatever reason
+
 To overcome these things the planning-service consumes events about the data he needs and persists this data in its own database.
 
 #### Messaging
@@ -87,7 +89,7 @@ message can be handled correctly.
 
 ### Scaling
 Because every event/message can only be consumed by one instance of a service and all instances of one service share the same database there is not reason for manual 
-synchronisation. It is possible so spawn more instances on demand because they are stateless.
+synchronisation. It is possible to spawn more instances on demand because they are stateless.
 Default all services are scaled to 1. This can be changed in the compose file (replicas=) or in CLI ```docker-compose up scale buggy-developer-service=2```
 
 ![](static/scaled.png) 
@@ -96,16 +98,21 @@ Default all services are scaled to 1. This can be changed in the compose file (r
 
 #### Logging
 None of the services uses manual logging. There is not a single instance of any Logger. Beside that the services use the out-of-the box logging of Spring Boot.
+
 TOOD: configure meaningful logging level
 
 #### History
 The services handling the basic data domains are using [Javers](https://javers.org/) to persist informations about all changes made on the data. Including what was changed and how.
 
+![](static/javers_update_with_author.png) 
+
 #### Distributed Logging
 One of the hardest things when doing a distributed microservice driven project is debugging and analysing of the workflows. This is achieved via Sleuth.
-Every request (Rest and Messaging) is enriched with a spanId and a traceId. The spanId is used to identify the workflow of a request inside one service. Even with haevy 
+Every request (Rest and Messaging) is enriched with a spanId and a traceId. The spanId is used to identify the workflow of a request inside one service. Even with heavy 
 usage of multithreading and asynchronous processes. The traceId is used to track one request between multiple services.
 In most cases it is a wise idea to store all log messages of all services and instances in a central log storage like an ELK stack.
+
+TODO: add ELK
 
 #### Zipkin
 [Zipkin](https://zipkin.io/) is a wonderful tool to visualize distributed requests inside a microservice system. 
@@ -146,7 +153,7 @@ The implementation is entirly done with Spring  Security and not with the Spring
 The Mappers are necessary because Spring Security searches the Roles in the claim "authorities". The default in Keycloak is "realm_access.roles".
 Beside that Spring Security reads the resource ID from the claim "aud". Without the mapper, der authorization would fail.
 
-The REST API can by called with a bearer Token. Here is Screenshot from Insomnia as an example.
+The REST API can by called with a bearer Token. Here is Screenshot from [Insomnia](https://insomnia.rest/) as an example.
 
 ![](static/insomnia_path_dev_with_oauth2_usercreds.png) 
 
