@@ -14,6 +14,7 @@ jobs:
     - uses: eskatos/gradle-command-action@v1
       with:
         build-root-directory: developer
+        wrapper-directory: developer
         arguments: build
     - name: build issues
       uses: actions/setup-java@v1
@@ -22,6 +23,7 @@ jobs:
     - uses: eskatos/gradle-command-action@v1
       with:
         build-root-directory: issues
+        wrapper-directory: issues
         arguments: build
     - name: build planning
       uses: actions/setup-java@v1
@@ -30,4 +32,5 @@ jobs:
     - uses: eskatos/gradle-command-action@v1
       with:
         build-root-directory: planning
+        wrapper-directory: planning
         arguments: build
