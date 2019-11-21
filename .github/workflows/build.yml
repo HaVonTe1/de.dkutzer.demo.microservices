@@ -15,6 +15,7 @@ jobs:
       with:
         build-root-directory: developer
         wrapper-directory: developer
+        gradle-version: 5.6.2
         arguments: build
     - name: build issues
       uses: actions/setup-java@v1
@@ -24,6 +25,7 @@ jobs:
       with:
         build-root-directory: issues
         wrapper-directory: issues
+        gradle-version: 5.6.2
         arguments: build
     - name: build planning
       uses: actions/setup-java@v1
@@ -33,4 +35,5 @@ jobs:
       with:
         build-root-directory: planning
         wrapper-directory: planning
+        gradle-version: 5.6.2
         arguments: build
