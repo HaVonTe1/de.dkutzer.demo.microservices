@@ -14,4 +14,26 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: build developer
-      run: pushd developer && ./gradlew build
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - uses: eskatos/gradle-command-action@v1
+      with:
+        build-root-directory: developer
+        arguments: build
+    - name: build issues
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - uses: eskatos/gradle-command-action@v1
+      with:
+        build-root-directory: issues
+        arguments: build
+    - name: build planning
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - uses: eskatos/gradle-command-action@v1
+      with:
+        build-root-directory: planning
+        arguments: build
