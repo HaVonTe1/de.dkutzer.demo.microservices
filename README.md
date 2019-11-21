@@ -134,23 +134,30 @@ The implementation is entirly done with Spring  Security and not with the Spring
     - resourceid: buggyui
     - add realm role "ROLE_BUGGY_UI" to the client
     - Mappers:
-        - aud: Audience
-        - authorities: User Realm Roles
-        
-Have a look at the /static directory. The real-export.json file can be used to import all necessary things after a fresh start of the keycloak server.        
+        - aud: Audience --> this maps to the resourceId in Spring Security
+        - authorities: User Realm Roles --> this maps to the effective User Roles in Spring Security
+        - user_name: User Attribut: user_name --> this maps to the principal aka. loged in user in Spring Security 
+
+
+|ResourceID|Roles|Username Client|Username User|        
+|----|-----|----|----|
+|![](static/keycloak_buggy_client_mappers_resourceid.png) |![](static/keycloak_buggy_client_mappers_roles.png)|![](static/keycloak_buggy_client_mappers_username.png)|![](static/keycloak_buggy_user_attributes_principal.png)|        
 
 The Mappers are necessary because Spring Security searches the Roles in the claim "authorities". The default in Keycloak is "realm_access.roles".
 Beside that Spring Security reads the resource ID from the claim "aud". Without the mapper, der authorization would fail.
 
 The REST API can by called with a bearer Token. Here is Screenshot from Insomnia as an example.
 
-![](static/security_accesstoken.png) 
+![](static/insomnia_path_dev_with_oauth2_usercreds.png) 
 
 
 TODO: TLS 
 
 #### Auditing
 The services handling the basic data domains are using [Javers](https://javers.org/) to persist informations about which principal made which changed when.
+
+![](static/javers_update_with_author.png) 
+
 
 #### TLS 
 TODO: add TLS encryption
