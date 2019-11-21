@@ -1,0 +1,17 @@
+name: CI
+
+on:
+  push:
+    branches:
+    - master
+    
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: build developer
+      run: pushd developer && ./gradlew build
