@@ -1,4 +1,4 @@
-![](https://github.com/HaVonTe1/de.dkutzer.demo.microservices/workflows/.github/workflows/build.yml/badge.svg)
+![](https://github.com/HaVonTe1/de.dkutzer.demo.microservices/workflows/.github/workflows/CI/badge.svg)
 # Buggy - A Demo App for Microservices
 
 The goal of this project is to demonstrate a possible architecture for building microservices on top Spring Boot with Kotlin.
