@@ -10,6 +10,7 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 import org.springframework.security.oauth2.provider.token.TokenStore
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest
 
 @Configuration
 @EnableResourceServer
@@ -24,7 +25,7 @@ class ResourceServer : ResourceServerConfigurerAdapter() {
     override fun configure(http: HttpSecurity?) {
         http!!
                 .authorizeRequests()
-                .antMatchers("/info","/health").permitAll()
+                .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()//dont do this in production
                 .antMatchers("/stories/**","/bugs/**").hasRole("BUGGY_UI")
                 .anyRequest().authenticated()
                 .and()

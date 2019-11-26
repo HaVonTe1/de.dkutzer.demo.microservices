@@ -1,6 +1,7 @@
 package de.dkutzer.buggy.developer.control
 
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -24,7 +25,7 @@ class ResourceServer : ResourceServerConfigurerAdapter() {
     override fun configure(http: HttpSecurity?) {
         http!!
                 .authorizeRequests()
-                .antMatchers("/info","/health").permitAll()
+                .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()//dont do this in production
                 .antMatchers("/developers/**").hasRole("BUGGY_UI")
                 .anyRequest().authenticated()
                 .and()
