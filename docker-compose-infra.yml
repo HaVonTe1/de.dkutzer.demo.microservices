@@ -1,0 +1,107 @@
+version: '3.5'
+
+networks:
+  buggy-networks:
+    driver: bridge
+
+
+services:
+
+  buggy-rabbitmq:
+    image: rabbitmq:3-management
+    container_name: buggy-rabbitmq
+    hostname: buggy-rabbitmq
+    ports:
+      - 5672
+      - 5671
+      - 15672
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+      RABBITMQ_DEFAULT_VHOST: buggy
+    networks:
+      - buggy-networks
+
+  buggy-mysql-zipkin:
+    image: openzipkin/zipkin-mysql
+    container_name: buggy-mysql-zipkin
+    hostname: buggy-mysql-zipkin
+    networks:
+      - buggy-networks
+
+
+  buggy-mongo:
+    image: mongo:4.0.4
+    container_name: buggy-mongo
+    hostname: buggy-mongo
+    ports:
+      - 27017
+    networks:
+      - buggy-networks
+
+  buggy-postgres:
+    image: postgres:12.1
+    container_name: buggy-postgres
+    hostname: buggy-postgres
+    environment:
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=buggy
+    networks:
+      - buggy-networks
+
+  buggy-zipkin:
+    image: openzipkin/zipkin
+    container_name: buggy-zipkin
+    hostname: buggy-zipkin
+    # Environment settings are defined here https://github.com/openzipkin/zipkin/blob/master/zipkin-server/README.md#environment-variables
+    environment:
+      - STORAGE_TYPE=mysql
+      - MYSQL_HOST=buggy-mysql-zipkin
+      - RABBIT_ADDRESSES=buggy-rabbitmq
+      - RABBIT_USER=admin
+      - RABBIT_PASSWORD=admin
+      - RABBIT_VIRTUAL_HOST=buggy
+    ports:
+      # Port used for the Zipkin UI and HTTP Api
+      - 9411
+    depends_on:
+      - buggy-mysql-zipkin
+      - buggy-rabbitmq
+    networks:
+      - buggy-networks
+
+  buggy-keycloak:
+    image: jboss/keycloak:8.0.0
+    container_name: buggy-keycloak
+    hostname: buggy-keycloak
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+      - DB_VENDOR=postgres
+      - DB_ADDR=buggy-postgres
+      - DB_USER=admin
+      - DB_PASSWORD=admin
+      - DB_DATABASE=buggy
+    ports:
+      - 8080
+    depends_on:
+      - buggy-postgres
+    networks:
+      - buggy-networks
+
+
+  buggy-sba-service:
+    build:
+      context: ./sba-server
+      args:
+        JAR_FILE: build/libs/*.jar
+    container_name: buggy-sba-service
+    hostname: buggy-sba-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+    ports:
+      - 8080
+    networks:
+      - buggy-networks
