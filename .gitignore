@@ -91,5 +91,4 @@ fabric.properties
 /*/.idea
 /*/build
 /*/out
-/*/gradle/wrapper/gradle-wrapper.jar
 /*/*.iml
