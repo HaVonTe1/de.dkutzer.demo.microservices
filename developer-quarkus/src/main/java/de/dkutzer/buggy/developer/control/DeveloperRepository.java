@@ -7,16 +7,15 @@ import com.mongodb.client.MongoCollection;
 import de.dkutzer.buggy.developer.entity.Developer;
 import java.util.List;
 import org.bson.Document;
-import org.springframework.stereotype.Service;
 
-@Service
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+@ApplicationScoped
 public class DeveloperRepository
 {
-    private MongoClient mongoClient;
-
-    public DeveloperRepository(MongoClient mongoClient) {
-        this.mongoClient = mongoClient;
-    }
+    @Inject
+    MongoClient mongoClient;
 
 
     public Iterable<Developer> findAll() {

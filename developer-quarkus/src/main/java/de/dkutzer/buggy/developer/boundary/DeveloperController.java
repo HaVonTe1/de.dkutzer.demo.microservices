@@ -1,6 +1,7 @@
 package de.dkutzer.buggy.developer.boundary;
 
 import de.dkutzer.buggy.developer.control.DeveloperRepository;
+import de.dkutzer.buggy.developer.control.DeveloperService;
 import de.dkutzer.buggy.developer.entity.Developer;
 import io.quarkus.security.Authenticated;
 import javax.annotation.security.RolesAllowed;
@@ -15,35 +16,15 @@ import javax.ws.rs.core.MediaType;
 public class DeveloperController {
 
     @Inject
-    private DeveloperRepository developerRepository;
+    DeveloperService developerService;
 
 
-
-//    @GET
-//    @RolesAllowed({"ROLE_BUGGY_UI"})
-//    @Path("admin")
-//    public String admin() {
-//        return "granted";
-//    }
-//
-//    @GET
-//    @Path("guy")
-//    public String guy() {
-//        return "granted";
-//    }
-//
-//    @GET
-//    @Path("stranger")
-//    @RolesAllowed({"NOBODY"})
-//    public String stranger() {
-//        return "granted";
-//    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({"ROLE_BUGGY_UI"})
     public Iterable<Developer> findAll(){
-        return developerRepository.findAll();
+        return developerService.findAll();
     }
 
 
