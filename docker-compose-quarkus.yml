@@ -1,4 +1,4 @@
-version: '3.5'
+version: '3.7'
 
 networks:
   buggy-networks:
@@ -21,6 +21,11 @@ services:
       RABBITMQ_DEFAULT_VHOST: buggy
     networks:
       - buggy-networks
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:15672"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
 
   buggy-mysql-zipkin:
     image: openzipkin/zipkin-mysql
@@ -28,6 +33,11 @@ services:
     hostname: buggy-mysql-zipkin
     networks:
       - buggy-networks
+    healthcheck:
+      test: "/usr/bin/mysql --user=zipkin --password=zipkin --execute \"SHOW DATABASES;\""
+      interval: 2s
+      timeout: 20s
+      retries: 10
 
 
   buggy-mongo:
@@ -70,6 +80,11 @@ services:
       - buggy-rabbitmq
     networks:
       - buggy-networks
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+        max_attempts: 3
 
   buggy-keycloak:
     image: jboss/keycloak:8.0.0
@@ -83,6 +98,9 @@ services:
       - DB_USER=admin
       - DB_PASSWORD=admin
       - DB_DATABASE=buggy
+      - KEYCLOAK_IMPORT=/tmp/buggy_realm.json
+    volumes:
+      - ./keycloak:/tmp
     ports:
       - 8080
     depends_on:
@@ -105,6 +123,32 @@ services:
       - 8080
     networks:
       - buggy-networks
+    deploy:
+      restart_policy:
+        condition: on-failure
+
+
+  buggy-developer-boot-java:
+    build:
+      context: ./developer
+      args:
+        JAR_FILE: build/libs/*.jar
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 15s
+
+    depends_on:
+      - buggy-mongo
+      - buggy-rabbitmq
+    ports:
+      - 8080
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+    networks:
+      - buggy-networks
 
 
   buggy-developer-quarkus-service:
@@ -113,6 +157,10 @@ services:
       dockerfile: src/main/docker/Dockerfile.jvm
     deploy:
       replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 15s
+
     depends_on:
       - buggy-mongo
       - buggy-rabbitmq
@@ -125,3 +173,24 @@ services:
     networks:
       - buggy-networks
 
+  buggy-developer-quarkus-native:
+    build:
+      context: ./developer-quarkus
+      dockerfile: src/main/docker/Dockerfile.native
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 15s
+
+    depends_on:
+      - buggy-mongo
+      - buggy-rabbitmq
+      - buggy-keycloak
+    ports:
+      - 8080
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+    networks:
+      - buggy-networks
