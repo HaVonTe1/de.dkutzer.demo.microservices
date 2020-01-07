@@ -134,7 +134,7 @@ services:
       args:
         JAR_FILE: build/libs/*.jar
     deploy:
-      replicas: 1
+      replicas: 0
       restart_policy:
         condition: on-failure
         delay: 15s
@@ -156,7 +156,7 @@ services:
       context: ./developer-quarkus
       dockerfile: src/main/docker/Dockerfile.jvm
     deploy:
-      replicas: 1
+      replicas: 0
       restart_policy:
         condition: on-failure
         delay: 15s
@@ -178,7 +178,7 @@ services:
       context: ./developer-quarkus
       dockerfile: src/main/docker/Dockerfile.native
     deploy:
-      replicas: 1
+      replicas: 0
       restart_policy:
         condition: on-failure
         delay: 15s

@@ -65,6 +65,11 @@ services:
     ports:
       # Port used for the Zipkin UI and HTTP Api
       - 9411
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 15s
     depends_on:
       - buggy-mysql-zipkin
       - buggy-rabbitmq
@@ -83,6 +88,9 @@ services:
       - DB_USER=admin
       - DB_PASSWORD=admin
       - DB_DATABASE=buggy
+      - KEYCLOAK_IMPORT=/tmp/buggy_realm.json
+    volumes:
+      - ./keycloak:/tmp
     ports:
       - 8080
     depends_on:
@@ -171,7 +179,37 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: docker
       SERVER_PORT: 8080
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 15s
     ports:
       - 8080
+    networks:
+      - buggy-networks
+
+
+  buggy-elasticsearch:
+    image: elasticsearch:7.5.1
+    container_name: buggy-elasticsearch
+    hostname: buggy-elasticsearch
+    environment:
+      discovery.type: single-node
+    ports:
+      - 9200
+      - 9300
+    networks:
+      - buggy-networks
+
+  buggy-kibana:
+    image: kibana:7.5.1
+    container_name: buggy-kibana
+    hostname: buggy-kibana
+    environment:
+      SERVER_NAME: buggy-kibana
+      ELASTICSEARCH_HOSTS: http://buggy-elasticsearch:9200
+    ports:
+      - 5601
     networks:
       - buggy-networks

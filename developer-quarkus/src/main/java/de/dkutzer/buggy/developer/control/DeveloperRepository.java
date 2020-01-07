@@ -4,20 +4,17 @@ import com.google.common.collect.Lists;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Indexes;
 import com.mongodb.client.model.UpdateOptions;
 import de.dkutzer.buggy.developer.entity.Developer;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
+import io.quarkus.runtime.StartupEvent;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
-
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import java.util.*;
 
 @ApplicationScoped
 public class DeveloperRepository
@@ -27,6 +24,13 @@ public class DeveloperRepository
 
     @Inject
     MongoClient mongoClient;
+
+    void onStart(@Observes StartupEvent ev) {
+
+        getCollection().createIndex(Indexes.ascending("id"));
+    }
+
+
 
     private UpdateOptions upsertOptions = new UpdateOptions().upsert(true);
 
@@ -65,21 +69,41 @@ public class DeveloperRepository
         return mongoClient.getDatabase(BUGGY_DB).getCollection(DEVELOPERS);
     }
 
-    public void upsert(final Developer developer){
+    public void upsert(final Developer developer) {
 
         MongoCollection<Document> collection = getCollection();
-        collection.updateOne(getFilterByDeveloper(developer), getDocumentByDeveloper(developer), upsertOptions);
+        if (developer.getId() != null && !developer.getId().isEmpty()) {
+            collection.updateOne(getFilterByDeveloper(developer), getDocumentByDeveloper(developer), upsertOptions);
+
+        } else {
+            collection.insertOne(getDocumentByDeveloper(developer));
+        }
     }
 
     private Document getDocumentByDeveloper(Developer developer) {
         Map<String, Object> map = new HashMap<>();
-        map.put("id", developer.getId());
+        if (developer.getId() != null && !developer.getId().isEmpty()) {
+            map.put("id", developer.getId());
+        }
         map.put("firstName", developer.getFirstName());
-        map.put("lastName",developer.getLastName());
+        map.put("lastName", developer.getLastName());
         return new Document(map);
     }
 
     private Bson getFilterByDeveloper(Developer developer) {
         return new Document("id", developer.getId());
+    }
+    private Bson getFilterById(final String id) {
+        return new Document("id", id);
+    }
+
+    public void delete(final String id){
+        MongoCollection<Document> collection = getCollection();
+        collection.deleteOne(getFilterById(id));
+    }
+
+    public boolean exists(String id) {
+
+        return getCollection().countDocuments(getFilterById(id))!=0;
     }
 }

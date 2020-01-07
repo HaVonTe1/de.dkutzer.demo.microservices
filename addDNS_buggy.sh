@@ -2,7 +2,7 @@
 set -o errexit
 set -o pipefail
 set -o nounset
-set -x
+#set -x
 
 # run as root
 echo "before"
@@ -49,6 +49,8 @@ modHostsForSingleService buggy-zipkin
 modHostsForSingleService buggy-sba-service
 modHostsForSingleService buggy-keycloak
 modHostsForSingleService buggy-postgres
+modHostsForSingleService buggy-elasticsearch
+modHostsForSingleService buggy-kibana
 
 modHostsForScaledService buggy-developer-service
 modHostsForScaledService buggy-issues-service
