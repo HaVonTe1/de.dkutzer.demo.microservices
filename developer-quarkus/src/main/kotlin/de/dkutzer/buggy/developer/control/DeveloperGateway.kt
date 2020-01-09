@@ -2,8 +2,7 @@ package de.dkutzer.buggy.developer.control
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
-import de.dkutzer.buggy.developer.entity.Developer
-import de.dkutzer.buggy.developer.entity.DeveloperCreatedEvent
+import de.dkutzer.buggy.developer.entity.*
 import io.smallrye.reactive.messaging.amqp.AmqpMessage
 import io.smallrye.reactive.messaging.annotations.Broadcast
 import io.smallrye.reactive.messaging.annotations.Channel
@@ -25,27 +24,29 @@ class DeveloperGateway {
     @Inject
     @Channel("developer")
     @OnOverflow(OnOverflow.Strategy.BUFFER)
-    var createdEventEmitter: Emitter<AmqpMessage<String>>? = null
+    var createdEventEmitter: Emitter<DeveloperEvent>? = null
 
     @Outgoing("developer")
     @Incoming("developer")
     @Broadcast
     @Throws(JsonProcessingException::class)
-    fun process(developer: String): org.eclipse.microprofile.reactive.messaging.Message<String> {
+    fun process(developerEvent: DeveloperEvent): org.eclipse.microprofile.reactive.messaging.Message<String> {
         val message1 = Message.Factory.create()
-        message1.body = AmqpValue(developer)
+        message1.body = AmqpValue(objectMapper.writeValueAsString(developerEvent))
         message1.contentType="application/json"
-        message1.subject = "DeveloperCreated"
+        message1.subject = developerEvent.javaClass.simpleName
         message1.contentEncoding = Charsets.UTF_8.name()
         val amqpMessageImpl = AmqpMessageImpl(message1)
-
-
-        val msg = AmqpMessage<String>(amqpMessageImpl)
-        return msg
+        return AmqpMessage<String>(amqpMessageImpl)
     }
 
-    @Throws(JsonProcessingException::class)
     fun created(developer: Developer) {
-        createdEventEmitter!!.send(AmqpMessage(objectMapper.writeValueAsString(DeveloperCreatedEvent(developer))))
+        createdEventEmitter!!.send(DeveloperCreatedEvent(developer))
+    }
+    fun updated(developer: Developer) {
+        createdEventEmitter!!.send(DeveloperUpdatedEvent(developer))
+    }
+    fun deleted(id:String) {
+        createdEventEmitter!!.send(DeveloperDeletedEvent(id))
     }
 }

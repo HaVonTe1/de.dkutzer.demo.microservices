@@ -70,12 +70,14 @@ class DeveloperRepository {
 
 
 
-    fun upsert(developer: Developer) {
+    fun upsert(developer: Developer) : Boolean{
         val collection = getCollection()
         if (developer.id != null && developer.id!!.isNotEmpty()) {
             collection.updateOne(getFilterByDeveloper(developer), getDocumentByDeveloper(developer), upsertOptions)
+            return true
         } else {
             collection.insertOne(getDocumentByDeveloper(developer))
+            return false
         }
     }
 

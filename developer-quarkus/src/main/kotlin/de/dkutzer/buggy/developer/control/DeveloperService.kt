@@ -25,15 +25,20 @@ class DeveloperService(@field:Inject var developerRepository: DeveloperRepositor
     fun deleteById(id: String): Boolean {
         if (developerRepository.exists(id)) {
             developerRepository.delete(id)
+            developerGateway.deleted(id)
             return true
         }
         return false
     }
 
-    @Throws(JsonProcessingException::class)
     fun upsert(developer: Developer): Developer {
-        developerRepository.upsert(developer)
-        developerGateway.created(developer)
+        if (developerRepository.upsert(developer)) {
+
+            developerGateway.updated(developer)
+        } else {
+
+            developerGateway.created(developer)
+        }
         return developer
     }
 
