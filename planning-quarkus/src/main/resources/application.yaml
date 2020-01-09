@@ -1,4 +1,6 @@
 quarkus:
+  http:
+    port: 8081
   keycloak:
     policy-enforcer:
       enable: true

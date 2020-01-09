@@ -19,8 +19,9 @@ class DeveloperMessageListener {
         log.trace("Headers: {}", msg.header)
         log.trace("Address: {}", msg.address)
         log.trace("Props: {}", msg.applicationProperties)
+        log.trace("Subject: {}", msg.subject)
         log.trace("body: {}", msg.body)
-        log.trace("type: {}", msg.contentType)
+        log.trace("contentType: {}", msg.contentType)
         log.trace("Payload: {}", msg.payload)
         return msg.ack()
     }
