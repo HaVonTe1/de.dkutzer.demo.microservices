@@ -1,7 +1,14 @@
 quarkus:
+  application:
+    name: buggy-developer-quarkus-service
+    uri: http://buggy-developer-quarkus-service:8080/
   keycloak:
     policy-enforcer:
-      enable: true
+      enforment-mode: PERMISSIVE
+      paths:
+        name: unsecured
+        path: /health
+        enforcement-mode: DISABLED
   oidc:
     auth-server-url: http://buggy-keycloak:8080/auth/realms/buggy
     client-id: buggyui
@@ -35,8 +42,8 @@ mp:
         connector: smallrye-amqp
         address: developer
         durable: false
-
-
+sba-api/mp-rest/url: http://buggy-sba:8080
+sba-api/mp-rest/scope: javax.inject.Singleton
 
 
 
