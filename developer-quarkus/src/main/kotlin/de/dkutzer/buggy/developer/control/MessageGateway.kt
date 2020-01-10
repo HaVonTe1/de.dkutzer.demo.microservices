@@ -14,23 +14,28 @@ import org.apache.qpid.proton.message.Message
 import org.eclipse.microprofile.reactive.messaging.Incoming
 import org.eclipse.microprofile.reactive.messaging.Outgoing
 import javax.enterprise.context.ApplicationScoped
+import javax.enterprise.inject.Default
 import javax.inject.Inject
 
 @ApplicationScoped
-class DeveloperGateway {
+class MessageGateway {
 
-    private val objectMapper = ObjectMapper()
+    interface Event
+    
+    @Inject
+    @field: Default
+    lateinit var  objectMapper : ObjectMapper
 
     @Inject
     @Channel("developer")
     @OnOverflow(OnOverflow.Strategy.BUFFER)
-    var createdEventEmitter: Emitter<DeveloperEvent>? = null
+    var  createdEventEmitter: Emitter<Event>?=null
 
     @Outgoing("developer")
     @Incoming("developer")
     @Broadcast
     @Throws(JsonProcessingException::class)
-    fun process(developerEvent: DeveloperEvent): org.eclipse.microprofile.reactive.messaging.Message<String> {
+    fun process(developerEvent: Event): org.eclipse.microprofile.reactive.messaging.Message<String> {
         val message1 = Message.Factory.create()
         message1.body = AmqpValue(objectMapper.writeValueAsString(developerEvent))
         message1.contentType="application/json"
@@ -41,12 +46,12 @@ class DeveloperGateway {
     }
 
     fun created(developer: Developer) {
-        createdEventEmitter!!.send(DeveloperCreatedEvent(developer))
+        createdEventEmitter!!.send(developer.toEvent<DeveloperCreated>())
     }
     fun updated(developer: Developer) {
-        createdEventEmitter!!.send(DeveloperUpdatedEvent(developer))
+        createdEventEmitter!!.send(developer.toEvent<DeveloperUpdated>())
     }
-    fun deleted(id:String) {
-        createdEventEmitter!!.send(DeveloperDeletedEvent(id))
+    fun deleted(developer: Developer) {
+        createdEventEmitter!!.send(developer.toEvent<DeveloperDeleted>())
     }
 }

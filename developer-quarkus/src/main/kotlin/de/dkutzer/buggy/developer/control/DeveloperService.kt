@@ -1,6 +1,5 @@
 package de.dkutzer.buggy.developer.control
 
-import com.fasterxml.jackson.core.JsonProcessingException
 import de.dkutzer.buggy.developer.entity.Developer
 import javax.enterprise.context.ApplicationScoped
 import javax.enterprise.inject.Default
@@ -12,7 +11,7 @@ class DeveloperService(@field:Inject var developerRepository: DeveloperRepositor
 
     @Inject
     @field: Default
-    lateinit var developerGateway: DeveloperGateway
+    lateinit var messageGateway: MessageGateway
 
     fun findAll(): Iterable<Developer> {
         return developerRepository.findAll()
@@ -25,25 +24,36 @@ class DeveloperService(@field:Inject var developerRepository: DeveloperRepositor
     fun deleteById(id: String): Boolean {
         if (developerRepository.exists(id)) {
             developerRepository.delete(id)
-            developerGateway.deleted(id)
+            messageGateway.deleted(Developer(id,"",""))
             return true
         }
         return false
     }
 
     fun upsert(developer: Developer): Developer {
-        if (developerRepository.upsert(developer)) {
+        val existed = developerRepository.exists(developer.id)
 
-            developerGateway.updated(developer)
+
+        val result = (developerRepository.upsert(developer))
+
+        if (existed) {
+            messageGateway.updated(result)
         } else {
 
-            developerGateway.created(developer)
+            messageGateway.created(result)
         }
-        return developer
+        return result
     }
 
     fun exists(id: String?): Boolean {
         return id != null && id.isNotEmpty() && developerRepository.exists(id)
+    }
+
+    fun deleteAll() {
+
+        val all = this.developerRepository.findAll()
+        this.developerRepository.deleteAll()
+        all.forEach { messageGateway.deleted(it) }
     }
 
 }

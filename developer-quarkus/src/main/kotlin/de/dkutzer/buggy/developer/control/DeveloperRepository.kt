@@ -3,9 +3,11 @@ package de.dkutzer.buggy.developer.control
 import com.google.common.collect.Lists
 import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoCollection
+import com.mongodb.client.model.FindOneAndUpdateOptions
 import com.mongodb.client.model.Indexes
 import com.mongodb.client.model.UpdateOptions
 import de.dkutzer.buggy.developer.entity.Developer
+import de.dkutzer.buggy.developer.entity.toEntity
 import io.quarkus.runtime.StartupEvent
 import org.bson.Document
 import org.bson.conversions.Bson
@@ -36,7 +38,8 @@ class DeveloperRepository {
         getCollection().createIndex(Indexes.ascending("id"))
     }
 
-    private val upsertOptions = UpdateOptions().upsert(true)
+
+    private val findOneAndUpdateOptions = FindOneAndUpdateOptions().upsert(true)
 
 
     fun findAll(): Iterable<Developer> {
@@ -50,13 +53,7 @@ class DeveloperRepository {
         return result
     }
 
-    private fun getDeveloperByDocument(doc: Document): Developer {
-        val e = Developer()
-        e.id = doc.getString("id")
-        e.firstName = doc.getString("firstName")
-        e.lastName = doc.getString("lastName")
-        return e
-    }
+    private fun getDeveloperByDocument(doc: Document) = Developer(doc.getString("id"),doc.getString("firstName"),doc.getString("lastName"))
 
     fun findById(id: String?): Optional<Developer> {
         val collection = getCollection()
@@ -70,24 +67,28 @@ class DeveloperRepository {
 
 
 
-    fun upsert(developer: Developer) : Boolean{
+
+    fun upsert(developer: Developer) : Developer {
         val collection = getCollection()
-        if (developer.id != null && developer.id!!.isNotEmpty()) {
-            collection.updateOne(getFilterByDeveloper(developer), getDocumentByDeveloper(developer), upsertOptions)
-            return true
+        return if (developer.id!=null &&  developer.id.isNotEmpty()) {
+            val document = collection.findOneAndUpdate(getFilterByDeveloper(developer), getDocumentByDeveloper(developer), findOneAndUpdateOptions)
+            document.toEntity()
         } else {
-            collection.insertOne(getDocumentByDeveloper(developer))
-            return false
+            val document = getDocumentByDeveloper(developer)
+            collection.insertOne(document)
+            document.toEntity();
         }
     }
 
     private fun getDocumentByDeveloper(developer: Developer): Document {
         val map: MutableMap<String, Any> = HashMap()
-        if (developer.id != null && developer.id!!.isNotEmpty()) {
-            map["id"] = developer.id as String
+        if (developer.id!=null &&  developer.id.isNotEmpty()) {
+            map["id"] = developer.id 
+        }else{
+            map["id"] = UUID.randomUUID().toString()
         }
-        map["firstName"] = developer.firstName as String
-        map["lastName"] = developer.lastName as String
+        map["firstName"] = developer.firstName
+        map["lastName"] = developer.lastName 
         return Document(map)
     }
 
@@ -104,8 +105,13 @@ class DeveloperRepository {
         collection.deleteOne(getFilterById(id))
     }
 
-    fun exists(id: String): Boolean {
-        return getCollection().countDocuments(getFilterById(id)) != 0L
+    fun exists(id: String?): Boolean {
+        return id!=null && id.isNotEmpty()&& getCollection().countDocuments(getFilterById(id)) != 0L
+    }
+
+    fun deleteAll() {
+
+        getCollection().deleteMany(Document())
     }
 
 

@@ -41,6 +41,12 @@ class DeveloperController {
     fun delete(@PathParam("id") id: String): Response {
         return Response.status(if (developerService.deleteById(id)) Response.Status.GONE else Response.Status.NOT_FOUND).build()
     }
+    @DELETE
+    @RolesAllowed("ROLE_BUGGY_UI")
+    fun deleteAll(): Response {
+        this.developerService.deleteAll();
+        return Response.status(Response.Status.GONE).build();
+    }
 
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -52,7 +58,7 @@ class DeveloperController {
         return if (developerService.exists(id)) {
             Response.accepted(entity).build()
         } else {
-            Response.created(UriBuilder.fromPath("/" + entity.id).build()).build()
+            Response.created(UriBuilder.fromPath("/developers/" + entity.id).build()).build()
         }
     }
 
@@ -63,7 +69,7 @@ class DeveloperController {
     @Throws(JsonProcessingException::class)
     fun update(@PathParam("id") id: String, developer: Developer): Response {
         if (developerService.exists(id)) {
-            developer.id = id
+
             return Response.accepted(developerService.upsert(developer)).build()
         }
         return Response.status(Response.Status.NOT_FOUND).build()
