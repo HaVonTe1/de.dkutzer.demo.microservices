@@ -28,6 +28,7 @@ class ResourceServer : ResourceServerConfigurerAdapter() {
         http!!
                 .authorizeRequests()
                 .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()//dont do this in production
+                .antMatchers("/docs/**").permitAll()
                 .antMatchers("/developers/**").hasRole("BUGGY_UI")
                 .anyRequest().authenticated()
                 .and()

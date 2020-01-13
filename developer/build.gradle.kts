@@ -71,7 +71,7 @@ tasks.withType<KotlinCompile> {
 }
 
 tasks.test {
-    outputs.dir(file("build/generated-snippets"))
+    outputs.dir(file("build/generated-snippets") )
     useJUnitPlatform()
     testLogging {
         events = setOf(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
@@ -88,6 +88,8 @@ springBoot {
 tasks.asciidoctor {
     inputs.dir(file("build/generated-snippets"))
     dependsOn(tasks.test)
+    attributes.put("snippets",file("build/generated-snippets"))
+    attributes.put("projectdir",file("build/generated-snippets").toString() )
 }
 
 
