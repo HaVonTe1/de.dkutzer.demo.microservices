@@ -88,8 +88,8 @@ fabric.properties
 /.idea/
 
 /*/.gradlegi
+/*/.gradle
 /*/.idea
 /*/build
 /*/out
-/*/gradle/wrapper/gradle-wrapper.jar
 /*/*.iml

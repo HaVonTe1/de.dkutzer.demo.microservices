@@ -1,0 +1,40 @@
+quarkus:
+  http:
+    port: 8081
+  keycloak:
+    policy-enforcer:
+      enable: true
+  oidc:
+    auth-server-url: http://buggy-keycloak:8080/auth/realms/buggy
+    client-id: buggyui
+    credentials:
+      secret: d6bbc4e6-ca6b-4a15-96aa-838aab3aaeef
+
+  mongodb:
+    connection-string: mongodb://buggy-mongo:27017
+
+  log:
+    level: INFO
+    category:
+      "io.smallrye.reactive.messaging":
+        level: TRACE
+      "de.dkutzer":
+        level: TRACE
+
+
+
+# Configures the AMQP broker credentials.
+amqp-username: admin
+amqp-password: admin
+
+  # Configure the AMQP connector to read from the `prices` queue
+mp:
+  messaging:
+    incoming:
+      developer:
+        connector: smallrye-amqp
+        durable: false
+        host: buggy-rabbitmq
+        port: 5672
+        username: admin
+        password: admin

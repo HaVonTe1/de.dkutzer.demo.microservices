@@ -1,0 +1,71 @@
+version: '3.5'
+
+networks:
+  buggy-networks:
+    driver: bridge
+
+
+services:
+
+  buggy-rabbitmq:
+    image: rabbitmq:3-management
+    container_name: buggy-rabbitmq
+    hostname: buggy-rabbitmq
+    ports:
+      - 5672
+      - 5671
+      - 15672
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+      RABBITMQ_DEFAULT_VHOST: buggy
+    volumes:
+      - ./rabbitmq/etc/enabled_plugins:/etc/rabbitmq/enabled_plugins
+    networks:
+      - buggy-networks
+
+
+
+  buggy-mongo:
+    image: mongo:4.0.4
+    container_name: buggy-mongo
+    hostname: buggy-mongo
+    ports:
+      - 27017
+    networks:
+      - buggy-networks
+
+  buggy-postgres:
+    image: postgres:12.1
+    container_name: buggy-postgres
+    hostname: buggy-postgres
+    environment:
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=admin
+      - POSTGRES_DB=buggy
+    networks:
+      - buggy-networks
+
+  buggy-keycloak:
+    image: jboss/keycloak:8.0.0
+    container_name: buggy-keycloak
+    hostname: buggy-keycloak
+    environment:
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+      - DB_VENDOR=postgres
+      - DB_ADDR=buggy-postgres
+      - DB_USER=admin
+      - DB_PASSWORD=admin
+      - DB_DATABASE=buggy
+      - KEYCLOAK_IMPORT=/tmp/buggy_realm.json
+    volumes:
+      - ./keycloak:/tmp
+    ports:
+      - 8080
+    depends_on:
+      - buggy-postgres
+    networks:
+      - buggy-networks
+
+
