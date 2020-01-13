@@ -19,6 +19,8 @@ services:
       RABBITMQ_DEFAULT_USER: admin
       RABBITMQ_DEFAULT_PASS: admin
       RABBITMQ_DEFAULT_VHOST: buggy
+    volumes:
+      - ./rabbitmq/etc/enabled_plugins:/etc/rabbitmq/enabled_plugins
     networks:
       - buggy-networks
 
@@ -62,14 +64,14 @@ services:
       - RABBIT_USER=admin
       - RABBIT_PASSWORD=admin
       - RABBIT_VIRTUAL_HOST=buggy
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+        max_attempts: 3
     ports:
       # Port used for the Zipkin UI and HTTP Api
       - 9411
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-        delay: 15s
     depends_on:
       - buggy-mysql-zipkin
       - buggy-rabbitmq
@@ -98,76 +100,6 @@ services:
     networks:
       - buggy-networks
 
-  buggy-developer-service:
-    build:
-      context: ./developer
-      args:
-        JAR_FILE: build/libs/*.jar
-    deploy:
-      replicas: 1
-    depends_on:
-      - buggy-mongo
-      - buggy-rabbitmq
-    ports:
-      - 8080
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      SERVER_PORT: 8080
-    networks:
-      - buggy-networks
-
-  buggy-issues-service:
-    build:
-      context: ./issues
-      args:
-        JAR_FILE: build/libs/*.jar
-    deploy:
-      replicas: 1
-    depends_on:
-      - buggy-mongo
-      - buggy-rabbitmq
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      SERVER_PORT: 8080
-    ports:
-      - 8080
-    networks:
-      - buggy-networks
-
-  buggy-planning-service:
-    build:
-      context: ./planning
-      args:
-        JAR_FILE: build/libs/*.jar
-    deploy:
-      replicas: 1
-    depends_on:
-      - buggy-mongo
-      - buggy-rabbitmq
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      SERVER_PORT: 8080
-    ports:
-      - 8080
-    networks:
-      - buggy-networks
-
-  buggy-gateway-service:
-    build:
-      context: ./gateway
-      args:
-        JAR_FILE: build/libs/*.jar
-    depends_on:
-      - buggy-developer-service
-      - buggy-issues-service
-      - buggy-planning-service
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      SERVER_PORT: 8080
-    ports:
-      - 8080
-    networks:
-      - buggy-networks
 
   buggy-sba-service:
     build:
@@ -213,3 +145,5 @@ services:
       - 5601
     networks:
       - buggy-networks
+
+
