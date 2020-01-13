@@ -1,9 +1,13 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 
 plugins {
     id("org.springframework.boot") version "2.1.9.RELEASE"
     id("io.spring.dependency-management") version "1.0.8.RELEASE"
     id("org.asciidoctor.convert") version "1.5.8"
+    id ("com.adarshr.test-logger") version "1.7.0"
     kotlin("jvm") version "1.2.71"
     kotlin("plugin.spring") version "1.2.71"
 }
@@ -42,9 +46,14 @@ dependencies {
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("org.springframework.cloud:spring-cloud-stream-test-support")
     testImplementation("org.springframework.amqp:spring-rabbit-test")
+    testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("io.projectreactor:reactor-test")
-    testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation ("org.junit.jupiter:junit-jupiter-api")
+    testImplementation ("com.playtika.testcontainers:embedded-mongodb:1.36")
+    testImplementation ("com.playtika.testcontainers:embedded-rabbitmq:1.36")
+    testRuntimeOnly ("org.junit.jupiter:junit-jupiter-engine")
 }
 
 dependencyManagement {
@@ -63,9 +72,33 @@ tasks.withType<KotlinCompile> {
 
 tasks.test {
     outputs.dir(file("build/generated-snippets"))
+    useJUnitPlatform()
+    testLogging {
+        events = setOf(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
+        exceptionFormat = TestExceptionFormat.FULL
+        showStackTraces = true
+        showExceptions = true
+        showCauses = true
+        showStandardStreams = true
+    }
 }
-
+springBoot {
+    buildInfo()
+}
 tasks.asciidoctor {
     inputs.dir(file("build/generated-snippets"))
     dependsOn(tasks.test)
+}
+
+
+tasks.getByName<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
+    version = "${project.version}"
+    dependsOn(tasks.asciidoctor)
+
+    into("static/docs") {
+        from(file("build/asciidoc/html5"))
+    }
+
+
+
 }

@@ -1,0 +1,95 @@
+= Buggy Service - API Doc
+Alles ist besser mit Pinguin!;
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+:imagesdir: ./img
+
+[introduction]
+= Summary
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+
+
+
+
+[[overview]]
+= REST API
+
+== Developers
+
+=== Create a new Developer
+include::{snippets}/developer-create/curl-request.adoc[]
+
+==== Requestbody
+include::{snippets}/developer-create/request-body.adoc[]
+
+==== Requestfield
+include::{snippets}/developer-create/request-fields.adoc[]
+
+==== Example Response
+include::{snippets}/developer-create/http-response.adoc[]
+include::{snippets}/developer-create/response-fields.adoc[]
+
+=== Request a Developer
+include::{snippets}/developer-get/curl-request.adoc[]
+
+==== Parameter
+include::{snippets}/developer-get/path-parameters.adoc[]
+
+==== Example Response
+include::{snippets}/developer-get/http-response.adoc[]
+
+=== Request all Developer
+include::{snippets}/developer-get-all/curl-request.adoc[]
+
+==== Example Response
+include::{snippets}/developer-get-all/http-response.adoc[]
+
+=== Delete a Developer
+include::{snippets}/developer-delete/curl-request.adoc[]
+
+==== Parameter
+include::{snippets}/developer-delete/path-parameters.adoc[]
+
+==== Example Response
+include::{snippets}/developer-delete/http-response.adoc[]
+
+
+== Issues
+
+=== Create a new Issue
+include::{snippets}/issue-create-story/curl-request.adoc[]
+
+==== Requestbody
+include::{snippets}/issue-create-story/request-body.adoc[]
+
+==== Requestfield
+include::{snippets}/issue-create-story/request-fields.adoc[]
+
+==== Example Response
+include::{snippets}/issue-create-story/http-response.adoc[]
+include::{snippets}/issue-create-story/response-fields.adoc[]
+
+=== Request a Issue
+include::{snippets}/issue-get-story/curl-request.adoc[]
+
+==== Parameter
+include::{snippets}/issue-get-story/path-parameters.adoc[]
+
+==== Example Response
+include::{snippets}/issue-get-story/http-response.adoc[]
+
+== Planning
+
+=== Get a Planning Report
+include::{snippets}/planning-get/curl-request.adoc[]
+
+
+==== Example Response
+include::{snippets}/planning-get/http-response.adoc[]
+include::{snippets}/planning-get/response-fields.adoc[]
+

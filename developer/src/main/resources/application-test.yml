@@ -1,0 +1,26 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://${embedded.mongodb.host}:${embedded.mongodb.port}/${embedded.mongodb.database}
+  rabbitmq:
+    host: ${embedded.rabbitmq.host}
+    password: rabbitmq
+    username: rabbitmq
+    virtualHost: /
+    port: ${embedded.rabbitmq.port}
+  boot:
+    admin:
+      client:
+        enabled: false
+
+management:
+  endpoints:
+    enabled-by-default: false
+
+logging:
+  level:
+    root: info
+#    org.springframework.boot.autoconfigure.mongo.embedded: trace
+#    org.springframework.web: debug
+#    org.mongodb: trace
+#    com.playtika.testcontainers: trace

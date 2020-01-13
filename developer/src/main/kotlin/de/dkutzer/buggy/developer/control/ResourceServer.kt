@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter
@@ -14,6 +15,7 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore
 
 @Configuration
 @EnableResourceServer
+@Profile("!test")
 class ResourceServer : ResourceServerConfigurerAdapter() {
 
     @Value("\${spring.security.oauth2.resourceserver.jwt.verifierKey}")
