@@ -130,7 +130,7 @@ services:
 
   buggy-developer-boot-java:
     build:
-      context: ./developer
+      context: developer-spring
       args:
         JAR_FILE: build/libs/*.jar
     deploy:

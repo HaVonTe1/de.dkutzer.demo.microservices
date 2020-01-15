@@ -100,7 +100,7 @@ services:
 
   buggy-developer-service:
     build:
-      context: ./developer
+      context: developer-spring
       args:
         JAR_FILE: build/libs/*.jar
     deploy:
@@ -118,7 +118,7 @@ services:
 
   buggy-issues-service:
     build:
-      context: ./issues
+      context: issues-spring
       args:
         JAR_FILE: build/libs/*.jar
     deploy:
@@ -136,7 +136,7 @@ services:
 
   buggy-planning-service:
     build:
-      context: ./planning
+      context: planning-spring
       args:
         JAR_FILE: build/libs/*.jar
     deploy:

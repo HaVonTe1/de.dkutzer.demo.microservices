@@ -2,7 +2,7 @@ spring:
   main:
     banner-mode: "off"
   application:
-    name: buggy-developer-service
+    name: buggy-developer-spring-service
   profiles:
     active: local
   jackson:

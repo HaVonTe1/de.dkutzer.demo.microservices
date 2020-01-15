@@ -4,13 +4,13 @@ set -o pipefail
 set -o nounset
 #set -x
 
-pushd developer
+pushd developer-spring
 ./gradlew build
 popd
-pushd issues
+pushd issues-spring
 ./gradlew build
 popd
-pushd planning
+pushd planning-spring
 ./gradlew build
 popd
 pushd gateway
