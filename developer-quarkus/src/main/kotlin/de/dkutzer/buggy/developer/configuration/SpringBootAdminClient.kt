@@ -3,6 +3,8 @@ package de.dkutzer.buggy.developer.configuration
 import com.google.common.collect.Maps
 import io.quarkus.scheduler.Scheduled
 import org.eclipse.microprofile.config.inject.ConfigProperty
+import org.eclipse.microprofile.rest.client.inject.RestClient
+import java.util.*
 import javax.enterprise.context.ApplicationScoped
 import javax.enterprise.inject.Default
 import javax.inject.Inject
@@ -16,17 +18,15 @@ class HeartbeatScheduledController {
 
     @Inject
     @ConfigProperty(name = "quarkus.application.name", defaultValue = "buggy-developer-service")
-    @field: Default
     lateinit var appName: String
 
     @Inject
     @ConfigProperty(name = "quarkus.application.uri", defaultValue = "http://buggy-developer-quarkus-service:8080/")
-    @field: Default
     lateinit var  appuri: String
 
     @Inject
-    @field: Default
-    lateinit var restClient: SpringBootAdminRestClient
+    @field: RestClient
+    internal lateinit var restClient: SpringBootAdminRestClient
 
     @Scheduled(every="10s")
     fun postStatusToSBA(){

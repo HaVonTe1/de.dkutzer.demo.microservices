@@ -7,10 +7,16 @@ set -o nounset
 pushd developer-spring
 ./gradlew build
 popd
+pushd developer-quarkus
+./gradlew build
+popd
 pushd issues-spring
 ./gradlew build
 popd
 pushd planning-spring
+./gradlew build
+popd
+pushd planning-quarkus
 ./gradlew build
 popd
 pushd gateway
