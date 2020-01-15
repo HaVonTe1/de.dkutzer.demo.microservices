@@ -76,9 +76,10 @@ management:
           base-url: buggy-prometheus-pushgateway:9091
           enabled: true
           job: buggy-developer-spring-service
-          push-rate: 5s
+          push-rate: 30s
     tags:
       application: buggy-developer-spring-service
+      stage: dev
 
 
 

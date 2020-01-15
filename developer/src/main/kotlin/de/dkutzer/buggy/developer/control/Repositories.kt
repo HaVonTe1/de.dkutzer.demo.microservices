@@ -1,6 +1,7 @@
 package de.dkutzer.buggy.developer.control
 
 import de.dkutzer.buggy.developer.entity.*
+import io.micrometer.core.instrument.Gauge
 import org.javers.spring.annotation.JaversSpringDataAuditable
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.data.rest.core.annotation.*
@@ -9,6 +10,9 @@ import org.springframework.stereotype.Component
 @RepositoryRestResource(collectionResourceRel = "developer", path = "developers")
 @JaversSpringDataAuditable
 interface DeveloperRepository : MongoRepository<Developer, String>{
+
+
+
 }
 
 @RepositoryEventHandler

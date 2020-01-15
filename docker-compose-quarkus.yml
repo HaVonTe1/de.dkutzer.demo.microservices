@@ -190,3 +190,26 @@ services:
 
     networks:
       - buggy-networks
+      -
+  buggy-prometheus:
+    image:  prom/prometheus:v2.15.2
+    container_name: buggy-prometheus
+    hostname: buggy-prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090
+    networks:
+      - buggy-networks
+
+
+  buggy-prometheus-pushgateway:
+    image:  prom/pushgateway
+    container_name: buggy-prometheus-pushgateway
+    hostname: buggy-prometheus-pushgateway
+    ports:
+      - 9091
+    depends_on:
+      - buggy-prometheus
+    networks:
+      - buggy-networks
