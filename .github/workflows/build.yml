@@ -7,33 +7,53 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
-    - name: build developer
+    - name: build developer-spring
       uses: actions/setup-java@v1
       with:
         java-version: 11
     - uses: eskatos/gradle-command-action@v1
       with:
-        build-root-directory: developer
-        wrapper-directory: developer
+        build-root-directory: developer-spring
+        wrapper-directory: developer-spring
         gradle-version: 5.6.2
         arguments: build
-    - name: build issues
+    - name: build developer-quarkus
       uses: actions/setup-java@v1
       with:
         java-version: 11
     - uses: eskatos/gradle-command-action@v1
       with:
-        build-root-directory: issues
-        wrapper-directory: issues
+        build-root-directory: developer-quarkus
+        wrapper-directory: developer-quarkus
+        gradle-version: 6.0.1
+        arguments: build
+    - name: build issues-spring
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - uses: eskatos/gradle-command-action@v1
+      with:
+        build-root-directory: issues-spring
+        wrapper-directory: issues-spring
         gradle-version: 5.6.2
         arguments: build
-    - name: build planning
+    - name: build planning-spring
       uses: actions/setup-java@v1
       with:
         java-version: 11
     - uses: eskatos/gradle-command-action@v1
       with:
-        build-root-directory: planning
-        wrapper-directory: planning
+        build-root-directory: planning-spring
+        wrapper-directory: planning-spring
         gradle-version: 5.6.2
+        arguments: build
+    - name: build planning-quarkus
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - uses: eskatos/gradle-command-action@v1
+      with:
+        build-root-directory: planning-quarkus
+        wrapper-directory: planning-quarkus
+        gradle-version: 6.0.1
         arguments: build
