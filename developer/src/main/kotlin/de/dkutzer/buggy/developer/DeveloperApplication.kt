@@ -9,8 +9,5 @@ class DeveloperApplication
 fun main(args: Array<String>) {
     runApplication<DeveloperApplication>(*args)
 
-//    @Bean
-//    fun developerEventHandler(messageGateway: MessageGateway): DeveloperEventHandler {
-//        return DeveloperEventHandler(messageGateway )
-//    }
+
 }

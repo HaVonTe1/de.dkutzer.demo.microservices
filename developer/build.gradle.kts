@@ -43,6 +43,12 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.cloud:spring-cloud-starter-oauth2")
     implementation("org.springframework.security.oauth:spring-security-oauth2")
+    implementation("io.micrometer:micrometer-registry-prometheus")
+
+// https://mvnrepository.com/artifact/io.prometheus/simpleclient_pushgateway
+    implementation ("io.prometheus:simpleclient_pushgateway:0.8.0")
+
+
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("org.springframework.cloud:spring-cloud-stream-test-support")
     testImplementation("org.springframework.amqp:spring-rabbit-test")

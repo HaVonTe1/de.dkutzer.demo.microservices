@@ -51,6 +51,9 @@ modHostsForSingleService buggy-keycloak
 modHostsForSingleService buggy-postgres
 modHostsForSingleService buggy-elasticsearch
 modHostsForSingleService buggy-kibana
+modHostsForSingleService buggy-grafana
+modHostsForSingleService buggy-prometheus
+modHostsForSingleService buggy-prometheus-pushgateway
 
 modHostsForScaledService buggy-developer-service
 modHostsForScaledService buggy-issues-service

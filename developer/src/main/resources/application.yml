@@ -69,4 +69,16 @@ management:
   trace:
     http:
       include: REQUEST_HEADERS,RESPONSE_HEADERS,TIME_TAKEN,PRINCIPAL
+  metrics:
+    export:
+      prometheus:
+        pushgateway:
+          base-url: buggy-prometheus-pushgateway:9091
+          enabled: true
+          job: buggy-developer-spring-service
+          push-rate: 5s
+    tags:
+      application: buggy-developer-spring-service
+
+
 

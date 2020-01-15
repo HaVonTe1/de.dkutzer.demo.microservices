@@ -18,3 +18,8 @@ spring:
         resourceid: buggyui
         jwt:
           verifierKey: -----BEGIN PUBLIC KEY----- MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAhWZws2kqAtNJz7x8tNWuM6jT68V1PD7Th30En5THbrJxSabsLrDWBOS+WWVFT4VieAdCghgY0hbIafEfYZJ2dkuKyYaajSWYzLVkGlepl2YEu72vv91bF04GFIrAvDAedZT4jsC+JSPPFRRgt8VxWwHblMpzSqWE/buJg/c3jV+HkybtdE15hlzRZ9WcoZTuircR4kwzt8PVT9T4Kj/4tLFlaSDUWW9aJFiQFVv4/QC3QUAPGrf0CMCSi1O6PDakLz92vj6+JX+qNBczyzH18z+pBwLgZELgF+wgrw0L2sv+o3rT1HR8uN3zeGC7IAoUSA0f1iUlC1fdPaOCgppSfwIDAQAB -----END PUBLIC KEY-----
+logging:
+  level:
+    root: info
+    org.springframework.boot.actuate: trace
+    io.micrometer: trace
