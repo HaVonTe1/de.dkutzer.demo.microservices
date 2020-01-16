@@ -42,7 +42,9 @@ mp:
         connector: smallrye-amqp
         address: developer
         durable: false
-sba-api/mp-rest/url: http://buggy-sba:8080
+
+
+sba-api/mp-rest/url: http://buggy-sba-service:8080/instances
 sba-api/mp-rest/scope: javax.inject.Singleton
 
 

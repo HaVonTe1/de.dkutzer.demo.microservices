@@ -5,14 +5,12 @@ import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.FindOneAndUpdateOptions
 import com.mongodb.client.model.Indexes
-import com.mongodb.client.model.UpdateOptions
 import de.dkutzer.buggy.developer.entity.Developer
 import de.dkutzer.buggy.developer.entity.toEntity
 import io.quarkus.runtime.StartupEvent
 import org.bson.Document
 import org.bson.conversions.Bson
 import java.util.*
-import java.util.function.Consumer
 import javax.enterprise.context.ApplicationScoped
 import javax.enterprise.event.Observes
 import javax.enterprise.inject.Default

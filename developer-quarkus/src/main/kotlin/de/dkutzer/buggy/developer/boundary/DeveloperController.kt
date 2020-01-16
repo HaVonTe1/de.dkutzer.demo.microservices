@@ -16,9 +16,13 @@ import javax.ws.rs.core.UriBuilder
 @Authenticated
 class DeveloperController {
 
+
     @Inject
     @field: Default
     lateinit var developerService: DeveloperService
+
+
+ 
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

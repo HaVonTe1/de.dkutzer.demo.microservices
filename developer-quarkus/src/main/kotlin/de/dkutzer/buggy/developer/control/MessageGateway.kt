@@ -21,6 +21,9 @@ import javax.inject.Inject
 class MessageGateway {
 
     interface Event
+
+
+
     
     @Inject
     @field: Default
