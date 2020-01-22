@@ -4,7 +4,9 @@ Dirk Kutzer
 :toc-title: Inhaltsverzeichnis
 :toc:
 :icons: font
-
+ifdef::env-github[]
+:imagesdir: static/
+endif::[]
 
 The goal of this project is to demonstrate a possible architecture for building microservices on top Spring Boot with Kotlin.
 There won't be any fancy buisness logic but a full stack of technologies.
@@ -13,10 +15,13 @@ As an example the buggy-platfrom imitates an issue tracker like bugzilla or Jira
 '''
 
 Features:
+====
 * Create/Update/Delete of so called Basic-Data: 
 ** Developers
 ** Issues (Bugs and  Stories)
 * Doing a Planning for estimated Stories
+====
+
 
 == How to build an run
 
@@ -32,12 +37,15 @@ Features:
 This will build the jar of each component and start the compose file.
 
 === Hints
+====
+
 * On Linux you can run the script `/sudo ./addDNS_buggy.sh`. This will modify your local /etc/hosts file with the internal IPs of all services.
 So you can access each component without any port forwaring.
 * On first start the process will take several minutes for downloading 
-    * the `gradle` wrapper
-    * all dependencies
-    * docker images (mongodb, rabbitmq...)
+** the `gradle` wrapper
+** all dependencies
+** docker images (mongodb, rabbitmq...)
+====
 
 === Try-it-out
 TODO
@@ -55,6 +63,7 @@ A domain-service can handle multiple entities and controller.
 
 === Decoupling and Messaging
 Every service can offer full functionality even if other services are not available. This is achieved via `view-data` and messaging.
+
 ==== View-Data
 Every services persists all data needed to do it's work. In the case of the planning-service this means, it needs some data about the availably developers and data about the work about to be planned (estimated stories). It would be a very simple but also very bad idea to request all these data on demand via Rest or something simliar. Some disadvanteged would be:
 * increasing workload (net-io) over time 
@@ -71,9 +80,9 @@ The services don't know each other. The `planning-service` has  no idea about th
 |===
 |Pattern |Example
 
-|image::static/ProducerConsumerPattern.png[]
+| image:static/ProducerConsumerPattern.png[]
 
-|image::static/queues.png[]
+| image:static/queues.png[]
 
 |===
 
@@ -135,7 +144,7 @@ Because every event/message can only be consumed by one instance of a service an
 synchronisation. It is possible to spawn more instances on demand because they are stateless.
 Default all services are scaled to 1. This can be changed in the compose file (replicas=) or in CLI ```docker-compose up scale buggy-developer-service=2```
 
-![](static/scaled.png)
+image::static/scaled.png[]
 
 === Logging and Monitoring
 
@@ -145,9 +154,9 @@ None of the services uses manual logging. There is not a single instance of any 
 TOOD: configure meaningful logging level
 
 ==== History
-The services handling the basic data domains are using [Javers](https://javers.org/) to persist informations about all changes made on the data. Including what was changed and how.
+The services handling the basic data domains are using https://javers.org/[Javers] to persist informations about all changes made on the data. Including what was changed and how.
 
-![](static/javers_update_with_author.png)
+image::static/javers_update_with_author.png[]
 
 ==== Distributed Logging
 One of the hardest things when doing a distributed microservice driven project is debugging and analysing of the workflows. This is achieved via Sleuth.
@@ -158,55 +167,63 @@ In most cases it is a wise idea to store all log messages of all services and in
 TODO: add ELK
 
 ==== Zipkin
-[Zipkin](https://zipkin.io/) is a wonderful tool to visualize distributed requests inside a microservice system. 
+https://zipkin.io/[Zipkin] is a wonderful tool to visualize distributed requests inside a microservice system.
 Here is an example of a creation of a new developer over the gateway in the developer-service. The DeveloperCreated Event is consumed by the planning-service.
 
-![](static/Screenshot_Zipkin.png)
+image::static/Screenshot_Zipkin.png[]
 
 
 ==== Metrics
 TODO: add prometheus / grafana
 
 ==== Monitoring / Maintenance
-A first stepstone in monitoring a microservice system build with Spring Boot would be [Spring Boot Admin](https://codecentric.github.io/spring-boot-admin/current/).
+A first stepstone in monitoring a microservice system build with Spring Boot would be https://codecentric.github.io/spring-boot-admin/current/[Spring Boot Admin].
 
-![](static/Screenshot_sba.png)
+image::static/Screenshot_sba.png[]
 
 
 === Security
 The services are secured via OAuth2 (OpenId). The authorization Server is done with [Keycloak](https://www.keycloak.org/).
 The REST Endpoints require full authentification with an User with the role "buggy_ui".
 The implementation is entirly done with Spring  Security and not with the Spring Keycloak Adapter. This makes some modifications necessary.
-- Realm: buggy
-    - Roles: new Role: ROLE_BUGGY_UI
-- Client: buggyui
-    - the client secret is generated by keycloak automaticaly
-    - resourceid: buggyui
-    - add realm role "ROLE_BUGGY_UI" to the client
-    - Mappers:
-        - aud: Audience --> this maps to the resourceId in Spring Security
-        - authorities: User Realm Roles --> this maps to the effective User Roles in Spring Security
-        - user_name: User Attribut: user_name --> this maps to the principal aka. loged in user in Spring Security 
+
+====
+* Realm: buggy
+** Roles: new Role: ROLE_BUGGY_UI
+* Client: buggyui
+** the client secret is generated by keycloak automaticaly
+** resourceid: buggyui
+** add realm role "ROLE_BUGGY_UI" to the client
+** Mappers:
+*** aud: Audience -> this maps to the resourceId in Spring Security
+*** authorities: User Realm Roles -> this maps to the effective User Roles in Spring Security
+*** user_name: User Attribut: user_name -> this maps to the principal aka. loged in user in Spring Security
+====
 
 
-|ResourceID|Roles|Username Client|Username User|        
-|----|-----|----|----|
-|![](static/keycloak_buggy_client_mappers_resourceid.png) |![](static/keycloak_buggy_client_mappers_roles.png)|![](static/keycloak_buggy_client_mappers_username.png)|![](static/keycloak_buggy_user_attributes_principal.png)|        
+|===
+|ResourceID|Roles|Username Client|Username User
+|image:static/keycloak_buggy_client_mappers_resourceid.png[]
+|image:static/keycloak_buggy_client_mappers_roles.png[]
+|image:static/keycloak_buggy_client_mappers_username.png[]
+|image:static/keycloak_buggy_user_attributes_principal.png[]
+|===
+
 
 The Mappers are necessary because Spring Security searches the Roles in the claim "authorities". The default in Keycloak is "realm_access.roles".
 Beside that Spring Security reads the resource ID from the claim "aud". Without the mapper, der authorization would fail.
 
-The REST API can by called with a bearer Token. Here is Screenshot from [Insomnia](https://insomnia.rest/) as an example.
+The REST API can by called with a bearer Token. Here is Screenshot from https://insomnia.rest/[Insomnia] as an example.
 
-![](static/insomnia_path_dev_with_oauth2_usercreds.png) 
+image::static/insomnia_path_dev_with_oauth2_usercreds.png[]
 
 
 TODO: TLS
 
 ==== Auditing
-The services handling the basic data domains are using [Javers](https://javers.org/) to persist informations about which principal made which changed when.
+The services handling the basic data domains are using https://javers.org/[Javers] to persist informations about which principal made which changed when.
 
-![](static/javers_update_with_author.png)
+image::static/javers_update_with_author.png[]
 
 
 ==== TLS
