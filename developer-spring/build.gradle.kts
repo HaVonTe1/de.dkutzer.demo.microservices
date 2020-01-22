@@ -27,7 +27,7 @@ extra["springCloudVersion"] = "Greenwich.SR3"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-amqp")
+//    implementation("org.springframework.boot:spring-boot-starter-amqp")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
     implementation("org.springframework.boot:spring-boot-starter-data-rest")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -36,7 +36,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
     implementation ("org.springframework.cloud:spring-cloud-starter-zipkin")
-    implementation("org.springframework.cloud:spring-cloud-stream-binder-rabbit")
+    implementation("org.springframework.cloud:spring-cloud-stream-binder-kafka")
     implementation("org.springframework.cloud:spring-cloud-stream-reactive")
     implementation( "org.javers:javers-spring-boot-starter-mongo:5.8.5" )
     implementation( "de.codecentric:spring-boot-admin-starter-client:2.2.0-SNAPSHOT" )
@@ -52,14 +52,12 @@ dependencies {
 
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("org.springframework.cloud:spring-cloud-stream-test-support")
-    testImplementation("org.springframework.amqp:spring-rabbit-test")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("io.projectreactor:reactor-test")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation ("org.junit.jupiter:junit-jupiter-api")
     testImplementation ("com.playtika.testcontainers:embedded-mongodb:1.36")
-    testImplementation ("com.playtika.testcontainers:embedded-rabbitmq:1.36")
     testRuntimeOnly ("org.junit.jupiter:junit-jupiter-engine")
 }
 

@@ -2,12 +2,7 @@ spring:
   data:
     mongodb:
       uri: mongodb://${embedded.mongodb.host}:${embedded.mongodb.port}/${embedded.mongodb.database}
-  rabbitmq:
-    host: ${embedded.rabbitmq.host}
-    password: rabbitmq
-    username: rabbitmq
-    virtualHost: /
-    port: ${embedded.rabbitmq.port}
+
   boot:
     admin:
       client:

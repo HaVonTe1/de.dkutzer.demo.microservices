@@ -2,7 +2,7 @@
 set -o errexit
 set -o pipefail
 set -o nounset
-#set -x
+set -x
 
 # run as root
 echo "before"
@@ -43,17 +43,25 @@ function modHostsForScaledService {
 }
 
 modHostsForSingleService buggy-mongo
-modHostsForSingleService buggy-rabbitmq
-modHostsForSingleService buggy-mysql-zipkin
-modHostsForSingleService buggy-zipkin
-modHostsForSingleService buggy-sba-service
+#modHostsForSingleService buggy-rabbitmq
+#modHostsForSingleService buggy-mysql-zipkin
+#modHostsForSingleService buggy-zipkin
+#modHostsForSingleService buggy-sba-service
 modHostsForSingleService buggy-keycloak
 modHostsForSingleService buggy-postgres
-modHostsForSingleService buggy-elasticsearch
-modHostsForSingleService buggy-kibana
-modHostsForSingleService buggy-grafana
-modHostsForSingleService buggy-prometheus
-modHostsForSingleService buggy-prometheus-pushgateway
+#modHostsForSingleService buggy-elasticsearch
+#modHostsForSingleService buggy-kibana
+#modHostsForSingleService buggy-grafana
+#modHostsForSingleService buggy-prometheus
+#modHostsForSingleService buggy-prometheus-pushgateway
+modHostsForSingleService buggy-zookeeper
+modHostsForSingleService buggy-broker
+modHostsForSingleService buggy-kafka-control-center
+modHostsForSingleService buggy-kafka-ksql-server
+modHostsForSingleService buggy-kafka-connect
+modHostsForSingleService buggy-kafka-rest
+modHostsForSingleService buggy-kafka-schema-registry
+modHostsForSingleService buggy-zookeeper
 
 modHostsForScaledService buggy-developer-service
 modHostsForScaledService buggy-issues-service
