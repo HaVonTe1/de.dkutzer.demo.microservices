@@ -102,10 +102,20 @@ The endpoints and interfaces of all services are gathered and made public via a 
 ==== HATEOS
 Spring Rest Data offers a simple way to add HATEOS out of the box. This is all achieved by simple annotating the specific repository:
 
+ifdef::env-github[]
+[source,kotlin]
+----
+@RepositoryRestResource(collectionResourceRel = "developer", path = "developers")
+@JaversSpringDataAuditable
+interface DeveloperRepository : MongoRepository<Developer, String>{
+----
+endif::[]
+ifndef::env-github[]
 [source,kotlin]
 ----
 include::developer-spring/src/main/kotlin/de/dkutzer/buggy/developer/control/Repositories.kt[tag=HATEOS]
 ----
+endif::[]
 
 
 === Resilience
