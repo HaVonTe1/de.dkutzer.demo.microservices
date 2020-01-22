@@ -5,7 +5,7 @@ Dirk Kutzer
 :toc:
 :icons: font
 ifdef::env-github[]
-:imagesdir: static/
+:imagesdir: /
 endif::[]
 
 The goal of this project is to demonstrate a possible architecture for building microservices on top Spring Boot with Kotlin.
@@ -183,7 +183,7 @@ image::static/Screenshot_sba.png[]
 
 
 === Security
-The services are secured via OAuth2 (OpenId). The authorization Server is done with [Keycloak](https://www.keycloak.org/).
+The services are secured via OAuth2 (OpenId). The authorization Server is done with https://www.keycloak.org/[Keycloak].
 The REST Endpoints require full authentification with an User with the role "buggy_ui".
 The implementation is entirly done with Spring  Security and not with the Spring Keycloak Adapter. This makes some modifications necessary.
 
