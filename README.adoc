@@ -92,41 +92,21 @@ The planning-service is listening with his own Queue on the "Issues" Exchange an
 The Planning-Service also validates and persists the needed parts/properties of the data in its own database.
 The both services have no knowledge of each other. They don´t share a database.
 
-.Seuqncediagram for Messaging
-[plantuml,”seq1”,png]
-----
-
-
-actor client
-
-client -> gateway : POST dev
-activate gateway
-gateway -> "developer-service" : POST dev
-database "devs-db"
-activate "developer-service"
-"developer-service" -> "devs-db" : persist
-"developer-service" -> gateway : response 201
-gateway -> client : 201
-deactivate gateway
-control "broker"
-"developer-service" ->  "broker" : emit DevCreated Event
-deactivate "developer-service"
-
-broker -> "planning-service" : consume Event
-activate "planning-service"
-database "planning-db"
-"planning-service" -> "planning-db" : persist Dev
-
-deactivate "planning-service"
-
-----
+image::static/MessagingExample1.png[]
 
 TODO: Replay and REST Fallback
 
 === Blackbox
 The endpoints and interfaces of all services are gathered and made public via a an api-gateway. A client (like any user interface or web app) would only access the endpoints via this gateway. Never directly via one of the services. This way it is very easy to add modify or delete the underlying services without changing the API in any way.
 
-TODO: add HATEOS
+==== HATEOS
+Spring Rest Data offers a simple way to add HATEOS out of the box. This is all achieved by simple annotating the specific repository:
+
+[source,kotlin]
+----
+include::developer-spring/src/main/kotlin/de/dkutzer/buggy/developer/control/Repositories.kt[tag=HATEOS]
+----
+
 
 === Resilience
 
