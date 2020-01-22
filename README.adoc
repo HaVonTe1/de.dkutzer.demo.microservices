@@ -5,6 +5,7 @@ Dirk Kutzer
 :toc:
 :icons: font
 
+
 The goal of this project is to demonstrate a possible architecture for building microservices on top Spring Boot with Kotlin.
 There won't be any fancy buisness logic but a full stack of technologies.
 As an example the buggy-platfrom imitates an issue tracker like bugzilla or Jira.
@@ -13,8 +14,8 @@ As an example the buggy-platfrom imitates an issue tracker like bugzilla or Jira
 
 Features:
 * Create/Update/Delete of so called Basic-Data: 
-    * Developers
-    * Issues (Bugs and  Stories)
+** Developers
+** Issues (Bugs and  Stories)
 * Doing a Planning for estimated Stories
 
 == How to build an run
@@ -66,15 +67,50 @@ To overcome these things the planning-service consumes events about the data he 
 ==== Messaging
 The services don't know each other. The `planning-service` has  no idea about the origin of the events about developers and issues. There is only a message broker. (RabbitMQ)
 
-| Pattern        | Example           |
-| ------------- |:-------------:|
-|![](static/ProducerConsumerPattern.png)| ![](static/queues.png) 
+
+|===
+|Pattern |Example
+
+|image::static/ProducerConsumerPattern.png[]
+
+|image::static/queues.png[]
+
+|===
 
 Example:
 When a new issue is created in the issues-service the service emits an event `IssueCreated` containing all properties of the just created issue.
-The planning-service is listening with his own Queue on the "Issues" Exchange and consumes the event and it's data right away. The Planning-Service also validates and persists the needed parts/properties of the data in its own database. The both services have no knowledge of each other. They don´t share a database.
+The planning-service is listening with his own Queue on the "Issues" Exchange and consumes the event and it's data right away.
+The Planning-Service also validates and persists the needed parts/properties of the data in its own database.
+The both services have no knowledge of each other. They don´t share a database.
 
-![](static/MessagingExample1.png) 
+.Seuqncediagram for Messaging
+[plantuml,”seq1”,png]
+----
+
+
+actor client
+
+client -> gateway : POST dev
+activate gateway
+gateway -> "developer-service" : POST dev
+database "devs-db"
+activate "developer-service"
+"developer-service" -> "devs-db" : persist
+"developer-service" -> gateway : response 201
+gateway -> client : 201
+deactivate gateway
+control "broker"
+"developer-service" ->  "broker" : emit DevCreated Event
+deactivate "developer-service"
+
+broker -> "planning-service" : consume Event
+activate "planning-service"
+database "planning-db"
+"planning-service" -> "planning-db" : persist Dev
+
+deactivate "planning-service"
+
+----
 
 TODO: Replay and REST Fallback
 
