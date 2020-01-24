@@ -19,10 +19,10 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore
 class ResourceServer : ResourceServerConfigurerAdapter() {
 
     @Value("\${spring.security.oauth2.resourceserver.jwt.verifierKey}")
-    private var verifierKey : String ? = null
+    private var verifierKey: String? = null
 
     @Value("\${spring.security.oauth2.resourceserver.resourceid}")
-    private var resourceId : String ? = null
+    private var resourceId: String? = null
 
     override fun configure(http: HttpSecurity?) {
         http!!
@@ -39,18 +39,18 @@ class ResourceServer : ResourceServerConfigurerAdapter() {
     }
 
     override fun configure(resources: ResourceServerSecurityConfigurer?) {
-       resources!!.resourceId(resourceId)
+        resources!!.resourceId(resourceId)
     }
 
     @Bean
-    fun accessTokenConverter():JwtAccessTokenConverter{
+    fun accessTokenConverter(): JwtAccessTokenConverter {
         val keycloakAccessTokenConverter = JwtAccessTokenConverter()
         keycloakAccessTokenConverter.setVerifierKey(verifierKey)
         return keycloakAccessTokenConverter
     }
 
     @Bean
-    fun tokenStore(accessTokenConverter: JwtAccessTokenConverter):TokenStore {
+    fun tokenStore(accessTokenConverter: JwtAccessTokenConverter): TokenStore {
         return JwtTokenStore(accessTokenConverter)
     }
 

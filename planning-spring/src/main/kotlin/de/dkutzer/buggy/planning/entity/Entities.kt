@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull
 @Document(collection = "issues")
 data class Issue(
         @Id
-        val id:String,
+        val id: String,
         @NotNull
         val type: Type,
         @NotNull
@@ -27,14 +27,14 @@ data class Issue(
         val priority: Priority
 
 ) {
-        var remainPoints: Int=0
+    var remainPoints: Int = 0
 }
 
 @TypeAlias("Developer")
 @Document(collection = "developer")
 data class Developer(
         @Id
-        val id:String,
+        val id: String,
         val name: String
 
 )

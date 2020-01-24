@@ -12,7 +12,7 @@ import javax.ws.rs.core.MediaType
 @ApplicationScoped
 class HeartbeatScheduledController {
 
-    data class StatusDTO(val name: String,val  managementUrl: String,val healthUrl: String,val serviceUrl:String,val  metaData: Map<String, String>)
+    data class StatusDTO(val name: String, val managementUrl: String, val healthUrl: String, val serviceUrl: String, val metaData: Map<String, String>)
 
     @Inject
     @ConfigProperty(name = "quarkus.application.name", defaultValue = "buggy-developer-service")
@@ -20,16 +20,16 @@ class HeartbeatScheduledController {
 
     @Inject
     @ConfigProperty(name = "quarkus.application.uri", defaultValue = "http://buggy-developer-quarkus-service:8080/")
-    lateinit var  appuri: String
+    lateinit var appuri: String
 
     @Inject
     @field: RestClient
     internal lateinit var restClient: SpringBootAdminRestClient
 
-    @Scheduled(every="10s")
-    fun postStatusToSBA(){
-        val statusDTO = StatusDTO(appName, appuri, appuri+"health", appuri, Maps.newHashMap())
-        restClient.postStatus(MediaType.APPLICATION_JSON,MediaType.APPLICATION_JSON, statusDTO);
+    @Scheduled(every = "10s")
+    fun postStatusToSBA() {
+        val statusDTO = StatusDTO(appName, appuri, appuri + "health", appuri, Maps.newHashMap())
+        restClient.postStatus(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, statusDTO);
 
         //TODO: add de-register
     }

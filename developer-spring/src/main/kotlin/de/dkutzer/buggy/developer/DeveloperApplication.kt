@@ -9,11 +9,11 @@ import org.springframework.context.annotation.Bean
 
 
 @SpringBootApplication
+
 class DeveloperApplication
 
 fun main(args: Array<String>) {
     runApplication<DeveloperApplication>(*args)
-
 
 
 }

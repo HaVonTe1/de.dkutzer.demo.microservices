@@ -24,10 +24,10 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.springframework.cloud:spring-cloud-starter-gateway")
     implementation("org.springframework.cloud:spring-cloud-starter-sleuth")
-    implementation ("org.springframework.cloud:spring-cloud-starter-zipkin")
+    implementation("org.springframework.cloud:spring-cloud-starter-zipkin")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.cloud:spring-cloud-stream-binder-rabbit")
-    implementation( "de.codecentric:spring-boot-admin-starter-client:2.2.0-SNAPSHOT" )
+    implementation("de.codecentric:spring-boot-admin-starter-client:2.2.0-SNAPSHOT")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }

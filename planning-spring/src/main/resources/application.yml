@@ -9,52 +9,23 @@ spring:
     time-zone: UTC
   cloud:
     stream:
-      default:
-        destination:
-        contentType: application/json;charset=UTF-8
-        consumer:
-          maxAttempts: 1 # do not retry with internal message loop, instead use the DLQ for retry
-        group: planning
       bindings:
         developers_channel:
-          binder: buggy-rabbit
           destination: developers
+          group: bubby-planning
         issues_channel:
-          binder: buggy-rabbit
           destination: issues
-      rabbit:
-        bindings:
-          developers_channel:
-            binder: buggy-rabbit
-            consumer:
-              autoBindDlq: true
-              dlqTtl: 60000
-              republishToDlq: true
-              dlq-dead-letter-exchange:
-          issues_channel:
-            binder: buggy-rabbit
-            consumer:
-              autoBindDlq: true
-              dlqTtl: 60000
-              republishToDlq: true
-              dlq-dead-letter-exchange:
-      binders:
-        buggy-rabbit:
-          type: rabbit
-          environment:
-            spring:
-              rabbitmq:
-                host: ${spring.rabbitmq.host}
-                port: ${spring.rabbitmq.port}
-                username: ${spring.rabbitmq.username}
-                password: ${spring.rabbitmq.password}
-                virtual-host: ${spring.rabbitmq.virtualHost}
-  rabbitmq:
-    port: 5672
-    virtualHost: buggy
-    host: localhost
-    username: guest
-    password: guest #todo: use docker secret
+          group: bubby-planning
+      default-binder: kafka
+      default:
+        enableDlq: true
+
+  kafka:
+    consumer:
+      client-id: ${spring.application.name}
+      group-id: buggy-planning
+      auto-offset-reset: earliest
+
   data:
     mongodb:
       database: buggy-plannings
@@ -66,7 +37,7 @@ spring:
       enabled: true
     sampler:
       probability: 100
-server.use-forward-headers: true
+
 
 management:
   endpoints:

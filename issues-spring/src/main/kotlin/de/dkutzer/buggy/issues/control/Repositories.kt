@@ -39,5 +39,4 @@ class IssueEventHandler(val messageGateway: MessageGateway) {
     fun handleBugDeleted(ent: Bug) = messageGateway.send(ent.toEvent<IssueDeleted>())
 
 
-
 }

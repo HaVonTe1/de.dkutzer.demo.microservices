@@ -24,13 +24,13 @@ class IssuesServices(val issuesRepository: IssuesRepository) {
 
 }
 
-private fun IssueEvent.toEntity(): Issue = Issue(id, type, title, description, createdAt,assignee, points, status, priority)
+private fun IssueEvent.toEntity(): Issue = Issue(id, type, title, description, createdAt, assignee, points, status, priority)
 
 @Service
 class PlanningService(val issuesRepository: IssuesRepository, val developerRepository: DeveloperRepository) {
     private val capacityPerDev: Int = 5
 
-    fun doPlanning():PlanningDto {
+    fun doPlanning(): PlanningDto {
 
         val estimatedStories = issuesRepository.findAllByTypeAndStatusOrderByPriorityAsc(Type.STORY.name, Status.Estimated.name)
         val numberOfDevs = developerRepository.count().toInt()
@@ -40,14 +40,14 @@ class PlanningService(val issuesRepository: IssuesRepository, val developerRepos
         val issues = ArrayList<Issue>(remainingIssues)
         var currentWeek = 1;
 
-        while (issues.isNotEmpty()){
-            for (it: Issue in issues){
-                val points = if(it.remainPoints>0)it.remainPoints else  it.points
-                if(points <= capacity){
+        while (issues.isNotEmpty()) {
+            for (it: Issue in issues) {
+                val points = if (it.remainPoints > 0) it.remainPoints else it.points
+                if (points <= capacity) {
                     issuesPerWeek.add(currentWeek, it.toDto())
-                    capacity-=points
+                    capacity -= points
                     remainingIssues.remove(it)
-                } else if(capacity > 0 ){
+                } else if (capacity > 0) {
                     val remainingPoints = points - capacity;
                     it.remainPoints = remainingPoints
                     issuesPerWeek.add(currentWeek, it.toDto())
@@ -61,14 +61,14 @@ class PlanningService(val issuesRepository: IssuesRepository, val developerRepos
         }
         val weeks = ArrayList<Week>()
         issuesPerWeek.forEach { (weekNr, issueDto) ->
-            weeks.add(Week(weekNr,issueDto))
+            weeks.add(Week(weekNr, issueDto))
         }
 
-        val numberOfIssuesPerWeek = if(weeks.size!=0) (estimatedStories.size / weeks.size).toDouble() else 0.0
-        return  PlanningDto(Summary(weeks.size,estimatedStories.size.toLong(),numberOfDevs.toLong(),numberOfIssuesPerWeek),weeks)
+        val numberOfIssuesPerWeek = if (weeks.size != 0) (estimatedStories.size / weeks.size).toDouble() else 0.0
+        return PlanningDto(Summary(weeks.size, estimatedStories.size.toLong(), numberOfDevs.toLong(), numberOfIssuesPerWeek), weeks)
 
     }
 
 }
 
-private fun Issue.toDto(): IssueDto = IssueDto(type,title,description,createdAt,assignee,points,status,priority)
+private fun Issue.toDto(): IssueDto = IssueDto(type, title, description, createdAt, assignee, points, status, priority)

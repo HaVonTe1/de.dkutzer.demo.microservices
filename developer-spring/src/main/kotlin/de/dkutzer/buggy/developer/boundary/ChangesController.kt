@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 
 class ChangesController(val javers: Javers) {
-    
+
 
     @GetMapping("/developers/changes")
-    @Timed(value = "de.dkutzer.buggy.changes" , extraTags = ["javamethod","getDevelopersChanges"])
+    @Timed(value = "de.dkutzer.buggy.changes", extraTags = ["javamethod", "getDevelopersChanges"])
     fun getDevelopersChanges(): String =
-        javers.jsonConverter.toJson(javers.findChanges(QueryBuilder.byClass(Developer::class.java).build()))
+            javers.jsonConverter.toJson(javers.findChanges(QueryBuilder.byClass(Developer::class.java).build()))
 
 
 }

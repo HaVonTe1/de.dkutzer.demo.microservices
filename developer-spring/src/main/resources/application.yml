@@ -12,7 +12,14 @@ spring:
       bindings:
         output:
           destination: developers
-          contentType: application/json;charset=UTF-8
+
+#      kafka:
+#        bindings:
+#          output:
+#            producer:
+#              configuration:
+#                value.serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
   data:
     mongodb:
       database: buggy-developers
@@ -25,10 +32,14 @@ spring:
       enabled: true
     sampler:
       probability: 100
+  kafka:
+    producer:
+  #    key-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  #    value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      client-id: ${spring.application.name}
 
 
 
-server.use-forward-headers: true
 
 management:
   endpoints:

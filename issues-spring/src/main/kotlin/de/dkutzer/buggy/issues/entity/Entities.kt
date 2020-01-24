@@ -13,10 +13,10 @@ import javax.validation.constraints.NotNull
 
 @TypeAlias("Story")
 @Document(collection = "issues")
-@CompoundIndexes( value = [
+@CompoundIndexes(value = [
     CompoundIndex(name = "status_type", def = "{'status' : 1, 'type': 1}")
 ])
-data class Story (
+data class Story(
         @Id
         val id: String,
         @NotNull
@@ -32,9 +32,10 @@ data class Story (
         val priority: Priority
 
 )
+
 @TypeAlias("Bug")
 @Document(collection = "issues")
-data class Bug (
+data class Bug(
         @Id
         val id: String,
         @NotNull
@@ -49,30 +50,31 @@ data class Bug (
 )
 
 enum class Priority {
-        Critical, Major, Minor
+    Critical, Major, Minor
 }
 
 enum class Status {
-        New, Verified, Resolved, Estimated, Completed
+    New, Verified, Resolved, Estimated, Completed
 }
 
 enum class Type {
-        STORY,BUG
+    STORY, BUG
 }
 
 inline fun <reified T : MessageGateway.Event> Story.toEvent(): MessageGateway.Event {
-        return when (T::class) {
-                IssueCreated::class -> IssueCreated(id,Type.STORY,title,description, LocalDate.now(),assignee,points,status,priority)
-                IssueUpdated::class -> IssueUpdated(id,Type.STORY,title,description, LocalDate.now(),assignee,points,status,priority)
-                IssueDeleted::class -> IssueDeleted(id)
-                else -> throw IllegalArgumentException(T::class.simpleName)
-        }
+    return when (T::class) {
+        IssueCreated::class -> IssueCreated(id, Type.STORY, title, description, LocalDate.now(), assignee, points, status, priority)
+        IssueUpdated::class -> IssueUpdated(id, Type.STORY, title, description, LocalDate.now(), assignee, points, status, priority)
+        IssueDeleted::class -> IssueDeleted(id)
+        else -> throw IllegalArgumentException(T::class.simpleName)
+    }
 }
+
 inline fun <reified T : MessageGateway.Event> Bug.toEvent(): MessageGateway.Event {
-        return when (T::class) {
-                IssueCreated::class -> IssueCreated(id,Type.BUG,title,description, LocalDate.now(),assignee,0,status,priority)
-                IssueUpdated::class -> IssueUpdated(id,Type.BUG,title,description, LocalDate.now(),assignee,0,status,priority)
-                IssueDeleted::class -> IssueDeleted(id)
-                else -> throw IllegalArgumentException(T::class.simpleName)
-        }
+    return when (T::class) {
+        IssueCreated::class -> IssueCreated(id, Type.BUG, title, description, LocalDate.now(), assignee, 0, status, priority)
+        IssueUpdated::class -> IssueUpdated(id, Type.BUG, title, description, LocalDate.now(), assignee, 0, status, priority)
+        IssueDeleted::class -> IssueDeleted(id)
+        else -> throw IllegalArgumentException(T::class.simpleName)
+    }
 }

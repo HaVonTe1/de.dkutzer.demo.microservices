@@ -9,8 +9,7 @@ import org.springframework.stereotype.Component
 
 @RepositoryRestResource(collectionResourceRel = "developer", path = "developers")
 @JaversSpringDataAuditable
-interface DeveloperRepository : MongoRepository<Developer, String>{
-
+interface DeveloperRepository : MongoRepository<Developer, String> {
 
 
 }

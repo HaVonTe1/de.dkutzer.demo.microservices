@@ -93,7 +93,7 @@ services:
     container_name: buggy-grafana
     hostname: buggy-grafana
     environment:
-#      - GF_SERVER_ROOT_URL=http:/buggy-grafana"
+      #      - GF_SERVER_ROOT_URL=http:/buggy-grafana"
       - GF_SECURITY_ADMIN_PASSWORD=admin
     ports:
       - 3000

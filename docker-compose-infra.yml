@@ -6,30 +6,30 @@ networks:
 
 
 services:
-#
-#  buggy-rabbitmq:
-#    image: rabbitmq:3-management
-#    container_name: buggy-rabbitmq
-#    hostname: buggy-rabbitmq
-#    ports:
-#      - 5672
-#      - 5671
-#      - 15672
-#    environment:
-#      RABBITMQ_DEFAULT_USER: admin
-#      RABBITMQ_DEFAULT_PASS: admin
-#      RABBITMQ_DEFAULT_VHOST: buggy
-#    volumes:
-#      - ./rabbitmq/etc/enabled_plugins:/etc/rabbitmq/enabled_plugins
-#    networks:
-#      - buggy-networks
+  #
+  #  buggy-rabbitmq:
+  #    image: rabbitmq:3-management
+  #    container_name: buggy-rabbitmq
+  #    hostname: buggy-rabbitmq
+  #    ports:
+  #      - 5672
+  #      - 5671
+  #      - 15672
+  #    environment:
+  #      RABBITMQ_DEFAULT_USER: admin
+  #      RABBITMQ_DEFAULT_PASS: admin
+  #      RABBITMQ_DEFAULT_VHOST: buggy
+  #    volumes:
+  #      - ./rabbitmq/etc/enabled_plugins:/etc/rabbitmq/enabled_plugins
+  #    networks:
+  #      - buggy-networks
 
-#  buggy-mysql-zipkin:
-#    image: openzipkin/zipkin-mysql
-#    container_name: buggy-mysql-zipkin
-#    hostname: buggy-mysql-zipkin
-#    networks:
-#      - buggy-networks
+  #  buggy-mysql-zipkin:
+  #    image: openzipkin/zipkin-mysql
+  #    container_name: buggy-mysql-zipkin
+  #    hostname: buggy-mysql-zipkin
+  #    networks:
+  #      - buggy-networks
 
 
   buggy-mongo:
@@ -52,31 +52,31 @@ services:
     networks:
       - buggy-networks
 
-#  buggy-zipkin:
-#    image: openzipkin/zipkin
-#    container_name: buggy-zipkin
-#    hostname: buggy-zipkin
-#    # Environment settings are defined here https://github.com/openzipkin/zipkin/blob/master/zipkin-server/README.md#environment-variables
-#    environment:
-#      - STORAGE_TYPE=mysql
-#      - MYSQL_HOST=buggy-mysql-zipkin
-#      - RABBIT_ADDRESSES=buggy-rabbitmq
-#      - RABBIT_USER=admin
-#      - RABBIT_PASSWORD=admin
-#      - RABBIT_VIRTUAL_HOST=buggy
-#    deploy:
-#      restart_policy:
-#        condition: on-failure
-#        delay: 30s
-#        max_attempts: 3
-#    ports:
-#      # Port used for the Zipkin UI and HTTP Api
-#      - 9411
-#    depends_on:
-#      - buggy-mysql-zipkin
-#      - buggy-rabbitmq
-#    networks:
-#      - buggy-networks
+  #  buggy-zipkin:
+  #    image: openzipkin/zipkin
+  #    container_name: buggy-zipkin
+  #    hostname: buggy-zipkin
+  #    # Environment settings are defined here https://github.com/openzipkin/zipkin/blob/master/zipkin-server/README.md#environment-variables
+  #    environment:
+  #      - STORAGE_TYPE=mysql
+  #      - MYSQL_HOST=buggy-mysql-zipkin
+  #      - RABBIT_ADDRESSES=buggy-rabbitmq
+  #      - RABBIT_USER=admin
+  #      - RABBIT_PASSWORD=admin
+  #      - RABBIT_VIRTUAL_HOST=buggy
+  #    deploy:
+  #      restart_policy:
+  #        condition: on-failure
+  #        delay: 30s
+  #        max_attempts: 3
+  #    ports:
+  #      # Port used for the Zipkin UI and HTTP Api
+  #      - 9411
+  #    depends_on:
+  #      - buggy-mysql-zipkin
+  #      - buggy-rabbitmq
+  #    networks:
+  #      - buggy-networks
 
   buggy-keycloak:
     image: jboss/keycloak:8.0.1
@@ -102,74 +102,74 @@ services:
       - buggy-networks
 
 
-#  buggy-sba-service:
-#    build:
-#      context: ./sba-server
-#      args:
-#        JAR_FILE: build/libs/*.jar
-#    container_name: buggy-sba-service
-#    hostname: buggy-sba-service
-#    environment:
-#      SPRING_PROFILES_ACTIVE: docker
-#      SERVER_PORT: 8080
-#    deploy:
-#      replicas: 1
-#      restart_policy:
-#        condition: on-failure
-#        delay: 15s
-#    ports:
-#      - 8080
-#    networks:
-#      - buggy-networks
+  #  buggy-sba-service:
+  #    build:
+  #      context: ./sba-server
+  #      args:
+  #        JAR_FILE: build/libs/*.jar
+  #    container_name: buggy-sba-service
+  #    hostname: buggy-sba-service
+  #    environment:
+  #      SPRING_PROFILES_ACTIVE: docker
+  #      SERVER_PORT: 8080
+  #    deploy:
+  #      replicas: 1
+  #      restart_policy:
+  #        condition: on-failure
+  #        delay: 15s
+  #    ports:
+  #      - 8080
+  #    networks:
+  #      - buggy-networks
 
 
-#  buggy-elasticsearch:
-#    image: elasticsearch:7.5.1
-#    container_name: buggy-elasticsearch
-#    hostname: buggy-elasticsearch
-#    environment:
-#      discovery.type: single-node
-#    ports:
-#      - 9200
-#      - 9300
-#    networks:
-#      - buggy-networks
-#
-#  buggy-kibana:
-#    image: kibana:7.5.1
-#    container_name: buggy-kibana
-#    hostname: buggy-kibana
-#    environment:
-#      SERVER_NAME: buggy-kibana
-#      ELASTICSEARCH_HOSTS: http://buggy-elasticsearch:9200
-#    ports:
-#      - 5601
-#    networks:
-#      - buggy-networks
-#
-#
-#  buggy-prometheus:
-#    image:  prom/prometheus:v2.15.2
-#    container_name: buggy-prometheus
-#    hostname: buggy-prometheus
-#    volumes:
-#      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-#    ports:
-#      - 9090
-#    networks:
-#      - buggy-networks
-#
-#
-#  buggy-prometheus-pushgateway:
-#    image:  prom/pushgateway
-#    container_name: buggy-prometheus-pushgateway
-#    hostname: buggy-prometheus-pushgateway
-#    ports:
-#      - 9091
-#    depends_on:
-#      - buggy-prometheus
-#    networks:
-#      - buggy-networks
+  #  buggy-elasticsearch:
+  #    image: elasticsearch:7.5.1
+  #    container_name: buggy-elasticsearch
+  #    hostname: buggy-elasticsearch
+  #    environment:
+  #      discovery.type: single-node
+  #    ports:
+  #      - 9200
+  #      - 9300
+  #    networks:
+  #      - buggy-networks
+  #
+  #  buggy-kibana:
+  #    image: kibana:7.5.1
+  #    container_name: buggy-kibana
+  #    hostname: buggy-kibana
+  #    environment:
+  #      SERVER_NAME: buggy-kibana
+  #      ELASTICSEARCH_HOSTS: http://buggy-elasticsearch:9200
+  #    ports:
+  #      - 5601
+  #    networks:
+  #      - buggy-networks
+  #
+  #
+  #  buggy-prometheus:
+  #    image:  prom/prometheus:v2.15.2
+  #    container_name: buggy-prometheus
+  #    hostname: buggy-prometheus
+  #    volumes:
+  #      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+  #    ports:
+  #      - 9090
+  #    networks:
+  #      - buggy-networks
+  #
+  #
+  #  buggy-prometheus-pushgateway:
+  #    image:  prom/pushgateway
+  #    container_name: buggy-prometheus-pushgateway
+  #    hostname: buggy-prometheus-pushgateway
+  #    ports:
+  #      - 9091
+  #    depends_on:
+  #      - buggy-prometheus
+  #    networks:
+  #      - buggy-networks
 
 
   buggy-zookeeper:
