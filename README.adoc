@@ -25,7 +25,7 @@ Features:
 
 == How to build an run
 
-=== Prerequirements
+=== Pre-requirements
 * Docker 
 * Docker-Compose
 
@@ -40,7 +40,7 @@ This will build the jar of each component and start the compose file.
 ====
 
 * On Linux you can run the script `/sudo ./addDNS_buggy.sh`. This will modify your local /etc/hosts file with the internal IPs of all services.
-So you can access each component without any port forwaring.
+So you can access each component without any port forwarding.
 * On first start the process will take several minutes for downloading 
 ** the `gradle` wrapper
 ** all dependencies
