@@ -19,10 +19,12 @@ spring:
       kafka:
         binder:
           brokers: buggy-kafka
+  kafka:
+    bootstrap-servers: buggy-kafka:9092
   zipkin:
-    enabled: false
+    enabled: true
   sleuth:
-    enabled: false
+    enabled: true
 
 logging:
   level:

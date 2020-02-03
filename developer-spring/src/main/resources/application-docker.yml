@@ -20,6 +20,8 @@ spring:
       kafka:
         binder:
           brokers: buggy-kafka
+  kafka:
+    bootstrap-servers: buggy-kafka:9092
 logging:
   level:
     root: info

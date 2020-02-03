@@ -2,6 +2,8 @@ spring:
   data:
     mongodb:
       host: buggy-mongo
+  kafka:
+    bootstrap-servers: buggy-kafka:9092
   cloud:
     stream:
       kafka:

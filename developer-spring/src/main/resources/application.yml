@@ -16,10 +16,12 @@ spring:
     mongodb:
       database: buggy-developers
   zipkin:
+
     sender:
       type: kafka
     enabled: true
   sleuth:
+
     messaging:
       enabled: true
     sampler:

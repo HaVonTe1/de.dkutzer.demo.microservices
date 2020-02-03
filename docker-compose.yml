@@ -7,27 +7,6 @@ networks:
 
 services:
 
-  buggy-rabbitmq:
-    image: rabbitmq:3-management
-    container_name: buggy-rabbitmq
-    hostname: buggy-rabbitmq
-    ports:
-      - 5672
-      - 5671
-      - 15672
-    environment:
-      RABBITMQ_DEFAULT_USER: admin
-      RABBITMQ_DEFAULT_PASS: admin
-      RABBITMQ_DEFAULT_VHOST: buggy
-    networks:
-      - buggy-networks
-
-  buggy-mysql-zipkin:
-    image: openzipkin/zipkin-mysql
-    container_name: buggy-mysql-zipkin
-    hostname: buggy-mysql-zipkin
-    networks:
-      - buggy-networks
 
 
   buggy-mongo:
@@ -56,28 +35,27 @@ services:
     hostname: buggy-zipkin
     # Environment settings are defined here https://github.com/openzipkin/zipkin/blob/master/zipkin-server/README.md#environment-variables
     environment:
-      - STORAGE_TYPE=mysql
-      - MYSQL_HOST=buggy-mysql-zipkin
-      - RABBIT_ADDRESSES=buggy-rabbitmq
-      - RABBIT_USER=admin
-      - RABBIT_PASSWORD=admin
-      - RABBIT_VIRTUAL_HOST=buggy
+      - STORAGE_TYPE=elasticsearch
+      - ES_HOSTS=buggy-elasticsearch
+      - COLLECTOR_KAFKA_ENABLED=true
+      - KAFKA_BOOTSTRAP_SERVERS=buggy-kafka:9092
+
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 30s
+        max_attempts: 3
     ports:
       # Port used for the Zipkin UI and HTTP Api
       - 9411
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-        delay: 15s
     depends_on:
-      - buggy-mysql-zipkin
-      - buggy-rabbitmq
+      - buggy-elasticsearch
+      - buggy-kafka
     networks:
       - buggy-networks
 
   buggy-keycloak:
-    image: jboss/keycloak:8.0.0
+    image: jboss/keycloak:8.0.1
     container_name: buggy-keycloak
     hostname: buggy-keycloak
     environment:
@@ -89,6 +67,7 @@ services:
       - DB_PASSWORD=admin
       - DB_DATABASE=buggy
       - KEYCLOAK_IMPORT=/tmp/buggy_realm.json
+      - JAVA_OPTS=-Xms64m -Xmx512m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m -Djava.net.preferIPv4Stack=true -Djboss.modules.system.pkgs=org.jboss.byteman -Djava.awt.headless=true  --add-exports=java.base/sun.nio.ch=ALL-UNNAMED --add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED --add-exports=jdk.unsupported/sun.reflect=ALL-UNNAMED -Dkeycloak.profile.feature.upload_scripts=enabled
     volumes:
       - ./keycloak:/tmp
     ports:
@@ -97,6 +76,168 @@ services:
       - buggy-postgres
     networks:
       - buggy-networks
+
+
+  bugy-sba-service:
+    build:
+      context: ./sba-server
+      args:
+        JAR_FILE: build/libs/*.jar
+    container_name: buggy-sba-service
+    hostname: buggy-sba-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 15s
+    ports:
+      - 8080
+    networks:
+      - buggy-networks
+
+
+  buggy-elasticsearch:
+    image: elasticsearch:7.5.1
+    container_name: buggy-elasticsearch
+    hostname: buggy-elasticsearch
+    environment:
+      discovery.type: single-node
+    ports:
+      - 9200
+      - 9300
+    networks:
+      - buggy-networks
+
+  buggy-kibana:
+    image: kibana:7.5.1
+    container_name: buggy-kibana
+    hostname: buggy-kibana
+    environment:
+      SERVER_NAME: buggy-kibana
+      ELASTICSEARCH_HOSTS: http://buggy-elasticsearch:9200
+    ports:
+      - 5601
+    networks:
+      - buggy-networks
+
+
+  buggy-prometheus:
+    image:  prom/prometheus:v2.15.2
+    container_name: buggy-prometheus
+    hostname: buggy-prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090
+    networks:
+      - buggy-networks
+
+
+  buggy-prometheus-pushgateway:
+    image:  prom/pushgateway
+    container_name: buggy-prometheus-pushgateway
+    hostname: buggy-prometheus-pushgateway
+    ports:
+      - 9091
+    depends_on:
+      - buggy-prometheus
+    networks:
+      - buggy-networks
+
+
+  buggy-grafana:
+    image:  grafana/grafana:6.5.2
+    container_name: buggy-grafana
+    hostname: buggy-grafana
+    environment:
+      #      - GF_SERVER_ROOT_URL=http:/buggy-grafana"
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    ports:
+      - 3000
+    depends_on:
+      - buggy-prometheus
+    networks:
+      - buggy-networks
+
+
+
+  buggy-kafdrop:
+    image: obsidiandynamics/kafdrop
+    container_name: buggy-kafdrop
+    hostname: buggy-kafdrop
+    restart: "no"
+    ports:
+      - 9000
+    environment:
+      KAFKA_BROKERCONNECT: "buggy-kafka:29092"
+      JVM_OPTS: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
+    depends_on:
+      - "buggy-kafka"
+    networks:
+      - buggy-networks
+
+  buggy-kafka:
+    image: obsidiandynamics/kafka
+    container_name: buggy-kafka
+    hostname: buggy-kafka
+    restart: "no"
+    ports:
+      - "2181"
+      - "9092"
+    environment:
+      KAFKA_LISTENERS: "INTERNAL://:29092,EXTERNAL://:9092"
+      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://buggy-kafka:29092,EXTERNAL://buggy-kafka:9092"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
+      KAFKA_ZOOKEEPER_SESSION_TIMEOUT: "6000"
+      KAFKA_RESTART_ATTEMPTS: "10"
+      KAFKA_RESTART_DELAY: "5"
+      ZOOKEEPER_AUTOPURGE_PURGE_INTERVAL: "0"
+    networks:
+      - buggy-networks
+
+  buggy-gateway-service:
+    build:
+      context: ./gateway
+      args:
+        JAR_FILE: build/libs/*.jar
+    depends_on:
+      - buggy-developer-service
+      - buggy-issues-service
+      - buggy-planning-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+    ports:
+      - 8080
+    networks:
+      - buggy-networks
+
+  buggy-sba-service:
+    build:
+      context: ./sba-server
+      args:
+        JAR_FILE: build/libs/*.jar
+    container_name: buggy-sba-service
+    hostname: buggy-sba-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SERVER_PORT: 8080
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 15s
+    ports:
+      - 8080
+    networks:
+      - buggy-networks
+
+
+
 
   buggy-developer-service:
     build:
@@ -152,87 +293,3 @@ services:
     networks:
       - buggy-networks
 
-  buggy-gateway-service:
-    build:
-      context: ./gateway
-      args:
-        JAR_FILE: build/libs/*.jar
-    depends_on:
-      - buggy-developer-service
-      - buggy-issues-service
-      - buggy-planning-service
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      SERVER_PORT: 8080
-    ports:
-      - 8080
-    networks:
-      - buggy-networks
-
-  buggy-sba-service:
-    build:
-      context: ./sba-server
-      args:
-        JAR_FILE: build/libs/*.jar
-    container_name: buggy-sba-service
-    hostname: buggy-sba-service
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      SERVER_PORT: 8080
-    deploy:
-      replicas: 1
-      restart_policy:
-        condition: on-failure
-        delay: 15s
-    ports:
-      - 8080
-    networks:
-      - buggy-networks
-
-
-  buggy-elasticsearch:
-    image: elasticsearch:7.5.1
-    container_name: buggy-elasticsearch
-    hostname: buggy-elasticsearch
-    environment:
-      discovery.type: single-node
-    ports:
-      - 9200
-      - 9300
-    networks:
-      - buggy-networks
-
-  buggy-kibana:
-    image: kibana:7.5.1
-    container_name: buggy-kibana
-    hostname: buggy-kibana
-    environment:
-      SERVER_NAME: buggy-kibana
-      ELASTICSEARCH_HOSTS: http://buggy-elasticsearch:9200
-    ports:
-      - 5601
-    networks:
-      - buggy-networks
-
-  buggy-prometheus:
-    image:  prom/prometheus:v2.15.2
-    container_name: buggy-prometheus
-    hostname: buggy-prometheus
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-    ports:
-      - 9090
-    networks:
-      - buggy-networks
-
-
-  buggy-prometheus-pushgateway:
-    image:  prom/pushgateway
-    container_name: buggy-prometheus-pushgateway
-    hostname: buggy-prometheus-pushgateway
-    ports:
-      - 9091
-    depends_on:
-      - buggy-prometheus
-    networks:
-      - buggy-networks

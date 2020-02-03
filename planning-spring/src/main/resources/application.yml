@@ -37,7 +37,8 @@ spring:
       database: buggy-plannings
   zipkin:
     sender:
-      type: rabbit
+      type: kafka
+
   sleuth:
     messaging:
       enabled: true

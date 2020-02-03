@@ -46,17 +46,15 @@ function modHostsForScaledService() {
 }
 
 modHostsForSingleService buggy-mongo
-#modHostsForSingleService buggy-rabbitmq
-#modHostsForSingleService buggy-mysql-zipkin
-#modHostsForSingleService buggy-zipkin
-#modHostsForSingleService buggy-sba-service
+modHostsForSingleService buggy-zipkin
+modHostsForSingleService buggy-sba-service
 modHostsForSingleService buggy-keycloak
 modHostsForSingleService buggy-postgres
-#modHostsForSingleService buggy-elasticsearch
-#modHostsForSingleService buggy-kibana
-#modHostsForSingleService buggy-grafana
-#modHostsForSingleService buggy-prometheus
-#modHostsForSingleService buggy-prometheus-pushgateway
+modHostsForSingleService buggy-elasticsearch
+modHostsForSingleService buggy-kibana
+modHostsForSingleService buggy-grafana
+modHostsForSingleService buggy-prometheus
+modHostsForSingleService buggy-prometheus-pushgateway
 #modHostsForSingleService buggy-zookeeper
 modHostsForSingleService buggy-kafka
 modHostsForSingleService buggy-kafdrop
