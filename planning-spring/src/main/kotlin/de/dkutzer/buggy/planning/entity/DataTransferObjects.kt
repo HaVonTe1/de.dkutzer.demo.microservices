@@ -2,7 +2,7 @@ package de.dkutzer.buggy.planning.entity
 
 import java.time.LocalDate
 
-data class PlanningDto (
+data class PlanningDto(
         val summary: Summary,
         val weeks: List<Week>
 )
@@ -12,7 +12,7 @@ data class Week(
         val issues: List<IssueDto>
 )
 
-data class Summary (
+data class Summary(
         val weeks: Int,
         val issues: Long,
         val developers: Long,

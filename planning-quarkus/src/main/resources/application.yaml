@@ -27,7 +27,7 @@ quarkus:
 amqp-username: admin
 amqp-password: admin
 
-  # Configure the AMQP connector to read from the `prices` queue
+# Configure the AMQP connector to read from the `prices` queue
 mp:
   messaging:
     incoming:

@@ -4,15 +4,15 @@ import de.dkutzer.buggy.issues.control.MessageGateway
 import java.time.LocalDate
 
 data class IssueCreated(
-    val id: String,
-    val type: Type,
-    val title: String,
-    val description: String,
-    val createdAt: LocalDate,
-    val assignee: String,
-    val points: Int,
-    val status: Status,
-    val priority: Priority
+        val id: String,
+        val type: Type,
+        val title: String,
+        val description: String,
+        val createdAt: LocalDate,
+        val assignee: String,
+        val points: Int,
+        val status: Status,
+        val priority: Priority
 ) : MessageGateway.Event
 
 data class IssueUpdated(
@@ -26,7 +26,6 @@ data class IssueUpdated(
         val status: Status,
         val priority: Priority
 ) : MessageGateway.Event
-
 
 
 data class IssueDeleted(

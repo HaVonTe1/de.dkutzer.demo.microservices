@@ -7,7 +7,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 
 @Document(collection = "developers")
 @TypeAlias(value = "developer")
-data class Developer (
+data class Developer(
         @Id
         val id: String,
         val firstName: String,
@@ -15,10 +15,10 @@ data class Developer (
 )
 
 inline fun <reified T : MessageGateway.Event> Developer.toEvent(): MessageGateway.Event {
-        return when (T::class) {
-                DeveloperCreated::class -> DeveloperCreated(id,firstName,lastName)
-                DeveloperUpdated::class -> DeveloperUpdated(id,firstName,lastName)
-                DeveloperDeleted::class -> DeveloperDeleted(id)
-                else -> throw IllegalArgumentException(T::class.simpleName)
-        }
+    return when (T::class) {
+        DeveloperCreated::class -> DeveloperCreated(id, firstName, lastName)
+        DeveloperUpdated::class -> DeveloperUpdated(id, firstName, lastName)
+        DeveloperDeleted::class -> DeveloperDeleted(id)
+        else -> throw IllegalArgumentException(T::class.simpleName)
+    }
 }

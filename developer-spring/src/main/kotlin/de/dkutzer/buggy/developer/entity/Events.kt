@@ -15,7 +15,6 @@ data class DeveloperUpdated(
 ) : MessageGateway.Event
 
 
-
 data class DeveloperDeleted(
         val id: String
 ) : MessageGateway.Event

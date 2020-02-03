@@ -9,11 +9,11 @@ import java.util.concurrent.atomic.AtomicInteger
 import java.util.function.ToDoubleFunction
 
 @Configuration
-class AppConfig (val meterRegistry: MeterRegistry,val developerRepository: DeveloperRepository){
+class AppConfig(val meterRegistry: MeterRegistry, val developerRepository: DeveloperRepository) {
 
     @Autowired
     fun setCounter(meterRegistry: MeterRegistry) {
-        meterRegistry.gauge("de.dkutzer.buggy.developers.size", developerRepository, ToDoubleFunction { it -> it.count().toFloat().toDouble() } )!!
+        meterRegistry.gauge("de.dkutzer.buggy.developers.size", developerRepository, ToDoubleFunction { it -> it.count().toFloat().toDouble() })!!
 
     }
 }

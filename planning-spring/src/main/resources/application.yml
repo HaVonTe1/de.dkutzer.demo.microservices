@@ -9,64 +9,42 @@ spring:
     time-zone: UTC
   cloud:
     stream:
-      default:
-        destination:
-        contentType: application/json;charset=UTF-8
-        consumer:
-          maxAttempts: 1 # do not retry with internal message loop, instead use the DLQ for retry
-        group: planning
+      kafka:
+        binder:
+          headers: x-retries
+        default:
+          consumer:
+            enableDlq: true
       bindings:
         developers_channel:
-          binder: buggy-rabbit
           destination: developers
+          group: buggy-planning
+          consumer:
+            max-attempts: 1
         issues_channel:
-          binder: buggy-rabbit
           destination: issues
-      rabbit:
-        bindings:
-          developers_channel:
-            binder: buggy-rabbit
-            consumer:
-              autoBindDlq: true
-              dlqTtl: 60000
-              republishToDlq: true
-              dlq-dead-letter-exchange:
-          issues_channel:
-            binder: buggy-rabbit
-            consumer:
-              autoBindDlq: true
-              dlqTtl: 60000
-              republishToDlq: true
-              dlq-dead-letter-exchange:
-      binders:
-        buggy-rabbit:
-          type: rabbit
-          environment:
-            spring:
-              rabbitmq:
-                host: ${spring.rabbitmq.host}
-                port: ${spring.rabbitmq.port}
-                username: ${spring.rabbitmq.username}
-                password: ${spring.rabbitmq.password}
-                virtual-host: ${spring.rabbitmq.virtualHost}
-  rabbitmq:
-    port: 5672
-    virtualHost: buggy
-    host: localhost
-    username: guest
-    password: guest #todo: use docker secret
+          group: buggy-planning
+          consumer:
+            max-attempts: 1
+      default-binder: kafka
+  kafka:
+    consumer:
+      client-id: ${spring.application.name}
+      auto-offset-reset: earliest
+
   data:
     mongodb:
       database: buggy-plannings
   zipkin:
     sender:
-      type: rabbit
+      type: kafka
+
   sleuth:
     messaging:
       enabled: true
     sampler:
       probability: 100
-server.use-forward-headers: true
+
 
 management:
   endpoints:

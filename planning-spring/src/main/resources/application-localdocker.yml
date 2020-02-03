@@ -1,4 +1,5 @@
 spring:
+
   data:
     mongodb:
       host: buggy-mongo
@@ -6,9 +7,7 @@ spring:
   boot:
     admin:
       client:
-        url: http://buggy-sba-service:8080
-        instance:
-          prefer-ip: true
+        enabled: false
   security:
     oauth2:
       resourceserver:
@@ -22,8 +21,25 @@ spring:
           brokers: buggy-kafka
   kafka:
     bootstrap-servers: buggy-kafka:9092
+  zipkin:
+    enabled: true
+  sleuth:
+    enabled: true
+
 logging:
   level:
     root: info
-    org.apache.kafka: trace
+    de.dkutzer: trace
+#    org.apache.kafka: trace
     org.springframework.cloud.stream: trace
+
+
+management:
+  metrics:
+    export:
+      prometheus:
+        pushgateway:
+          enabled: false
+        enabled: false
+server:
+  port: 8081

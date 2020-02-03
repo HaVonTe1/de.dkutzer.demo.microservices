@@ -2,10 +2,13 @@ spring:
   data:
     mongodb:
       host: buggy-mongo
-  rabbitmq:
-    host: buggy-rabbitmq
-    password: admin
-    username: admin
+  kafka:
+    bootstrap-servers: buggy-kafka:9092
+  cloud:
+    stream:
+      kafka:
+        binder:
+          brokers: buggy-kafka
   boot:
     admin:
       client:

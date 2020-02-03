@@ -22,8 +22,6 @@ class DeveloperController {
     lateinit var developerService: DeveloperService
 
 
- 
-
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed("ROLE_BUGGY_UI")
@@ -45,6 +43,7 @@ class DeveloperController {
     fun delete(@PathParam("id") id: String): Response {
         return Response.status(if (developerService.deleteById(id)) Response.Status.GONE else Response.Status.NOT_FOUND).build()
     }
+
     @DELETE
     @RolesAllowed("ROLE_BUGGY_UI")
     fun deleteAll(): Response {

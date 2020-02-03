@@ -24,7 +24,7 @@ class DeveloperService(@field:Inject var developerRepository: DeveloperRepositor
     fun deleteById(id: String): Boolean {
         if (developerRepository.exists(id)) {
             developerRepository.delete(id)
-            messageGateway.deleted(Developer(id,"",""))
+            messageGateway.deleted(Developer(id, "", ""))
             return true
         }
         return false

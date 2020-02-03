@@ -25,7 +25,7 @@ Features:
 
 == How to build an run
 
-=== Prerequirements
+=== Pre-requirements
 * Docker 
 * Docker-Compose
 
@@ -40,24 +40,25 @@ This will build the jar of each component and start the compose file.
 ====
 
 * On Linux you can run the script `/sudo ./addDNS_buggy.sh`. This will modify your local /etc/hosts file with the internal IPs of all services.
-So you can access each component without any port forwaring.
+So you can access each component without any port forwarding.
 * On first start the process will take several minutes for downloading 
 ** the `gradle` wrapper
 ** all dependencies
-** docker images (mongodb, rabbitmq...)
+** docker images (mongodb, kafka...)
 ====
 
 === Try-it-out
-TODO
+TODO: add swagger
 
 == The Microservice Architecture explained
 
 === Domains
-The app is divided in so called 'Domains'. Every domain is handled by it's own Microservice. Which means this service mangages and persists the data belonging to his domain and offering interfaces/endpoints to access the data and execute the buisiness logic.
-In this example of an issue tracker there a 3 buisness domains:
+The demo is divided in so called 'Domains'. Every domain is handled by it's own Microservice.
+Which means this service manages and persists the data belonging to his domain and offering interfaces/endpoints to access the data and execute the business logic.
+In this example of an issue tracker there a 3 business domains:
 * Developers: basic data about the developers 
 * Issues: basic data about a the things need be done
-* Planning: makeing a plan about doing all the work based on developers and issues
+* Planning: making a plan about doing all the work based on developers and issues
 
 A domain-service can handle multiple entities and controller.
 
@@ -65,7 +66,9 @@ A domain-service can handle multiple entities and controller.
 Every service can offer full functionality even if other services are not available. This is achieved via `view-data` and messaging.
 
 ==== View-Data
-Every services persists all data needed to do it's work. In the case of the planning-service this means, it needs some data about the availably developers and data about the work about to be planned (estimated stories). It would be a very simple but also very bad idea to request all these data on demand via Rest or something simliar. Some disadvanteged would be:
+Every services persists all data needed to do it's work. In the case of the planning-service this means,
+it needs some data about the available developers and data about the work about to be planned (estimated stories).
+It would be a very simple but also very bad idea to request all these data on demand via Rest or something similar. Some disadvantages would be:
 * increasing workload (net-io) over time 
 * synchronous and slow processes
 * more memory consumption (the services would hold the data in-memory on every request)
@@ -74,7 +77,7 @@ Every services persists all data needed to do it's work. In the case of the plan
 To overcome these things the planning-service consumes events about the data he needs and persists this data in its own database.
 
 ==== Messaging
-The services don't know each other. The `planning-service` has  no idea about the origin of the events about developers and issues. There is only a message broker. (RabbitMQ)
+The services don't know each other. The `planning-service` has  no idea about the origin of the events about developers and issues. There is only a message broker. (Kafka)
 
 
 |===
@@ -82,7 +85,7 @@ The services don't know each other. The `planning-service` has  no idea about th
 
 | image:static/ProducerConsumerPattern.png[]
 
-| image:static/queues.png[]
+| image:static/Kafka ConsumerGroup buggy-planning.png[]
 
 |===
 
@@ -97,7 +100,9 @@ image::static/MessagingExample1.png[]
 TODO: Replay and REST Fallback
 
 === Blackbox
-The endpoints and interfaces of all services are gathered and made public via a an api-gateway. A client (like any user interface or web app) would only access the endpoints via this gateway. Never directly via one of the services. This way it is very easy to add modify or delete the underlying services without changing the API in any way.
+The endpoints and interfaces of all services are gathered and made public via a an api-gateway.
+A client (like any user interface or web app) would only access the endpoints via this gateway.
+Never directly via one of the services. This way it is very easy to add modify or delete the underlying services without changing the API in any way.
 
 ==== HATEOS
 Spring Rest Data offers a simple way to add HATEOS out of the box. This is all achieved by simple annotating the specific repository:
@@ -144,12 +149,12 @@ None of the services uses manual logging. There is not a single instance of any 
 TOOD: configure meaningful logging level
 
 ==== History
-The services handling the basic data domains are using https://javers.org/[Javers] to persist informations about all changes made on the data. Including what was changed and how.
+The services handling the basic data domains are using https://javers.org/[Javers] to persist information about all changes made on the data. Including what was changed and how.
 
 image::static/javers_update_with_author.png[]
 
 ==== Distributed Logging
-One of the hardest things when doing a distributed microservice driven project is debugging and analysing of the workflows. This is achieved via Sleuth.
+One of the hardest things when doing a distributed microservice driven project is debugging and analysing of the workflow. This is achieved via Sleuth.
 Every request (Rest and Messaging) is enriched with a spanId and a traceId. The spanId is used to identify the workflow of a request inside one service. Even with heavy 
 usage of multithreading and asynchronous processes. The traceId is used to track one request between multiple services.
 In most cases it is a wise idea to store all log messages of all services and instances in a central log storage like an ELK stack.
@@ -181,13 +186,13 @@ The implementation is entirly done with Spring  Security and not with the Spring
 * Realm: buggy
 ** Roles: new Role: ROLE_BUGGY_UI
 * Client: buggyui
-** the client secret is generated by keycloak automaticaly
+** the client secret is generated by keycloak automatically
 ** resourceid: buggyui
 ** add realm role "ROLE_BUGGY_UI" to the client
 ** Mappers:
 *** aud: Audience -> this maps to the resourceId in Spring Security
 *** authorities: User Realm Roles -> this maps to the effective User Roles in Spring Security
-*** user_name: User Attribut: user_name -> this maps to the principal aka. loged in user in Spring Security
+*** user_name: User Attribute: user_name -> this maps to the principal aka. logged in user in Spring Security
 ====
 
 
@@ -211,7 +216,7 @@ image::static/insomnia_path_dev_with_oauth2_usercreds.png[]
 TODO: TLS
 
 ==== Auditing
-The services handling the basic data domains are using https://javers.org/[Javers] to persist informations about which principal made which changed when.
+The services handling the basic data domains are using https://javers.org/[Javers] to persist information about which principal made which changed when.
 
 image::static/javers_update_with_author.png[]
 

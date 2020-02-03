@@ -11,10 +11,12 @@ Alles ist besser mit Pinguin!;
 [introduction]
 = Summary
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-
-
-
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+At vero eos et accusam et justo duo dolores et ea rebum.
+Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+At vero eos et accusam et justo duo dolores et ea rebum.
+Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
 
 [[overview]]
 = REST API
@@ -22,15 +24,19 @@ Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
 == Developers
 
 === Create a new Developer
+
 include::{snippets}/developer-create/curl-request.adoc[]
 
 ==== Requestbody
+
 include::{snippets}/developer-create/request-body.adoc[]
 
 ==== Requestfield
+
 include::{snippets}/developer-create/request-fields.adoc[]
 
 ==== Example Response
+
 include::{snippets}/developer-create/http-response.adoc[]
 include::{snippets}/developer-create/response-fields.adoc[]
 include::{snippets}/developer-create/links.adoc[]

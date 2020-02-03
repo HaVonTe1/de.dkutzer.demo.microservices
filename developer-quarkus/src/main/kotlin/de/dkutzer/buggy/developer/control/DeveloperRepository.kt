@@ -26,9 +26,9 @@ class DeveloperRepository {
 
     @Inject
     @field: Default
-    lateinit var  mongoClient: MongoClient
+    lateinit var mongoClient: MongoClient
 
-    fun  getCollection(): MongoCollection<Document> {
+    fun getCollection(): MongoCollection<Document> {
         return mongoClient.getDatabase(BUGGY_DB).getCollection(DEVELOPERS)
     }
 
@@ -51,7 +51,7 @@ class DeveloperRepository {
         return result
     }
 
-    private fun getDeveloperByDocument(doc: Document) = Developer(doc.getString("id"),doc.getString("firstName"),doc.getString("lastName"))
+    private fun getDeveloperByDocument(doc: Document) = Developer(doc.getString("id"), doc.getString("firstName"), doc.getString("lastName"))
 
     fun findById(id: String?): Optional<Developer> {
         val collection = getCollection()
@@ -64,11 +64,9 @@ class DeveloperRepository {
     }
 
 
-
-
-    fun upsert(developer: Developer) : Developer {
+    fun upsert(developer: Developer): Developer {
         val collection = getCollection()
-        return if (developer.id!=null &&  developer.id.isNotEmpty()) {
+        return if (developer.id != null && developer.id.isNotEmpty()) {
             val document = collection.findOneAndUpdate(getFilterByDeveloper(developer), getDocumentByDeveloper(developer), findOneAndUpdateOptions)
             document.toEntity()
         } else {
@@ -80,13 +78,13 @@ class DeveloperRepository {
 
     private fun getDocumentByDeveloper(developer: Developer): Document {
         val map: MutableMap<String, Any> = HashMap()
-        if (developer.id!=null &&  developer.id.isNotEmpty()) {
-            map["id"] = developer.id 
-        }else{
+        if (developer.id != null && developer.id.isNotEmpty()) {
+            map["id"] = developer.id
+        } else {
             map["id"] = UUID.randomUUID().toString()
         }
         map["firstName"] = developer.firstName
-        map["lastName"] = developer.lastName 
+        map["lastName"] = developer.lastName
         return Document(map)
     }
 
@@ -104,7 +102,7 @@ class DeveloperRepository {
     }
 
     fun exists(id: String?): Boolean {
-        return id!=null && id.isNotEmpty()&& getCollection().countDocuments(getFilterById(id)) != 0L
+        return id != null && id.isNotEmpty() && getCollection().countDocuments(getFilterById(id)) != 0L
     }
 
     fun deleteAll() {

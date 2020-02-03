@@ -15,7 +15,7 @@ class MessageGateway(val source: Source) {
     fun send(event: Event) {
         val map = mapOf(
                 "event" to event.javaClass.simpleName,
-                "contentType" to MediaType.APPLICATION_JSON_UTF8_VALUE
+                "contentType" to MediaType.APPLICATION_JSON_VALUE
         )
         val message = MessageBuilder.withPayload(event).copyHeaders(map).build()
         source.output().send(message)
