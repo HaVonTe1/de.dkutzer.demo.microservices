@@ -6,10 +6,11 @@ import org.javers.spring.annotation.JaversSpringDataAuditable
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.data.rest.core.annotation.*
 import org.springframework.stereotype.Component
-
+// tag::HATEOS[]
 @RepositoryRestResource(collectionResourceRel = "developer", path = "developers")
 @JaversSpringDataAuditable
-interface DeveloperRepository : MongoRepository<Developer, String> {
+interface DeveloperRepository : MongoRepository<Developer, String>{
+// end::HATEOS[]
 
 
 }
