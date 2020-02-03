@@ -21,20 +21,6 @@ spring:
           group: buggy-planning
           consumer:
             max-attempts: 1
-        developers_error_channel_in:
-          destination: error.developers.buggy-planning
-          group: buggy-planning-replay
-        developers_error_channel_out:
-          destination: developers
-        developers_parkinglot:
-          destination: developers.parkinglot
-        issues_error_channel_in:
-          destination: error.issues.buggy-planning
-          group: buggy-planning-replay
-        issues_error_channel_out:
-          destination: issues
-        issues_parkinglot:
-          destination: issues.parkinglot
         issues_channel:
           destination: issues
           group: buggy-planning

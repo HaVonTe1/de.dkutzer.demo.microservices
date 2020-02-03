@@ -48,8 +48,7 @@ class IssuesMessageListener(val issuesService: IssuesServices) {
 
     @StreamListener(target = IssuesChannel.INPUT, condition = "headers['event']=='IssueCreated'")
     fun handleIssueCreatedEvent(issueCreated: IssueCreated) {
-        throw IllegalArgumentException("test")
-//        issuesService.upsert(issueCreated)
+        issuesService.upsert(issueCreated)
     }
 
     @StreamListener(target = IssuesChannel.INPUT, condition = "headers['event']=='IssueUpdated'")
@@ -62,34 +61,5 @@ class IssuesMessageListener(val issuesService: IssuesServices) {
         issuesService.delete(issueDeleted)
     }
 
-}
-
-
-@Service
-@EnableBinding(DevelopersErrorChannel::class, IssuesErrorChannel::class, DevelopersParkingLog::class, IssuesParkingLog::class)
-class ReRouteDlqMessageListener(val developersParkingLog: DevelopersParkingLog, val issuesParkingLog: IssuesParkingLog){
-
-
-    @StreamListener("developers_error_channel_in")
-    @SendTo("developers_error_channel_out")
-    fun reRouteDev(failed : Message<Any>): Message<Any>? = reRoute(failed, developersParkingLog)
-
-    @StreamListener("issues_error_channel_in")
-    @SendTo("issues_error_channel_out")
-    fun reRouteIssues(failed : Message<Any>): Message<Any>? = reRoute(failed, issuesParkingLog)
-
-    fun reRoute(failed : Message<Any>, errorChannel: ParkingLotChannel ): Message<Any>?{
-        val retries = failed.headers.getOrDefault("x-retries",0) as Int
-        if (retries < 3){
-            logger.debug {"Retry $retries for $failed"}
-            return MessageBuilder.fromMessage(failed).setHeader("x-retries", retries+1).setHeader(BinderHeaders.PARTITION_OVERRIDE, failed.headers[KafkaHeaders.RECEIVED_PARTITION_ID]).build()
-
-        }else {
-            logger.debug { " Retries exhausted for $failed"}
-            errorChannel.parkingLot().send(MessageBuilder.fromMessage(failed).setHeader(BinderHeaders.PARTITION_OVERRIDE, failed.headers[KafkaHeaders.RECEIVED_PARTITION_ID]).build())
-        }
-        return null
-
-    }
 }
 
