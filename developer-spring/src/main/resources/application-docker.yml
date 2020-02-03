@@ -19,7 +19,7 @@ spring:
     stream:
       kafka:
         binder:
-          brokers: buggy-broker
+          brokers: buggy-kafka
 logging:
   level:
     root: info

@@ -33,6 +33,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.cloud:spring-cloud-starter-oauth2")
     implementation("org.springframework.security.oauth:spring-security-oauth2")
+    implementation( "io.github.microutils:kotlin-logging:1.7.7")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }

@@ -9,50 +9,26 @@ spring:
     time-zone: UTC
   cloud:
     stream:
-      default:
-        destination:
-        contentType: application/json;charset=UTF-8
-        consumer:
-          maxAttempts: 1 # do not retry with internal message loop, instead use the DLQ for retry
-        group: issue
       bindings:
         output:
           destination: issues
-          contentType: application/json;charset=UTF-8
-      rabbit:
-        bindings:
-          output:
-            binder: buggy-rabbit
-            destination: issues
-            contentType: application/json;charset=UTF-8
-      binders:
-        buggy-rabbit:
-          type: rabbit
-          environment:
-            spring:
-              rabbitmq:
-                host: ${spring.rabbitmq.host}
-                port: ${spring.rabbitmq.port}
-                username: ${spring.rabbitmq.username}
-                password: ${spring.rabbitmq.password}
-                virtual-host: ${spring.rabbitmq.virtualHost}
-  rabbitmq:
-    port: 5672
-    virtualHost: buggy
-    host: localhost
-    username: guest
-    password: guest #todo: use docker secret
+
+  kafka:
+    producer:
+      client-id: ${spring.application.name}
   data:
     mongodb:
       database: buggy-issues
   zipkin:
     sender:
-      type: rabbit
+      type: kafka
   sleuth:
     messaging:
       enabled: true
     sampler:
       probability: 100
+
+
 management:
   endpoints:
     web:

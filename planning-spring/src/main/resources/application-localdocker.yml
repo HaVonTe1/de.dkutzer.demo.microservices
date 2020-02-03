@@ -18,7 +18,7 @@ spring:
     stream:
       kafka:
         binder:
-          brokers: buggy-broker
+          brokers: buggy-kafka
   zipkin:
     enabled: false
   sleuth:
@@ -27,6 +27,7 @@ spring:
 logging:
   level:
     root: info
+    de.dkutzer: trace
 #    org.apache.kafka: trace
     org.springframework.cloud.stream: trace
 

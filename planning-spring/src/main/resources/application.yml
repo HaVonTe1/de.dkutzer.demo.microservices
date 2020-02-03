@@ -9,21 +9,41 @@ spring:
     time-zone: UTC
   cloud:
     stream:
+      kafka:
+        binder:
+          headers: x-retries
+        default:
+          consumer:
+            enableDlq: true
       bindings:
         developers_channel:
           destination: developers
-          group: bubby-planning
+          group: buggy-planning
+          consumer:
+            max-attempts: 1
+        developers_error_channel_in:
+          destination: error.developers.buggy-planning
+          group: buggy-planning-replay
+        developers_error_channel_out:
+          destination: developers
+        developers_parkinglot:
+          destination: developers.parkinglot
+        issues_error_channel_in:
+          destination: error.issues.buggy-planning
+          group: buggy-planning-replay
+        issues_error_channel_out:
+          destination: issues
+        issues_parkinglot:
+          destination: issues.parkinglot
         issues_channel:
           destination: issues
-          group: bubby-planning
+          group: buggy-planning
+          consumer:
+            max-attempts: 1
       default-binder: kafka
-      default:
-        enableDlq: true
-
   kafka:
     consumer:
       client-id: ${spring.application.name}
-      group-id: buggy-planning
       auto-offset-reset: earliest
 
   data:

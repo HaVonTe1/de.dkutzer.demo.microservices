@@ -36,3 +36,5 @@ management:
         pushgateway:
           enabled: false
         enabled: false
+server:
+  port: 8082

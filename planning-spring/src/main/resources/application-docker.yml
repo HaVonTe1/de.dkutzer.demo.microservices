@@ -6,7 +6,7 @@ spring:
     stream:
       kafka:
         binder:
-          brokers: buggy-broker
+          brokers: buggy-kafka
   boot:
     admin:
       client:

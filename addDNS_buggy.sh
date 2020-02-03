@@ -57,19 +57,14 @@ modHostsForSingleService buggy-postgres
 #modHostsForSingleService buggy-grafana
 #modHostsForSingleService buggy-prometheus
 #modHostsForSingleService buggy-prometheus-pushgateway
-modHostsForSingleService buggy-zookeeper
-modHostsForSingleService buggy-broker
-modHostsForSingleService buggy-kafka-control-center
-modHostsForSingleService buggy-kafka-ksql-server
-modHostsForSingleService buggy-kafka-connect
-modHostsForSingleService buggy-kafka-rest
-modHostsForSingleService buggy-kafka-schema-registry
-modHostsForSingleService buggy-zookeeper
+#modHostsForSingleService buggy-zookeeper
+modHostsForSingleService buggy-kafka
+modHostsForSingleService buggy-kafdrop
 
-modHostsForScaledService buggy-developer-service
-modHostsForScaledService buggy-issues-service
-modHostsForScaledService buggy-planning-service
-modHostsForScaledService buggy-gateway-service
+#modHostsForScaledService buggy-developer-service
+#modHostsForScaledService buggy-issues-service
+#modHostsForScaledService buggy-planning-service
+#modHostsForScaledService buggy-gateway-service
 
 echo "after"
 
