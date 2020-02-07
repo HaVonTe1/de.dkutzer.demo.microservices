@@ -223,3 +223,17 @@ image::static/javers_update_with_author.png[]
 
 ==== TLS
 TODO: add TLS encryption
+
+==== Documentation
+
+The internal API is documented with https://docs.spring.io/spring-restdocs/docs/1.2.6.RELEASE/reference/html5/[Spring Rest Docs].
+After all services booted up the Markdown is accessable via http://buggy-developer-service:8080/docs/api.html
+
+image::static/Buggy Service - API Doc.png[]
+
+===== Swagger
+
+None of the services offers a Swagger Try-Out UI because of the personal opinion of the author. Swagger does not play very well with oauth2 secured
+API. I recommend using tools like PostMan, Insomnia or the whatever Rest Client you prefer.
+
+
