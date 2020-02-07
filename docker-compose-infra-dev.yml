@@ -8,7 +8,6 @@ networks:
 services:
 
 
-
   buggy-mongo:
     image: mongo:4.0.4
     container_name: buggy-mongo
@@ -28,7 +27,6 @@ services:
       - POSTGRES_DB=buggy
     networks:
       - buggy-networks
-
 
   buggy-keycloak:
     image: jboss/keycloak:8.0.1
@@ -55,21 +53,6 @@ services:
 
 
 
-  buggy-kafdrop:
-    image: obsidiandynamics/kafdrop
-    container_name: buggy-kafdrop
-    hostname: buggy-kafdrop
-    restart: "no"
-    ports:
-      - 9000
-    environment:
-      KAFKA_BROKERCONNECT: "buggy-kafka:29092"
-      JVM_OPTS: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
-    depends_on:
-      - "buggy-kafka"
-    networks:
-      - buggy-networks
-
   buggy-kafka:
     image: obsidiandynamics/kafka
     container_name: buggy-kafka
@@ -89,4 +72,3 @@ services:
       ZOOKEEPER_AUTOPURGE_PURGE_INTERVAL: "0"
     networks:
       - buggy-networks
-

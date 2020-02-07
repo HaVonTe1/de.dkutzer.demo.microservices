@@ -8,8 +8,8 @@ plugins {
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
     id("org.asciidoctor.convert") version "1.5.8"
     id("com.adarshr.test-logger") version "1.7.0"
-    kotlin("jvm") version "1.3.50"
-    kotlin("plugin.spring") version "1.3.50"
+    kotlin("jvm") version "1.3.61"
+    kotlin("plugin.spring") version "1.3.61"
 }
 
 group = "de.dkutzer.buggy"
@@ -20,6 +20,8 @@ repositories {
     mavenCentral()
     maven { url = uri("https://repo.spring.io/milestone") }
     maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
+    maven { url = uri("http://oss.jfrog.org/artifactory/oss-snapshot-local/") }
+
 }
 
 extra["snippetsDir"] = file("build/generated-snippets")
@@ -28,9 +30,9 @@ extra["springCloudVersion"] = "Hoxton.SR1"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-//    implementation("org.springframework.boot:spring-boot-starter-amqp")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
     implementation("org.springframework.boot:spring-boot-starter-data-rest")
+
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("de.codecentric:spring-boot-admin-starter-client")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -46,10 +48,12 @@ dependencies {
     implementation("org.springframework.security.oauth:spring-security-oauth2")
     implementation("io.micrometer:micrometer-registry-prometheus")
     implementation("io.micrometer:micrometer-registry-statsd")
-
-// https://mvnrepository.com/artifact/io.prometheus/simpleclient_pushgateway
     implementation("io.prometheus:simpleclient_pushgateway:0.8.0")
 
+
+    implementation("io.springfox:springfox-swagger2:3.0.0-SNAPSHOT")
+    implementation("io.springfox:springfox-data-rest:3.0.0-SNAPSHOT")
+    implementation("io.springfox:springfox-swagger-ui:3.0.0-SNAPSHOT")
 
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("org.springframework.cloud:spring-cloud-stream-test-support")

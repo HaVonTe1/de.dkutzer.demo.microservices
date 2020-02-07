@@ -29,6 +29,10 @@ class ResourceServer : ResourceServerConfigurerAdapter() {
                 .authorizeRequests()
                 .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()//dont do this in production
                 .antMatchers("/docs/**").permitAll()
+                .antMatchers("/swagger-ui.html").permitAll()
+                .antMatchers("/swagger-resources/**").permitAll()
+                .antMatchers("/webjars/**").permitAll()
+                .antMatchers("/v2/**").permitAll()
 
                 .antMatchers("/developers/**").hasRole("BUGGY_UI")
                 .anyRequest().authenticated()

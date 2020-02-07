@@ -20,9 +20,9 @@ spring:
           brokers: buggy-kafka
 
   zipkin:
-    enabled: true
+    enabled: false
   sleuth:
-    enabled: true
+    enabled: false
   kafka:
     bootstrap-servers: buggy-kafka:9092
 

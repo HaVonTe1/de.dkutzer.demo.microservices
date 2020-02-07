@@ -32,7 +32,6 @@ spring:
 
 
 
-
 management:
   endpoints:
     web:
