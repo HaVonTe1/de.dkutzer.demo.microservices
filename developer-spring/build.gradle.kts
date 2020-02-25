@@ -8,8 +8,8 @@ plugins {
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
     id("org.asciidoctor.convert") version "1.5.8"
     id("com.adarshr.test-logger") version "1.7.0"
-    kotlin("jvm") version "1.3.50"
-    kotlin("plugin.spring") version "1.3.50"
+    kotlin("jvm") version "1.3.61"
+    kotlin("plugin.spring") version "1.3.61"
 }
 
 group = "de.dkutzer.buggy"
@@ -18,7 +18,7 @@ java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 repositories {
     mavenCentral()
-    maven { url = uri("https://repo.spring.io/milestone") }
+    maven { url = uri("https://repo.spring.io/milestone/") }
     maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
 }
 

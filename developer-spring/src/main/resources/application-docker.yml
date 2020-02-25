@@ -2,7 +2,6 @@ spring:
   data:
     mongodb:
       host: buggy-mongo
-
   boot:
     admin:
       client:
@@ -22,8 +21,22 @@ spring:
           brokers: buggy-kafka
   kafka:
     bootstrap-servers: buggy-kafka:9092
+  sleuth:
+    enabled: true
+  zipkin:
+    enabled: false
 logging:
   level:
     root: info
     org.apache.kafka: trace
     org.springframework.cloud.stream: trace
+management:
+  endpoint:
+    metrics:
+      enabled: false
+  metrics:
+    export:
+      prometheus:
+        enabled: false
+        pushgateway:
+          enabled: false

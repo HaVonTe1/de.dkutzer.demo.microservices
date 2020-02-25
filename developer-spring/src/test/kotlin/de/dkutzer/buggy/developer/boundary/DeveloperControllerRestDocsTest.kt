@@ -12,12 +12,11 @@ import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.RestDocumentationExtension
 import org.springframework.restdocs.constraints.ConstraintDescriptions
 import org.springframework.restdocs.hypermedia.HypermediaDocumentation.*
-import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
-import org.springframework.restdocs.operation.preprocess.Preprocessors
 import org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint
+import org.springframework.restdocs.payload.FieldDescriptor
 import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.restdocs.snippet.Attributes.key
 import org.springframework.test.context.ActiveProfiles
@@ -27,7 +26,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPat
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import org.springframework.util.StringUtils.collectionToDelimitedString
+import org.springframework.util.StringUtils
 import org.springframework.web.context.WebApplicationContext
 
 
@@ -38,13 +37,9 @@ class DeveloperControllerRestDocsTest() {
 
     var mockMvc: MockMvc? = null
 
-    final val constraintDescriptions = ConstraintDescriptions(Developer::class.java)
-    val requestFields = listOf(
-            fieldWithPath("id").description("Id").type("String").attributes(key("constraints").value(collectionToDelimitedString(constraintDescriptions.descriptionsForProperty("id"), ". "))),
-            fieldWithPath("firstName").description("Vorname").type("String").attributes(key("constraints").value(collectionToDelimitedString(constraintDescriptions.descriptionsForProperty("firstName"), ". "))),
-            fieldWithPath("lastName").description("Nachname").type("String").attributes(key("constraints").value(collectionToDelimitedString(constraintDescriptions.descriptionsForProperty("lastName"), ". ")))
 
-    )
+
+
     val responseFields = listOf(
             fieldWithPath("firstName").description("Vorname").type("String"),
             fieldWithPath("lastName").description("Nachname").type("String"),
@@ -63,9 +58,12 @@ class DeveloperControllerRestDocsTest() {
     }
 
     @Test
-    fun `Testing The Creating of a new Developer`() {
+    fun `Testing The Creating of a new Developer (RestDocs)`() {
 
         val operationName = "developer-create"
+
+        val developer = Developer("1", "Bill", "Gates")
+        val fields: ConstrainedFields = ConstrainedFields(developer::class.java)
 
         // given - new Developer to be created
         val developerInDto = "{\"id\":\"1\",\"firstName\":\"Steve\",\"lastName\":\"Jobs\"}"
@@ -79,7 +77,10 @@ class DeveloperControllerRestDocsTest() {
                 .andDo(
                         document(// rest docs
                                 operationName,
-                                requestFields(requestFields),
+                                requestFields(
+                                        fields.withPath("id").description("Id").type("String"),
+                                        fields.withPath("firstName").description("Vorname").type("String"),
+                                        fields.withPath("lastName").description("Nachname").type("String")),
                                 responseFields(responseFields),
                                 links(halLinks(),
                                         linkWithRel("self").description("Link to the alpha resource"),
@@ -91,4 +92,14 @@ class DeveloperControllerRestDocsTest() {
     }
 
 
+    class ConstrainedFields internal constructor(input: Class<*>) {
+
+        private val constraintDescriptions: ConstraintDescriptions = ConstraintDescriptions(input)
+
+        fun withPath(path: String): FieldDescriptor {
+            return fieldWithPath(path).attributes(key("constraints").value(StringUtils
+                    .collectionToDelimitedString(this.constraintDescriptions
+                            .descriptionsForProperty(path), ". ")))
+        }
+    }
 }
