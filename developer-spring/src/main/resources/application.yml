@@ -16,20 +16,24 @@ spring:
     mongodb:
       database: buggy-developers
   zipkin:
-
+    propagation-keys:
+      - CorrId
     sender:
       type: kafka
     enabled: true
   sleuth:
-
+    propagation-keys:
+      - CorrId
     messaging:
       enabled: true
     sampler:
-      probability: 100
+      probability: 1.0
+    log:
+      slf4j:
+        whitelisted-mdc-keys: CorrId
   kafka:
     producer:
       client-id: ${spring.application.name}
-
 
 
 
@@ -45,6 +49,7 @@ management:
       enabled: true
   trace:
     http:
+
       include: REQUEST_HEADERS,RESPONSE_HEADERS,TIME_TAKEN,PRINCIPAL
   metrics:
     export:
@@ -59,4 +64,9 @@ management:
       stage: dev
 
 
-
+logging:
+  level:
+    root: warn
+    org.springframework.web.filter: trace
+    org.apache.kafka.clients.producer.ProducerConfig: warn
+    org.apache.kafka.clients.consumer.ConsumerConfig: warn

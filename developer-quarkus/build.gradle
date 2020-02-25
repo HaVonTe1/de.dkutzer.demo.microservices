@@ -17,7 +17,10 @@ dependencies {
     implementation 'io.quarkus:quarkus-rest-client'
     implementation 'io.quarkus:quarkus-oidc'
     implementation 'io.quarkus:quarkus-config-yaml'
-    implementation 'io.quarkus:quarkus-smallrye-reactive-messaging'
+    implementation ('io.quarkus:quarkus-smallrye-reactive-messaging')
+//            {
+//                exclude group: 'org.apache.commons', module: 'commons-lang3'
+//            }
     implementation 'io.quarkus:quarkus-keycloak-authorization'
     implementation 'io.quarkus:quarkus-smallrye-reactive-messaging-amqp'
     implementation 'io.quarkus:quarkus-mongodb-client'
@@ -27,6 +30,8 @@ dependencies {
     implementation 'io.quarkus:quarkus-resteasy-jackson'
     implementation 'io.quarkus:quarkus-jackson'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+//    implementation ('org.apache.commons:commons-lang3:3.9')
+//
 
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'
@@ -61,4 +66,11 @@ compileKotlin {
 
 compileTestKotlin {
     kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8
+}
+
+buildNative {
+    enableHttpUrlHandler = true
+    additionalBuildArgs = [
+            '--verbose'
+    ]
 }

@@ -63,7 +63,7 @@ class DeveloperControllerRestDocsTest() {
     }
 
     @Test
-    fun test1() {
+    fun `Testing The Creating of a new Developer`() {
 
         val operationName = "developer-create"
 
@@ -75,9 +75,9 @@ class DeveloperControllerRestDocsTest() {
                 .contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print())
                 .andExpect(status().isCreated)
-                .andExpect(jsonPath("$.firstName", `is`("Steve"))) // rest docs
+                .andExpect(jsonPath("$.firstName", `is`("Steve")))
                 .andDo(
-                        document(
+                        document(// rest docs
                                 operationName,
                                 requestFields(requestFields),
                                 responseFields(responseFields),

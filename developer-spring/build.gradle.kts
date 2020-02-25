@@ -49,6 +49,8 @@ dependencies {
 
 // https://mvnrepository.com/artifact/io.prometheus/simpleclient_pushgateway
     implementation("io.prometheus:simpleclient_pushgateway:0.8.0")
+    implementation ("io.github.microutils:kotlin-logging:1.7.7")
+    implementation ("org.apache.commons:commons-lang3:3.9")
 
 
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")

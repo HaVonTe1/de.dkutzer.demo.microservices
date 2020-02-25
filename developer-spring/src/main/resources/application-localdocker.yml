@@ -23,6 +23,8 @@ spring:
     enabled: true
   sleuth:
     enabled: true
+    sampler:
+      probability: 1.0
   kafka:
     bootstrap-servers: buggy-kafka:9092
 
