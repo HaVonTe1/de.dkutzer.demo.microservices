@@ -17,11 +17,7 @@ class AppConfig(val meterRegistry: MeterRegistry, val developerRepository: Devel
 
     }
     
-//    @Bean
-//    fun requestLogging() : CommonsRequestLoggingFilter =  CommonsRequestLoggingFilter().also { it.setIncludePayload(true);it.setIncludeHeaders(true);it.setIncludeQueryString(true) }
-//
-//
-    
+
     
 
 }
