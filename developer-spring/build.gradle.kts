@@ -25,6 +25,7 @@ repositories {
 
 extra["snippetsDir"] = file("build/generated-snippets")
 extra["springBootAdminVersion"] = "2.2.1"
+extra["pactVersion"] = "4.0.8"
 extra["springCloudVersion"] = "Hoxton.SR3"
 
 dependencies {
@@ -61,6 +62,10 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("com.playtika.testcontainers:embedded-mongodb:1.36")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
+
+    testImplementation("au.com.dius:pact-jvm-provider-junit5:${property("pactVersion")}")
+    testImplementation("au.com.dius:pact-jvm-provider-junit5-spring:${property("pactVersion")}")
+
 }
 
 dependencyManagement {
