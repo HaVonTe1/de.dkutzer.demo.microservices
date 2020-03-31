@@ -4,31 +4,31 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 
 plugins {
-    id("org.springframework.boot") version "2.2.4.RELEASE"
+    id("org.springframework.boot") version "2.2.6.RELEASE"
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
     id("org.asciidoctor.convert") version "1.5.8"
     id("com.adarshr.test-logger") version "1.7.0"
-    kotlin("jvm") version "1.3.61"
-    kotlin("plugin.spring") version "1.3.61"
+    kotlin("jvm") version "1.3.71"
+    kotlin("plugin.spring") version "1.3.71"
 }
+
 
 group = "de.dkutzer.buggy"
 version = "0.0.1-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_1_8
+java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
     mavenCentral()
     maven { url = uri("https://repo.spring.io/milestone/") }
-    maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
+//    maven { url = uri("https://oss.sonatype.org/content/repositories/snapshots/") }
 }
 
 extra["snippetsDir"] = file("build/generated-snippets")
-extra["springBootAdminVersion"] = "2.1.5"
-extra["springCloudVersion"] = "Hoxton.SR1"
+extra["springBootAdminVersion"] = "2.2.1"
+extra["springCloudVersion"] = "Hoxton.SR3"
 
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-//    implementation("org.springframework.boot:spring-boot-starter-amqp")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
     implementation("org.springframework.boot:spring-boot-starter-data-rest")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
@@ -40,14 +40,13 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-stream-binder-kafka")
 
     implementation("org.javers:javers-spring-boot-starter-mongo:5.8.5")
-    implementation("de.codecentric:spring-boot-admin-starter-client:2.2.0-SNAPSHOT")
+    implementation("de.codecentric:spring-boot-admin-starter-client")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.cloud:spring-cloud-starter-oauth2")
     implementation("org.springframework.security.oauth:spring-security-oauth2")
     implementation("io.micrometer:micrometer-registry-prometheus")
     implementation("io.micrometer:micrometer-registry-statsd")
 
-// https://mvnrepository.com/artifact/io.prometheus/simpleclient_pushgateway
     implementation("io.prometheus:simpleclient_pushgateway:0.8.0")
     implementation ("io.github.microutils:kotlin-logging:1.7.7")
     implementation ("org.apache.commons:commons-lang3:3.9")
