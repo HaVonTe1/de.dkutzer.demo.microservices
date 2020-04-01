@@ -38,11 +38,15 @@ dependencies {
     implementation("org.springframework.cloud:spring-cloud-starter-oauth2")
     implementation("org.springframework.security.oauth:spring-security-oauth2")
     implementation( "io.github.microutils:kotlin-logging:1.7.7")
+    implementation( "com.fasterxml.jackson.module:jackson-module-kotlin:2.10.+")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
     testImplementation("au.com.dius:pact-jvm-consumer-junit5:${property("pactVersion")}")
     testImplementation("au.com.dius:pact-jvm-consumer-java8:${property("pactVersion")}")
+
+    testImplementation("io.mockk:mockk:1.9")
 
 }
 
