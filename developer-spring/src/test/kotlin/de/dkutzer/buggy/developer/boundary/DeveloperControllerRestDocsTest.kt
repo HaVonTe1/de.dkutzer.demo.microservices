@@ -66,7 +66,7 @@ class DeveloperControllerRestDocsTest() {
         val fields: ConstrainedFields = ConstrainedFields(developer::class.java)
 
         // given - new Developer to be created
-        val developerInDto = "{\"id\":\"1\",\"firstName\":\"Steve\",\"lastName\":\"Jobs\"}"
+        val developerInDto = """{"id":"cd3535b8-7781-4755-a58b-05c10354ea99", "firstName":"Steve", "lastName":"Jobs"}"""
         // when - the resource is passed via POST
         mockMvc!!.perform(post("/developers/")
                 .content(developerInDto)

@@ -56,6 +56,7 @@ dependencies {
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("org.springframework.cloud:spring-cloud-stream-test-support")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
+    testImplementation("org.springframework.security:spring-security-test")
     testImplementation("io.projectreactor:reactor-test")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
@@ -65,7 +66,7 @@ dependencies {
 
     testImplementation("au.com.dius:pact-jvm-provider-junit5:${property("pactVersion")}")
     testImplementation("au.com.dius:pact-jvm-provider-junit5-spring:${property("pactVersion")}")
-
+    testImplementation("com.ninja-squad:springmockk:2.0.0")
 }
 
 dependencyManagement {

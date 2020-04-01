@@ -6,6 +6,7 @@ import au.com.dius.pact.consumer.junit5.PactConsumerTestExt
 import au.com.dius.pact.consumer.junit5.PactTestFor
 import au.com.dius.pact.consumer.junit5.ProviderType
 import au.com.dius.pact.core.model.annotations.Pact
+import au.com.dius.pact.core.model.annotations.PactFolder
 import au.com.dius.pact.core.model.messaging.Message
 import au.com.dius.pact.core.model.messaging.MessagePact
 import com.fasterxml.jackson.core.JsonProcessingException
@@ -44,6 +45,7 @@ private val logger = KotlinLogging.logger {}
         ExtendWith(PactConsumerTestExt::class),
         ExtendWith(MockKExtension::class)
 )
+@PactFolder("../pacts")
 class DevelopersMessageListenerPactTest {
 
     companion object {
