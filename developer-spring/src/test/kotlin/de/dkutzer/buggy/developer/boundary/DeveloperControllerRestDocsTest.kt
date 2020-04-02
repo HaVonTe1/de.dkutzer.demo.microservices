@@ -2,6 +2,7 @@ package de.dkutzer.buggy.developer.boundary
 
 
 import de.dkutzer.buggy.developer.entity.Developer
+import mu.KotlinLogging
 import org.hamcrest.Matchers.`is`
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -29,6 +30,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.util.StringUtils
 import org.springframework.web.context.WebApplicationContext
 
+private val logger = KotlinLogging.logger {}
 
 @ExtendWith(RestDocumentationExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

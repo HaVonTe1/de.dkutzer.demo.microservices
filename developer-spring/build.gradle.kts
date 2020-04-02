@@ -55,11 +55,17 @@ dependencies {
 
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("org.springframework.cloud:spring-cloud-stream-test-support")
+    {
+        exclude(group = "com.vaadin.external.google")
+    }
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("io.projectreactor:reactor-test")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    {
+        exclude(group = "com.vaadin.external.google")
+    }
     testImplementation("org.junit.jupiter:junit-jupiter-api")
     testImplementation("com.playtika.testcontainers:embedded-mongodb:1.36")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")

@@ -1,7 +1,7 @@
 package de.dkutzer.buggy.planning.boundary
 
 import au.com.dius.pact.consumer.MessagePactBuilder
-import au.com.dius.pact.consumer.MockServer
+import au.com.dius.pact.consumer.dsl.PactDslJsonBody
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt
 import au.com.dius.pact.consumer.junit5.PactTestFor
 import au.com.dius.pact.consumer.junit5.ProviderType
@@ -9,34 +9,24 @@ import au.com.dius.pact.core.model.annotations.Pact
 import au.com.dius.pact.core.model.annotations.PactFolder
 import au.com.dius.pact.core.model.messaging.Message
 import au.com.dius.pact.core.model.messaging.MessagePact
-import com.fasterxml.jackson.core.JsonProcessingException
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import de.dkutzer.buggy.planning.control.DeveloperRepository
 import de.dkutzer.buggy.planning.control.DeveloperServices
 import de.dkutzer.buggy.planning.control.IssuesRepository
 import de.dkutzer.buggy.planning.control.IssuesServices
 import de.dkutzer.buggy.planning.entity.*
-import io.mockk.*
-import io.mockk.impl.annotations.MockK
+import io.mockk.clearAllMocks
+import io.mockk.every
 import io.mockk.junit5.MockKExtension
-import io.pactfoundation.consumer.dsl.LambdaDsl
+import io.mockk.mockk
+import io.mockk.verify
 import io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody
-import io.pactfoundation.consumer.dsl.LambdaDslJsonBody
 import mu.KotlinLogging
-import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.extension.Extensions
-import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchers.eq
-import org.mockito.Mock
-import org.mockito.Mockito
-import org.mockito.Mockito.times
-import org.springframework.messaging.support.GenericMessage
 import java.util.*
-
 
 
 private val logger = KotlinLogging.logger {}
@@ -71,12 +61,14 @@ class DevelopersMessageListenerPactTest {
 
     @Pact(provider = PROVIDER, consumer = CONSUMER)
     fun receiveDeveloperDeletedEvent(builder: MessagePactBuilder): MessagePact {
+
+        val body = PactDslJsonBody()
+                .uuid("id", UUID.fromString(DEV_TEST_ID))
         return builder
                 .given("Developer with ID $DEV_TEST_ID exists")
                 .expectsToReceive("DELETED Event for Developer $DEV_TEST_ID")
-                .withContent(newJsonBody {
-                    it.uuid("id", UUID.fromString(DEV_TEST_ID))
-                        }.build())
+                .withContent(body)
+
                 .withMetadata(java.util.Map.of(
                          "type", "deleted"))
 
@@ -86,14 +78,15 @@ class DevelopersMessageListenerPactTest {
 
     @Pact(provider = PROVIDER, consumer = CONSUMER)
     fun receiveDeveloperCreatedEvent(builder: MessagePactBuilder): MessagePact {
+        val body = PactDslJsonBody()
+                .uuid("id", UUID.fromString(DEV_TEST_ID))
+                .stringType("firstName", "Bill")
+                .stringType("lastName", "Gates")
+
         return builder
                 .given("No special conditions")
                 .expectsToReceive("CREATED Event for Developer $DEV_TEST_ID")
-                .withContent(newJsonBody {
-                    it.uuid("id", UUID.fromString(DEV_TEST_ID))
-                    it.stringType("firstName", "Bill")
-                    it.stringType("lastName", "Gates")
-                }.build())
+                .withContent(body)
                 .withMetadata(java.util.Map.of(
                         "type", "created"))
 
@@ -103,14 +96,14 @@ class DevelopersMessageListenerPactTest {
 
     @Pact(provider = PROVIDER, consumer = CONSUMER)
     fun receiveDeveloperUpdatedEvent(builder: MessagePactBuilder): MessagePact {
+        val body = PactDslJsonBody()
+                .uuid("id", UUID.fromString(DEV_TEST_ID))
+                .stringType("firstName", "Steve")
+                .stringType("lastName", "Jobs")
         return builder
                 .given("Developer with ID $DEV_TEST_ID exists")
                 .expectsToReceive("UPDATED Event for Developer $DEV_TEST_ID")
-                .withContent(newJsonBody {
-                    it.uuid("id", UUID.fromString(DEV_TEST_ID))
-                    it.stringType("firstName", "Steve")
-                    it.stringType("lastName", "Jobs")
-                }.build())
+                .withContent(body)
                 .withMetadata(java.util.Map.of(
                         "type", "updated"))
 

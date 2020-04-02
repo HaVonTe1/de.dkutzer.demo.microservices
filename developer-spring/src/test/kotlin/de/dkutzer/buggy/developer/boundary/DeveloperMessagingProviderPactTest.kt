@@ -7,59 +7,43 @@ import au.com.dius.pact.provider.junit.loader.PactFolder
 import au.com.dius.pact.provider.junit5.AmpqTestTarget
 import au.com.dius.pact.provider.junit5.PactVerificationContext
 import au.com.dius.pact.provider.junit5.PactVerificationInvocationContextProvider
-import au.com.dius.pact.provider.spring.junit5.PactVerificationSpringProvider
+import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.ninjasquad.springmockk.MockkBean
-import com.ninjasquad.springmockk.SpykBean
-import de.dkutzer.buggy.developer.control.DeveloperRepository
+import de.dkutzer.buggy.developer.control.DeveloperEventHandler
 import de.dkutzer.buggy.developer.control.MessageGateway
 import de.dkutzer.buggy.developer.entity.Developer
-import de.dkutzer.buggy.developer.entity.DeveloperCreated
 import de.dkutzer.buggy.developer.entity.DeveloperDeleted
-import de.dkutzer.buggy.developer.entity.DeveloperUpdated
-import io.mockk.*
-import io.mockk.proxy.MockKInstantiatior
-import org.hamcrest.Matchers
+import io.mockk.every
+import io.mockk.junit5.MockKExtension
+import io.mockk.mockk
+import io.mockk.slot
+import mu.KotlinLogging
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.TestTemplate
 import org.junit.jupiter.api.extension.ExtendWith
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureDataJpa
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.http.MediaType
-import org.springframework.restdocs.RestDocumentationContextProvider
-import org.springframework.restdocs.RestDocumentationExtension
-import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
-import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
-import org.springframework.restdocs.operation.preprocess.Preprocessors
-import org.springframework.security.test.context.support.WithMockUser
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors
-import org.springframework.test.annotation.DirtiesContext
-import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.junit.jupiter.SpringExtension
-import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
-import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import org.springframework.web.context.WebApplicationContext
+import org.springframework.cloud.stream.messaging.Source
+import org.springframework.messaging.Message
+import org.springframework.messaging.MessageChannel
+
+private val logger = KotlinLogging.logger {}
 
 @Provider("dkutzer-msdemo-buggy-developers-messaging")
 @PactFolder("../pacts")
+@ExtendWith(MockKExtension::class)
 class DeveloperMessagingProviderPactTest {
 
+    var messageChannel = mockk<MessageChannel>(name = "messageChannelMock")
+    var channel = mockk<Source>(name = "channelMock")
 
+    var messageGateway =  MessageGateway(channel)
 
-    val objectMapper =  jacksonObjectMapper()
+    val developerEventHandler = DeveloperEventHandler(messageGateway)
+
+    val objectMapper =  jacksonObjectMapper().configure(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY,true)
 
     @TestTemplate
     @ExtendWith(PactVerificationInvocationContextProvider::class)
-    fun pactVerifactionTestTemplate(context  : PactVerificationContext){
+    fun pactVerificationTestTemplate(context  : PactVerificationContext){
 
         context.verifyInteraction()
 
@@ -68,6 +52,7 @@ class DeveloperMessagingProviderPactTest {
     @BeforeEach
     fun before(context: PactVerificationContext) {
         context.target = AmpqTestTarget()
+        every { channel.output() } returns messageChannel
     }
 
     @State("Developer with ID cd3535b8-7781-4755-a58b-05c10354ea99 exists")
@@ -79,8 +64,13 @@ class DeveloperMessagingProviderPactTest {
     }
 
     @PactVerifyProvider("UPDATED Event for Developer cd3535b8-7781-4755-a58b-05c10354ea99")
-    fun testDeveloperUpdated():String{
-        return """{"firstName":"Steve","lastName":"Jobs","id":"cd3535b8-7781-4755-a58b-05c10354ea99"}"""
+    fun testDeveloperUpdated(): String {
+        val slot = slot<Message<MessageGateway.Event>>()
+        every { messageChannel.send(capture(slot)) } returns true
+        developerEventHandler.handleDeveloperUpdated(Developer("cd3535b8-7781-4755-a58b-05c10354ea99", firstName = "Steve", lastName = "Jobs"))
+        val captured = slot.captured.payload
+        return objectMapper.writeValueAsString(captured)
+//        return """{"firstName":"Steve","lastName":"Jobs","id":"cd3535b8-7781-4755-a58b-05c10354ea99"}"""
     }
 
     @PactVerifyProvider("CREATED Event for Developer cd3535b8-7781-4755-a58b-05c10354ea99")

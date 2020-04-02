@@ -42,6 +42,7 @@ dependencies {
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+        exclude(group = "com.vaadin.external.google")
     }
     testImplementation("au.com.dius:pact-jvm-consumer-junit5:${property("pactVersion")}")
     testImplementation("au.com.dius:pact-jvm-consumer-java8:${property("pactVersion")}")
