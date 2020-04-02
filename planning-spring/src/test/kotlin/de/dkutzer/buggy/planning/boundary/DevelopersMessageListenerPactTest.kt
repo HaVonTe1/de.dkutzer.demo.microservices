@@ -5,10 +5,13 @@ import au.com.dius.pact.consumer.dsl.PactDslJsonBody
 import au.com.dius.pact.consumer.junit5.PactConsumerTestExt
 import au.com.dius.pact.consumer.junit5.PactTestFor
 import au.com.dius.pact.consumer.junit5.ProviderType
+import au.com.dius.pact.core.model.ContentType
+import au.com.dius.pact.core.model.OptionalBody
 import au.com.dius.pact.core.model.annotations.Pact
 import au.com.dius.pact.core.model.annotations.PactFolder
 import au.com.dius.pact.core.model.messaging.Message
 import au.com.dius.pact.core.model.messaging.MessagePact
+import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import de.dkutzer.buggy.planning.control.DeveloperRepository
 import de.dkutzer.buggy.planning.control.DeveloperServices
@@ -20,7 +23,6 @@ import io.mockk.every
 import io.mockk.junit5.MockKExtension
 import io.mockk.mockk
 import io.mockk.verify
-import io.pactfoundation.consumer.dsl.LambdaDsl.newJsonBody
 import mu.KotlinLogging
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -46,7 +48,7 @@ class DevelopersMessageListenerPactTest {
         private const val DEV_TEST_ID = "cd3535b8-7781-4755-a58b-05c10354ea99"
     }
 
-    val objectMapper =  jacksonObjectMapper()
+    val objectMapper =  jacksonObjectMapper().enable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
     val developerRepository= mockk<DeveloperRepository>(relaxed = true)
     val issuesRepository= mockk<IssuesRepository>(relaxed = true)
 
@@ -68,10 +70,8 @@ class DevelopersMessageListenerPactTest {
                 .given("Developer with ID $DEV_TEST_ID exists")
                 .expectsToReceive("DELETED Event for Developer $DEV_TEST_ID")
                 .withContent(body)
-
                 .withMetadata(java.util.Map.of(
                          "type", "deleted"))
-
                 .hasPactWith(PROVIDER)
                 .toPact()
     }
@@ -86,10 +86,9 @@ class DevelopersMessageListenerPactTest {
         return builder
                 .given("No special conditions")
                 .expectsToReceive("CREATED Event for Developer $DEV_TEST_ID")
-                .withContent(body)
+                .withOrderedContent<DeveloperCreated>(body)
                 .withMetadata(java.util.Map.of(
                         "type", "created"))
-
                 .hasPactWith(PROVIDER)
                 .toPact()
     }
@@ -103,14 +102,26 @@ class DevelopersMessageListenerPactTest {
         return builder
                 .given("Developer with ID $DEV_TEST_ID exists")
                 .expectsToReceive("UPDATED Event for Developer $DEV_TEST_ID")
-                .withContent(body)
+                .withOrderedContent<DeveloperUpdated>(body)
                 .withMetadata(java.util.Map.of(
                         "type", "updated"))
 
                 .hasPactWith(PROVIDER)
                 .toPact()
     }
+    private inline fun <reified T> PactDslJsonBody.toStringOrdered():String {
+        return objectMapper.writeValueAsString(objectMapper.readValue(this.toString(), T::class.java))
+    }
 
+    private inline fun <reified T> MessagePactBuilder.withOrderedContent(body:PactDslJsonBody) : MessagePactBuilder {
+        val builder = withContent(body)
+        val messagesField = MessagePactBuilder::class.java.getDeclaredField("messages")
+        messagesField.isAccessible = true
+        val messages = messagesField.get(this) as MutableList<Message>
+        val message = messages.last()
+        message.contents = OptionalBody.body(body.toStringOrdered<T>().toByteArray(ContentType.JSON.asCharset()), ContentType.JSON)
+        return builder
+    }
 
     private fun DeveloperEvent.toEntity(): Developer = Developer(id, "$firstName $lastName")
 

@@ -70,15 +70,22 @@ class DeveloperMessagingProviderPactTest {
         developerEventHandler.handleDeveloperUpdated(Developer("cd3535b8-7781-4755-a58b-05c10354ea99", firstName = "Steve", lastName = "Jobs"))
         val captured = slot.captured.payload
         return objectMapper.writeValueAsString(captured)
-//        return """{"firstName":"Steve","lastName":"Jobs","id":"cd3535b8-7781-4755-a58b-05c10354ea99"}"""
     }
 
     @PactVerifyProvider("CREATED Event for Developer cd3535b8-7781-4755-a58b-05c10354ea99")
     fun testDeveloperCreated():String{
-        return """{"firstName":"Bill","lastName":"Gates","id":"cd3535b8-7781-4755-a58b-05c10354ea99"}"""
+        val slot = slot<Message<MessageGateway.Event>>()
+        every { messageChannel.send(capture(slot)) } returns true
+        developerEventHandler.handleDeveloperCreated(Developer("cd3535b8-7781-4755-a58b-05c10354ea99", firstName = "Bill", lastName = "Gates"))
+        val captured = slot.captured.payload
+        return objectMapper.writeValueAsString(captured)
     }
     @PactVerifyProvider("DELETED Event for Developer cd3535b8-7781-4755-a58b-05c10354ea99")
     fun testDeveloperDeleted():String{
-        return objectMapper.writeValueAsString( DeveloperDeleted("cd3535b8-7781-4755-a58b-05c10354ea99"))
+        val slot = slot<Message<MessageGateway.Event>>()
+        every { messageChannel.send(capture(slot)) } returns true
+        developerEventHandler.handleDeveloperDeleted(Developer("cd3535b8-7781-4755-a58b-05c10354ea99", firstName = "Wurscht", lastName = "Pelle"))
+        val captured = slot.captured.payload
+        return objectMapper.writeValueAsString(captured)
     }
 }
