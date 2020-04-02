@@ -37,9 +37,6 @@ class DeveloperControllerRestDocsTest() {
 
     var mockMvc: MockMvc? = null
 
-
-
-
     val responseFields = listOf(
             fieldWithPath("firstName").description("Vorname").type("String"),
             fieldWithPath("lastName").description("Nachname").type("String"),
