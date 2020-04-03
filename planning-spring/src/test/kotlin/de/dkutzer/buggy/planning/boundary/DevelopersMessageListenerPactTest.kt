@@ -28,6 +28,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.extension.Extensions
+import org.springframework.test.util.ReflectionTestUtils
 import java.util.*
 
 
@@ -115,9 +116,7 @@ class DevelopersMessageListenerPactTest {
 
     private inline fun <reified T> MessagePactBuilder.withOrderedContent(body:PactDslJsonBody) : MessagePactBuilder {
         val builder = withContent(body)
-        val messagesField = MessagePactBuilder::class.java.getDeclaredField("messages")
-        messagesField.isAccessible = true
-        val messages = messagesField.get(this) as MutableList<Message>
+        val messages = ReflectionTestUtils.getField(this, "messages") as MutableList<Message>
         val message = messages.last()
         message.contents = OptionalBody.body(body.toStringOrdered<T>().toByteArray(ContentType.JSON.asCharset()), ContentType.JSON)
         return builder
