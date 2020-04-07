@@ -7,10 +7,20 @@ spring:
     admin:
       client:
         enabled: false
+  zipkin:
+    enabled: false
+
+  sleuth:
+    enabled: false
 
 management:
   endpoints:
     enabled-by-default: false
+  metrics:
+    export:
+      prometheus:
+        pushgateway:
+          enabled: false
 
 logging:
   level:

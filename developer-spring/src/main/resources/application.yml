@@ -22,6 +22,7 @@ spring:
       type: kafka
     enabled: true
   sleuth:
+
     propagation-keys:
       - CorrId
     messaging:

@@ -2,6 +2,7 @@ package de.dkutzer.buggy.developer.boundary
 
 
 import de.dkutzer.buggy.developer.entity.Developer
+import mu.KotlinLogging
 import org.hamcrest.Matchers.`is`
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -29,6 +30,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.util.StringUtils
 import org.springframework.web.context.WebApplicationContext
 
+private val logger = KotlinLogging.logger {}
 
 @ExtendWith(RestDocumentationExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -36,9 +38,6 @@ import org.springframework.web.context.WebApplicationContext
 class DeveloperControllerRestDocsTest() {
 
     var mockMvc: MockMvc? = null
-
-
-
 
     val responseFields = listOf(
             fieldWithPath("firstName").description("Vorname").type("String"),
@@ -66,7 +65,7 @@ class DeveloperControllerRestDocsTest() {
         val fields: ConstrainedFields = ConstrainedFields(developer::class.java)
 
         // given - new Developer to be created
-        val developerInDto = "{\"id\":\"1\",\"firstName\":\"Steve\",\"lastName\":\"Jobs\"}"
+        val developerInDto = """{"id":"cd3535b8-7781-4755-a58b-05c10354ea99", "firstName":"Steve", "lastName":"Jobs"}"""
         // when - the resource is passed via POST
         mockMvc!!.perform(post("/developers/")
                 .content(developerInDto)
