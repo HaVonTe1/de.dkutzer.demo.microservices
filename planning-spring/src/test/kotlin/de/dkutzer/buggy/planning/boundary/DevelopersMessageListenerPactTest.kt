@@ -28,6 +28,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.junit.jupiter.api.extension.Extensions
+import org.springframework.http.MediaType
 import org.springframework.test.util.ReflectionTestUtils
 import java.util.*
 
@@ -70,9 +71,10 @@ class DevelopersMessageListenerPactTest {
         return builder
                 .given("Developer with ID $DEV_TEST_ID exists")
                 .expectsToReceive("DELETED Event for Developer $DEV_TEST_ID")
-                .withContent(body)
                 .withMetadata(java.util.Map.of(
+                        "content-type", ContentType.JSON,
                          "type", "deleted"))
+                .withContent(body)
                 .hasPactWith(PROVIDER)
                 .toPact()
     }
@@ -87,9 +89,10 @@ class DevelopersMessageListenerPactTest {
         return builder
                 .given("No special conditions")
                 .expectsToReceive("CREATED Event for Developer $DEV_TEST_ID")
-                .withOrderedContent<DeveloperCreated>(body)
                 .withMetadata(java.util.Map.of(
+                        "content-type", ContentType.JSON,
                         "type", "created"))
+                .withOrderedContent<DeveloperCreated>(body)
                 .hasPactWith(PROVIDER)
                 .toPact()
     }
@@ -103,10 +106,9 @@ class DevelopersMessageListenerPactTest {
         return builder
                 .given("Developer with ID $DEV_TEST_ID exists")
                 .expectsToReceive("UPDATED Event for Developer $DEV_TEST_ID")
-                .withOrderedContent<DeveloperUpdated>(body)
                 .withMetadata(java.util.Map.of(
                         "type", "updated"))
-
+                .withOrderedContent<DeveloperUpdated>(body)
                 .hasPactWith(PROVIDER)
                 .toPact()
     }

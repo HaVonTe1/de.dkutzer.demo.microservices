@@ -9,8 +9,8 @@ ifdef::env-github[]
 endif::[]
 
 The goal of this project is to demonstrate a possible architecture for building microservices on top Spring Boot with Kotlin.
-There won't be any fancy buisness logic but a full stack of technologies.
-As an example the buggy-platfrom imitates an issue tracker like bugzilla or Jira.
+There won't be any fancy business logic but a full stack of technologies.
+As an example the buggy-platform imitates an issue tracker like bugzilla or Jira.
 
 '''
 
@@ -47,8 +47,6 @@ So you can access each component without any port forwarding.
 ** docker images (mongodb, kafka...)
 ====
 
-=== Try-it-out
-TODO: add swagger
 
 == The Microservice Architecture explained
 
@@ -104,6 +102,28 @@ The endpoints and interfaces of all services are gathered and made public via a 
 A client (like any user interface or web app) would only access the endpoints via this gateway.
 Never directly via one of the services. This way it is very easy to add modify or delete the underlying services without changing the API in any way.
 
+==== Testing via Contract Tests (Pacts)
+
+The 3 Microservices communicate via Messaging. To make sure the MessageListeners (Consumer) and the MessageProducer (Provider)
+sending and reading the same structure of data the Contract Tests are used.
+
+ifdef::env-github[]
+[source,kotlin]
+----
+@Provider("dkutzer-msdemo-buggy-developers-messaging")
+@PactFolder("../pacts")
+@ExtendWith(MockKExtension::class)
+class DeveloperMessagingProviderPactTest {
+----
+endif::[]
+ifndef::env-github[]
+[source,kotlin]
+----
+include::developer-spring/src/test/kotlin/de/dkutzer/buggy/developer/boundary/DeveloperMessagingProviderPactTest.kt[tag=PACT]
+----
+endif::[]
+
+
 ==== HATEOS
 Spring Rest Data offers a simple way to add HATEOS out of the box. This is all achieved by simple annotating the specific repository:
 
@@ -129,7 +149,7 @@ endif::[]
 If a service comes down for a reboot or a new deployment  for example, the consuming of the messages would stop. Which means the message broker will store them
 in the queues until the consuming services comes up again. There is no lost of data.
 
-==== retry
+ ==== retry
 If a service is unable to handle an event/message. For example the database is down or the network has issues. The message handler will throw an exception.
 This means the message will be send to a so called  "dead letter queue". The services are configured to re-load all messages from this DLQ after some seconds until the
 message can be handled correctly.

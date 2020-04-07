@@ -26,11 +26,12 @@ import org.springframework.messaging.Message
 import org.springframework.messaging.MessageChannel
 
 private val logger = KotlinLogging.logger {}
-
+// tag::PACT[]
 @Provider("dkutzer-msdemo-buggy-developers-messaging")
 @PactFolder("../pacts")
 @ExtendWith(MockKExtension::class)
 class DeveloperMessagingProviderPactTest {
+// end::PACT[]
 
     var messageChannel = mockk<MessageChannel>(name = "messageChannelMock")
     var channel = mockk<Source>(name = "channelMock")
