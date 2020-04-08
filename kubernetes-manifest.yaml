@@ -1,0 +1,358 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: buggy-mongodb
+  namespace: buggy
+  labels:
+    k8s-app: buggy-mongodb
+    layer: infra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: buggy-mongodb
+      layer: infra
+  template:
+    metadata:
+      name: buggy-mongodb
+      labels:
+        k8s-app: buggy-mongodb
+        layer: infra
+    spec:
+      containers:
+        - name: buggy-mongodb
+          image: 'mongo:4.0.4'
+          ports:
+            - containerPort: 27017
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: buggy
+  name: buggy-mongodb
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 27017
+      name: mongodb
+      protocol: TCP
+      targetPort: 27017
+  selector:
+    k8s-app: buggy-mongodb
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: buggy-postgres
+  namespace: buggy
+  labels:
+    k8s-app: buggy-postgres
+    layer: infra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: buggy-postgres
+      layer: infra
+  template:
+    metadata:
+      name: buggy-postgres
+      labels:
+        k8s-app: buggy-postgres
+        layer: infra
+    spec:
+      containers:
+        - name: buggy-postgres
+          image: 'postgres:12.1'
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_PASSWORD
+              value: "admin"
+            - name: POSTGRES_USER
+              value: "admin"
+            - name: POSTGRES_DB
+              value: "buggy"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: buggy
+  name: buggy-postgres
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 5432
+      name: postgres
+      protocol: TCP
+      targetPort: 5432
+  selector:
+    k8s-app: buggy-postgres
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: buggy-elasticsearch
+  namespace: buggy
+  labels:
+    k8s-app: buggy-elasticsearch
+    layer: infra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: buggy-elasticsearch
+      layer: infra
+  template:
+    metadata:
+      name: buggy-elasticsearch
+      labels:
+        k8s-app: buggy-elasticsearch
+        layer: infra
+    spec:
+      containers:
+        - name: buggy-elasticsearch
+          image: 'elasticsearch:7.5.1'
+          ports:
+            - containerPort: 9200
+            - containerPort: 9300
+          env:
+            - name: discovery.type
+              value: "single-node"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: buggy
+  name: buggy-elasticsearch
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 9200
+      name: elasticsearch1
+      protocol: TCP
+      targetPort: 9200
+    - port: 9300
+      name: elasticsearch2
+      protocol: TCP
+      targetPort: 9300
+  selector:
+    k8s-app: buggy-elasticsearch
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: buggy-kafka
+  namespace: buggy
+  labels:
+    k8s-app: buggy-kafka
+    layer: infra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: buggy-kafka
+      layer: infra
+  template:
+    metadata:
+      name: buggy-kafka
+      labels:
+        k8s-app: buggy-kafka
+        layer: infra
+    spec:
+      containers:
+        - name: buggy-kafka
+          image: 'obsidiandynamics/kafka'
+          ports:
+            - containerPort: 2181
+            - containerPort: 9092
+            - containerPort: 29092
+          env:
+            - name: KAFKA_LISTENERS
+              value: "INTERNAL://:29092,EXTERNAL://:9092"
+            - name: KAFKA_ADVERTISED_LISTENERS
+              value: "INTERNAL://buggy-kafka:29092,EXTERNAL://buggy-kafka:9092"
+            - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+              value: "INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT"
+            - name: KAFKA_INTER_BROKER_LISTENER_NAME
+              value: "INTERNAL"
+            - name: KAFKA_ZOOKEEPER_SESSION_TIMEOUT
+              value: "6000"
+            - name: KAFKA_RESTART_ATTEMPTS
+              value: "10"
+            - name: KAFKA_RESTART_DELAY
+              value: "5"
+            - name: ZOOKEEPER_AUTOPURGE_PURGE_INTERVAL
+              value: "0"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: buggy
+  name: buggy-kafka
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 2181
+      name: zk
+      protocol: TCP
+      targetPort: 2181
+    - port: 9092
+      name: kafka1
+      protocol: TCP
+      targetPort: 9092
+    - port: 29092
+      name: kafka2
+      protocol: TCP
+      targetPort: 29092
+  selector:
+    k8s-app: buggy-kafka
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: buggy-kafdrop
+  namespace: buggy
+  labels:
+    k8s-app: buggy-kafdrop
+    layer: infra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: buggy-kafdrop
+      layer: infra
+  template:
+    metadata:
+      name: buggy-kafdrop
+      labels:
+        k8s-app: buggy-kafdrop
+        layer: infra
+    spec:
+      containers:
+        - name: buggy-kafdrop
+          image: 'obsidiandynamics/kafdrop'
+          ports:
+            - containerPort: 9000
+          env:
+            - name: KAFKA_BROKERCONNECT
+              value: "buggy-kafka:29092"
+            - name: JVM_OPTS
+              value: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: buggy
+  name: buggy-kafdrop
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 9000
+      name: kafdropui
+      protocol: TCP
+      targetPort: 9000
+  selector:
+    k8s-app: buggy-kafdrop
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: buggy-zipkin
+  namespace: buggy
+  labels:
+    k8s-app: buggy-zipkin
+    layer: infra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: buggy-zipkin
+      layer: infra
+  template:
+    metadata:
+      name: buggy-zipkin
+      labels:
+        k8s-app: buggy-zipkin
+        layer: infra
+    spec:
+      containers:
+        - name: buggy-zipkin
+          image: 'openzipkin/zipkin'
+          ports:
+            - containerPort: 9411
+          env:
+            - name: STORAGE_TYPE
+              value: "elasticsearch"
+            - name: ES_HOSTS
+              value: "buggy-elasticsearch"
+            - name: COLLECTOR_KAFKA_ENABLED
+              value: "true"
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: "buggy-kafka:9092"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: buggy
+  name: buggy-zipkin
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 9411
+      name: zipkin
+      protocol: TCP
+      targetPort: 9411
+  selector:
+    k8s-app: buggy-zipkin
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: buggy-kibana
+  namespace: buggy
+  labels:
+    k8s-app: buggy-kibana
+    layer: infra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: buggy-kibana
+      layer: infra
+  template:
+    metadata:
+      name: buggy-kibana
+      labels:
+        k8s-app: buggy-kibana
+        layer: infra
+    spec:
+      containers:
+        - name: buggy-kibana
+          image: 'kibana:7.5.1'
+          ports:
+            - containerPort: 5601
+          env:
+            - name: SERVER_NAME
+              value: "buggy-kibana"
+            - name: ELASTICSEARCH_HOSTS
+              value: "http://buggy-elasticsearch:9200"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: buggy
+  name: buggy-kibana
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 5601
+      name: kibana
+      protocol: TCP
+      targetPort: 5601
+  selector:
+    k8s-app: buggy-kibana
+---

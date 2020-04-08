@@ -78,7 +78,7 @@ services:
       - buggy-networks
 
 
-  bugy-sba-service:
+  buggy-sba-service:
     build:
       context: ./sba-server
       args:
