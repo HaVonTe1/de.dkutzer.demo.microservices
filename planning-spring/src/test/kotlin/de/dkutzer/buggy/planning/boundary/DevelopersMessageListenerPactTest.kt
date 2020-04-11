@@ -68,13 +68,15 @@ class DevelopersMessageListenerPactTest {
 
         val body = PactDslJsonBody()
                 .uuid("id", UUID.fromString(DEV_TEST_ID))
+        val metadata = mapOf(
+                Pair("contenttype", MediaType.APPLICATION_JSON_VALUE),
+                Pair("event", "deleted")
+        )
         return builder
                 .given("Developer with ID $DEV_TEST_ID exists")
                 .expectsToReceive("DELETED Event for Developer $DEV_TEST_ID")
-                .withMetadata(java.util.Map.of(
-                        "content-type", ContentType.JSON,
-                         "type", "deleted"))
                 .withContent(body)
+                .withMetadata(metadata)
                 .hasPactWith(PROVIDER)
                 .toPact()
     }
@@ -85,14 +87,16 @@ class DevelopersMessageListenerPactTest {
                 .uuid("id", UUID.fromString(DEV_TEST_ID))
                 .stringType("firstName", "Bill")
                 .stringType("lastName", "Gates")
+        val metadata = mapOf(
+                Pair("contenttype", MediaType.APPLICATION_JSON_VALUE),
+                Pair("event", "created")
+        )
 
         return builder
                 .given("No special conditions")
                 .expectsToReceive("CREATED Event for Developer $DEV_TEST_ID")
-                .withMetadata(java.util.Map.of(
-                        "content-type", ContentType.JSON,
-                        "type", "created"))
-                .withOrderedContent<DeveloperCreated>(body)
+                .withContent(body)
+                .withMetadata(metadata)
                 .hasPactWith(PROVIDER)
                 .toPact()
     }
@@ -103,25 +107,17 @@ class DevelopersMessageListenerPactTest {
                 .uuid("id", UUID.fromString(DEV_TEST_ID))
                 .stringType("firstName", "Steve")
                 .stringType("lastName", "Jobs")
+        val metadata = mapOf(
+                Pair("contenttype", MediaType.APPLICATION_JSON_VALUE),
+                Pair("event", "updated")
+        )
         return builder
                 .given("Developer with ID $DEV_TEST_ID exists")
                 .expectsToReceive("UPDATED Event for Developer $DEV_TEST_ID")
-                .withMetadata(java.util.Map.of(
-                        "type", "updated"))
-                .withOrderedContent<DeveloperUpdated>(body)
+                .withContent(body)
+                .withMetadata(metadata)
                 .hasPactWith(PROVIDER)
                 .toPact()
-    }
-    private inline fun <reified T> PactDslJsonBody.toStringOrdered():String {
-        return objectMapper.writeValueAsString(objectMapper.readValue(this.toString(), T::class.java))
-    }
-
-    private inline fun <reified T> MessagePactBuilder.withOrderedContent(body:PactDslJsonBody) : MessagePactBuilder {
-        val builder = withContent(body)
-        val messages = ReflectionTestUtils.getField(this, "messages") as MutableList<Message>
-        val message = messages.last()
-        message.contents = OptionalBody.body(body.toStringOrdered<T>().toByteArray(ContentType.JSON.asCharset()), ContentType.JSON)
-        return builder
     }
 
     private fun DeveloperEvent.toEntity(): Developer = Developer(id, "$firstName $lastName")
