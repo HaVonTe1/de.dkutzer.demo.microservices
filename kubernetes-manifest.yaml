@@ -1,3 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: buggy
+---
 kind: Deployment
 apiVersion: apps/v1
 metadata:
@@ -357,4 +362,148 @@ spec:
       targetPort: 5601
   selector:
     k8s-app: buggy-kibana
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: task-pv-volume
+  namespace: buggy
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Mi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/home/FARMNET.INTRA/dirk.kutzer/dev/src/sandbox/buggy/keycloak"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: buggy
+  name: task-pv-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Mi
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: buggy-keycloak
+  namespace: buggy
+  labels:
+    k8s-app: buggy-keycloak
+    layer: infra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: buggy-keycloak
+      layer: infra
+  template:
+    metadata:
+      name: buggy-keycloak
+      labels:
+        k8s-app: buggy-keycloak
+        layer: infra
+    spec:
+      volumes:
+        - name: realm-import-volume
+          persistentVolumeClaim:
+            claimName: task-pv-claim
+      containers:
+        - name: buggy-keycloak
+          image: 'jboss/keycloak:8.0.1'
+          volumeMounts:
+            - mountPath: /tmp
+              name: realm-import-volume
+          ports:
+            - containerPort: 8080
+          env:
+            - name: KEYCLOAK_USER
+              value: "admin"
+            - name: KEYCLOAK_PASSWORD
+              value: "admin"
+            - name: DB_VENDOR
+              value: "postgres"
+            - name: DB_ADDR
+              value: "buggy-postgres"
+            - name: DB_USER
+              value: "admin"
+            - name: DB_PASSWORD
+              value: "admin"
+            - name: DB_DATABASE
+              value: "buggy"
+            - name: KEYCLOAK_IMPORT
+              value: "/tmp/buggy_realm.json"
+            - name: JAVA_OPTS
+              value: "-Xms64m -Xmx512m -XX:MetaspaceSize=96M -XX:MaxMetaspaceSize=256m -Djava.net.preferIPv4Stack=true -Djboss.modules.system.pkgs=org.jboss.byteman -Djava.awt.headless=true  --add-exports=java.base/sun.nio.ch=ALL-UNNAMED --add-exports=jdk.unsupported/sun.misc=ALL-UNNAMED --add-exports=jdk.unsupported/sun.reflect=ALL-UNNAMED -Dkeycloak.profile.feature.upload_scripts=enabled"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: buggy
+  name: buggy-keycloak
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8080
+      name: keycloak
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    k8s-app: buggy-keycloak
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: buggy-sba-server
+  namespace: buggy
+  labels:
+    k8s-app: buggy-sba-server
+    layer: infra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: buggy-sba-server
+      layer: infra
+  template:
+    metadata:
+      name: buggy-sba-server
+      labels:
+        k8s-app: buggy-sba-server
+        layer: infra
+    spec:
+      containers:
+        - name: buggy-sba-server
+          image: 'buggy/sba-server:2.2.1'
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "docker"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: buggy
+  name: buggy-sba-server
+spec:
+  type: LoadBalancer
+  ports:
+    - port: 8080
+      name: sba-server
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    k8s-app: buggy-sba-server
 ---
