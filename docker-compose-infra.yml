@@ -100,11 +100,16 @@ services:
 
 
   buggy-elasticsearch:
-    image: elasticsearch:7.5.1
+    image: elasticsearch:7.7.0
     container_name: buggy-elasticsearch
     hostname: buggy-elasticsearch
     environment:
       discovery.type: single-node
+      ES_JAVA_OPTS: -Xms4G -Xmx8G
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
     ports:
       - 9200
       - 9300
@@ -112,7 +117,7 @@ services:
       - buggy-networks
 
   buggy-kibana:
-    image: kibana:7.5.1
+    image: kibana:7.7.0
     container_name: buggy-kibana
     hostname: buggy-kibana
     environment:

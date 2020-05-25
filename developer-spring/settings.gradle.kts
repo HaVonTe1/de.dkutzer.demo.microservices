@@ -11,4 +11,4 @@ pluginManagement {
         }
     }
 }
-rootProject.name = "developer-spring"
+rootProject.name = "buggy-developer-service-spring"

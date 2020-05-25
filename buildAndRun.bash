@@ -18,11 +18,11 @@ popd
 pushd issues-spring
 ./gradlew build
 popd
-#pushd gateway
-#./gradlew build
-#popd
-#pushd sba-server
-#./gradlew build
-#popd
+pushd gateway
+./gradlew build
+popd
+pushd sba-server
+./gradlew build
+popd
 docker-compose build
 docker-compose --compatibility up -d
