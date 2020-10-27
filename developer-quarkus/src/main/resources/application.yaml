@@ -29,19 +29,23 @@ quarkus:
 
 
 # Configures the AMQP broker credentials.
-amqp-username: admin
-amqp-password: admin
-amqp-host: buggy-rabbitmq
-amqp-port: 5672
 
-# Configure the AMQP connector to read from the `prices` queue
+
+kafka:
+  bootstrap:
+    servers: buggy-kafka:9092
+
+# Configure the AMQP connector to read from the `developers` queue
+
+
 mp:
   messaging:
     outgoing:
       developer:
-        connector: smallrye-amqp
-        address: developer
-        durable: false
+        connector: smallrye-kafka
+        topic: developer
+        value:
+          serializer: io.quarkus.kafka.client.serialization.ObjectMapperSerializer
 
 
 sba-api/mp-rest/url: http://buggy-sba-service:8080/instances

@@ -3,8 +3,10 @@ package de.dkutzer.buggy.developer.control
 
 import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoCollection
+import com.mongodb.client.model.Filters
 import com.mongodb.client.model.FindOneAndUpdateOptions
 import com.mongodb.client.model.Indexes
+import com.mongodb.client.model.ReplaceOptions
 import de.dkutzer.buggy.developer.entity.Developer
 import de.dkutzer.buggy.developer.entity.toEntity
 import io.quarkus.runtime.StartupEvent
@@ -37,7 +39,7 @@ class DeveloperRepository {
     }
 
 
-    private val findOneAndUpdateOptions = FindOneAndUpdateOptions().upsert(true)
+    private val findOneAndUpdateOptions = ReplaceOptions().upsert(true)
 
 
     fun findAll(): Iterable<Developer> {
@@ -67,8 +69,8 @@ class DeveloperRepository {
     fun upsert(developer: Developer): Developer {
         val collection = getCollection()
         return if (developer.id != null && developer.id.isNotEmpty()) {
-            val document = collection.findOneAndUpdate(getFilterByDeveloper(developer), getDocumentByDeveloper(developer), findOneAndUpdateOptions)
-            document.toEntity()
+            collection.replaceOne(getFilterByDeveloper(developer), getDocumentByDeveloper(developer), findOneAndUpdateOptions)
+            return developer
         } else {
             val document = getDocumentByDeveloper(developer)
             collection.insertOne(document)
@@ -89,7 +91,7 @@ class DeveloperRepository {
     }
 
     private fun getFilterByDeveloper(developer: Developer): Bson {
-        return Document("id", developer.id)
+        return Filters.eq("id", developer.id)
     }
 
     private fun getFilterById(id: String): Bson {

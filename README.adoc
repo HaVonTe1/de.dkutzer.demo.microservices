@@ -23,7 +23,7 @@ Features:
 ====
 
 
-== How to build an run
+== How to build and run
 
 === Pre-requirements
 * Docker 
