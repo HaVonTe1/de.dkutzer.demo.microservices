@@ -1,6 +1,6 @@
 package de.dkutzer.buggy.developer.control
 
-import com.google.common.collect.Lists
+
 import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.model.FindOneAndUpdateOptions
@@ -15,6 +15,7 @@ import javax.enterprise.context.ApplicationScoped
 import javax.enterprise.event.Observes
 import javax.enterprise.inject.Default
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 @ApplicationScoped
 class DeveloperRepository {
@@ -25,7 +26,6 @@ class DeveloperRepository {
     }
 
     @Inject
-    @field: Default
     lateinit var mongoClient: MongoClient
 
     fun getCollection(): MongoCollection<Document> {
@@ -43,7 +43,7 @@ class DeveloperRepository {
     fun findAll(): Iterable<Developer> {
         val developersCol = getCollection()
         val documents = developersCol.find()
-        val result: MutableList<Developer> = Lists.newArrayList()
+        val result: MutableList<Developer> = ArrayList()
         documents.iterator().forEachRemaining {
             result.add(getDeveloperByDocument(it))
         }

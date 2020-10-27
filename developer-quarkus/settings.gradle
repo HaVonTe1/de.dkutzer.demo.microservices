@@ -5,8 +5,9 @@ pluginManagement {
         gradlePluginPortal()
     }
     plugins {
-        id 'io.quarkus' version "${quarkusPluginVersion}"
+        id "${quarkusPluginId}" version "${quarkusPluginVersion}"
     }
 }
-rootProject.name = 'developer-services'
 
+
+rootProject.name = 'developer-services'

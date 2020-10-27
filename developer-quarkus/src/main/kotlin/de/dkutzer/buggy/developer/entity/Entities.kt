@@ -20,4 +20,4 @@ inline fun <reified T : MessageGateway.Event> Developer.toEvent(): MessageGatewa
     }
 }
 
-public inline fun Document.toEntity(): Developer = Developer(this.get("id", UUID.randomUUID().toString()), this.getString("firstName"), this.getString("lastName"))
+inline fun Document.toEntity(): Developer = Developer(this.get("id", UUID.randomUUID().toString()), this.getString("firstName"), this.getString("lastName"))

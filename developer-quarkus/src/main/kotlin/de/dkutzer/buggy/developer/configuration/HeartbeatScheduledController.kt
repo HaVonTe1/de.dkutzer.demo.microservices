@@ -1,6 +1,6 @@
 package de.dkutzer.buggy.developer.configuration
 
-import com.google.common.collect.Maps
+
 import io.quarkus.scheduler.Scheduled
 import org.eclipse.microprofile.config.inject.ConfigProperty
 import org.eclipse.microprofile.rest.client.inject.RestClient
@@ -28,7 +28,7 @@ class HeartbeatScheduledController {
 
     @Scheduled(every = "10s")
     fun postStatusToSBA() {
-        val statusDTO = StatusDTO(appName, appuri, appuri + "health", appuri, Maps.newHashMap())
+        val statusDTO = StatusDTO(appName, appuri, appuri + "health", appuri, HashMap())
         restClient.postStatus(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, statusDTO);
 
         //TODO: add de-register

@@ -4,6 +4,7 @@ plugins {
     id 'io.quarkus'
 }
 
+
 repositories {
     mavenLocal()
     mavenCentral()
@@ -11,6 +12,8 @@ repositories {
 
 
 dependencies {
+
+
     implementation 'io.quarkus:quarkus-smallrye-metrics'
     implementation 'io.quarkus:quarkus-smallrye-health'
     implementation 'io.quarkus:quarkus-kotlin'
@@ -27,6 +30,7 @@ dependencies {
     implementation 'io.quarkus:quarkus-resteasy'
     implementation 'io.quarkus:quarkus-resteasy-jackson'
     implementation 'io.quarkus:quarkus-jackson'
+    implementation 'io.quarkus:quarkus-arc'
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'
@@ -36,6 +40,11 @@ dependencies {
 
 group 'de.dkutzer.buggy'
 version '1.0.0-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
 
 quarkus {
     setOutputDirectory("$projectDir/build/classes/kotlin/main")
@@ -51,11 +60,6 @@ allOpen {
     annotation("io.quarkus.test.junit.QuarkusTest")
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
-}
-
 compileKotlin {
     kotlinOptions.jvmTarget = JavaVersion.VERSION_11
     kotlinOptions.javaParameters = true
@@ -63,4 +67,12 @@ compileKotlin {
 
 compileTestKotlin {
     kotlinOptions.jvmTarget = JavaVersion.VERSION_11
+}
+
+
+quarkusBuild {
+    nativeArgs {
+        containerBuild = true
+        buildImage = "quay.io/quarkus/ubi-quarkus-native-image:20.2.0-java11"
+    }
 }
