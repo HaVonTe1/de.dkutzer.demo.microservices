@@ -1,4 +1,7 @@
+
 quarkus:
+  http:
+    test-port=8081:
   application:
     name: buggy-developer-quarkus-service
     uri: http://buggy-developer-quarkus-service:8080/
@@ -25,6 +28,9 @@ quarkus:
         level: TRACE
       de.dkutzer:
         level: TRACE
+      org.testcontainers:
+        level: TRACE
+      com.github.dockerjava: TRACE
 
 
 
@@ -50,6 +56,23 @@ mp:
 
 sba-api/mp-rest/url: http://buggy-sba-service:8080/instances
 sba-api/mp-rest/scope: javax.inject.Singleton
+
+
+
+
+"%test":
+
+  quarkus:
+    application:
+      sba:
+        enabled: false
+    oauth2:
+      enabled: false
+    keycloak:
+      policy-enforcer:
+        enable: false
+    oidc:
+      enabled: false
 
 
 

@@ -21,6 +21,9 @@ class HeartbeatScheduledController {
     @Inject
     @ConfigProperty(name = "quarkus.application.uri", defaultValue = "http://buggy-developer-quarkus-service:8080/")
     lateinit var appuri: String
+    @Inject
+    @ConfigProperty(name = "quarkus.application.sba.enabled", defaultValue = "true")
+    lateinit var sbaEnabled: String
 
     @Inject
     @field: RestClient
@@ -28,8 +31,11 @@ class HeartbeatScheduledController {
 
     @Scheduled(every = "10s")
     fun postStatusToSBA() {
-        val statusDTO = StatusDTO(appName, appuri, appuri + "health", appuri, HashMap())
-        restClient.postStatus(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, statusDTO);
+        if(sbaEnabled.compareTo("true")==0){
+            val statusDTO = StatusDTO(appName, appuri, appuri + "health", appuri, HashMap())
+            restClient.postStatus(MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, statusDTO);
+
+        }
 
         //TODO: add de-register
     }
