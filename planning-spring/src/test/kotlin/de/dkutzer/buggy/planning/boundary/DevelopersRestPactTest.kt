@@ -47,7 +47,8 @@ private val logger = KotlinLogging.logger {}
         ExtendWith(PactConsumerTestExt::class),
         ExtendWith(MockKExtension::class)
 )
-@PactFolder("../pacts")
+//@PactFolder("../pacts")
+
 class DevelopersRestListenerPactTest {
 
     companion object {
@@ -78,7 +79,7 @@ class DevelopersRestListenerPactTest {
                 .path("/developers/$DEV_TEST_ID")
                 .method("DELETE")
                 .willRespondWith()
-                .status(HttpStatus.GONE.value())
+                .status(HttpStatus.NO_CONTENT.value())
                 .toPact()
     }
 
@@ -117,7 +118,7 @@ class DevelopersRestListenerPactTest {
                 .body(body)
                 .headers(HttpHeaders.CONTENT_TYPE,MediaType.APPLICATION_JSON_VALUE)
                 .willRespondWith()
-                .status(HttpStatus.ACCEPTED.value())
+                .status(HttpStatus.NO_CONTENT.value())
                 .toPact()
     }
 
@@ -126,7 +127,7 @@ class DevelopersRestListenerPactTest {
     @PactTestFor(pactMethod = "sendDeveloperDeletedEvent", providerType = ProviderType.SYNCH)
     fun testSendDeveloperDeletedEvent(mockServer: MockServer) {
         val httpResponse = Request.Delete(mockServer.getUrl() + "/developers/$DEV_TEST_ID").execute().returnResponse()
-        assertThat(httpResponse.statusLine.statusCode, `is`(equalTo(HttpStatus.GONE.value())))
+        assertThat(httpResponse.statusLine.statusCode, `is`(equalTo(HttpStatus.NO_CONTENT.value())))
     }
 
     @Test
@@ -144,7 +145,7 @@ class DevelopersRestListenerPactTest {
         val httpResponse = Request.Put(mockServer.getUrl() + "/developers/$DEV_TEST_ID")
                 .bodyString("""{"id":$DEV_TEST_ID, "firstName":"Steve","lastName":"Jobs"}""", ContentType.APPLICATION_JSON)
                 .execute().returnResponse()
-        assertThat(httpResponse.statusLine.statusCode, `is`(equalTo(HttpStatus.ACCEPTED.value())))
+        assertThat(httpResponse.statusLine.statusCode, `is`(equalTo(HttpStatus.NO_CONTENT.value())))
     }
 
 

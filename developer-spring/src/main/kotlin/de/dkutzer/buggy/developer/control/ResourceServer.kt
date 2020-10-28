@@ -56,3 +56,18 @@ class ResourceServer : ResourceServerConfigurerAdapter() {
 
 }
 
+@Configuration
+@EnableResourceServer
+@Profile("test")
+class ResourceServerTest : ResourceServerConfigurerAdapter() {
+    override fun configure(http: HttpSecurity?) {
+        http!!
+                .authorizeRequests()
+                .antMatchers("/developers/**").permitAll()
+                .and()
+                .httpBasic().disable()
+                .csrf().disable()
+                .formLogin().disable()
+    }
+}
+

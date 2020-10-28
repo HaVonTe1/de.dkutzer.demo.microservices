@@ -92,6 +92,10 @@ tasks.withType<KotlinCompile> {
 tasks.test {
     outputs.dir(file("build/generated-snippets"))
     useJUnitPlatform()
+    environment("TESTCONTAINERS_RYUK_DISABLED","true")
+    systemProperty("pact.verifier.publishResults", "true")
+    systemProperty("pact.provider.tag", "dev")
+    systemProperty("pact.provider.version", "${project.version}")
     testLogging {
         events = setOf(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
         exceptionFormat = TestExceptionFormat.FULL

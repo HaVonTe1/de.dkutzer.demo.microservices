@@ -4,6 +4,7 @@ plugins {
     id("io.spring.dependency-management") version "1.0.9.RELEASE"
     id("org.asciidoctor.convert") version "1.5.8"
     id("com.adarshr.test-logger") version "1.7.0"
+    id ("au.com.dius.pact") version "4.1.0"
     kotlin("jvm") version "1.3.71"
     kotlin("plugin.spring") version "1.3.71"
 }
@@ -96,4 +97,13 @@ tasks.getByName<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar
     }
 
 
+}
+
+
+pact {
+    publish {
+        pactBrokerUrl = "http://localhost:9292"
+        tags = listOf("dev")
+        version = "${project.version}"
+    }
 }

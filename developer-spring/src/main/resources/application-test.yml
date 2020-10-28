@@ -22,10 +22,13 @@ management:
         pushgateway:
           enabled: false
 
+
+
 logging:
   level:
     root: info
 #    org.springframework.boot.autoconfigure.mongo.embedded: trace
-#    org.springframework.web: debug
+    org.springframework.web: debug
+    org.springframework.security: trace
 #    org.mongodb: trace
 #    com.playtika.testcontainers: trace

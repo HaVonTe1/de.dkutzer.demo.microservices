@@ -63,12 +63,12 @@ allOpen {
 }
 
 compileKotlin {
-    kotlinOptions.jvmTarget = JavaVersion.VERSION_11
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8
     kotlinOptions.javaParameters = true
 }
 
 compileTestKotlin {
-    kotlinOptions.jvmTarget = JavaVersion.VERSION_11
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8
 }
 
 
@@ -76,5 +76,33 @@ quarkusBuild {
     nativeArgs {
         containerBuild = true
         buildImage = "quay.io/quarkus/ubi-quarkus-native-image:20.2.0-java11"
+    }
+}
+
+
+test {
+    // enable JUnit Platform (a.k.a. JUnit 5) support
+    useJUnitPlatform()
+
+    // show standard out and standard error of the test JVM(s) on the console
+    testLogging.showStandardStreams = true
+
+    minHeapSize = "128m"
+    maxHeapSize = "4096m"
+
+    // set JVM arguments for the test JVM(s)
+    jvmArgs '-XX:MaxPermSize=1G '
+
+    // listen to events in the test execution lifecycle
+    beforeTest { descriptor ->
+        logger.lifecycle("Running test: " + descriptor)
+    }
+
+    // Fail the 'test' task on the first test failure
+    failFast = true
+
+    // listen to standard out and standard error of the test JVM(s)
+    onOutput { descriptor, event ->
+        logger.lifecycle("Test: " + descriptor + " produced standard out/err: " + event.message )
     }
 }

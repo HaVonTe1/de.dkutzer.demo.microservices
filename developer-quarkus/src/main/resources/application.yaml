@@ -1,7 +1,7 @@
 
 quarkus:
   http:
-    test-port=8081:
+    test-port: 8081
   application:
     name: buggy-developer-quarkus-service
     uri: http://buggy-developer-quarkus-service:8080/
@@ -28,9 +28,7 @@ quarkus:
         level: TRACE
       de.dkutzer:
         level: TRACE
-      org.testcontainers:
-        level: TRACE
-      com.github.dockerjava: TRACE
+
 
 
 
