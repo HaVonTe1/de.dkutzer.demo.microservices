@@ -59,18 +59,6 @@ class DevelopersRestListenerPactTest {
         private const val DEV_TEST_ID = "cd3535b8-7781-4755-a58b-05c10354ea99"
     }
 
-    val objectMapper =  jacksonObjectMapper().enable(MapperFeature.SORT_PROPERTIES_ALPHABETICALLY)
-    val developerRepository= mockk<DeveloperRepository>(relaxed = true)
-    val issuesRepository= mockk<IssuesRepository>(relaxed = true)
-
-    val developerService = DeveloperServices(developerRepository)
-    val issueService = IssuesServices(issuesRepository )
-
-    @BeforeEach
-    fun setup(){
-        clearAllMocks()
-    }
-
     @Pact(provider = PROVIDER, consumer = CONSUMER)
     fun sendDeveloperDeletedEvent(builder: PactDslWithProvider): RequestResponsePact {
         return builder

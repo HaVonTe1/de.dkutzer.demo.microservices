@@ -30,6 +30,22 @@ services:
       - buggy-networks
 
 
+  buggy-keycloak-x:
+    image: quay.io/keycloak/keycloak-x
+    container_name: buggy-keycloak-x
+    hostname: buggy-keycloak-x
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    command: --auto-config --proxy=edge --db=postgres -Dkc.db.url.host=buggy-postgres -Dkc.db.url.database=buggy --db-username=admin --db-password=admin
+    ports:
+      - 8080
+    depends_on:
+      - buggy-postgres
+    networks:
+      - buggy-networks
+
+
   buggy-keycloak:
     image: jboss/keycloak:8.0.1
     container_name: buggy-keycloak

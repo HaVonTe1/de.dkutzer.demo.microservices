@@ -36,7 +36,6 @@ import java.net.URL
 @IgnoreNoPactsToVerify
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@WithMockUser(username="spring", roles = ["BUGGY_UI"],setupBefore = TestExecutionEvent.TEST_EXECUTION)
 class DeveloperControllerTest {
 
     companion object {
@@ -62,10 +61,6 @@ class DeveloperControllerTest {
         val fromUrl = HttpTestTarget.fromUrl(URL("http://localhost:"+port))
         pactVerificationContext?.target = fromUrl
 
-
-//        System.setProperty("pact.provider.tag", "dev");
-//        System.setProperty("pact.provider.version", "version1");
-//        System.setProperty("pact.verifier.publishResults", "true");
 
     }
 
