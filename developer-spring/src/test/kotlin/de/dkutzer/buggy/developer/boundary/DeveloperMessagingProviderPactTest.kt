@@ -19,6 +19,7 @@ import io.mockk.mockk
 import io.mockk.slot
 import mu.KotlinLogging
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.TestTemplate
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.cloud.stream.messaging.Source
@@ -30,6 +31,7 @@ private val logger = KotlinLogging.logger {}
 @Provider("dkutzer-msdemo-buggy-developers-messaging")
 @PactFolder("../pacts")
 @ExtendWith(MockKExtension::class)
+@Disabled
 class DeveloperMessagingProviderPactTest {
 // end::PACT[]
 

@@ -56,7 +56,6 @@ management:
     export:
       prometheus:
         pushgateway:
-          base-url: buggy-prometheus-pushgateway:9091
           enabled: true
           job: buggy-developer-spring-service
           push-rate: 30s
@@ -68,6 +67,7 @@ management:
 logging:
   level:
     root: warn
-    org.springframework.web.filter: trace
     org.apache.kafka.clients.producer.ProducerConfig: warn
     org.apache.kafka.clients.consumer.ConsumerConfig: warn
+server:
+  port: 8081

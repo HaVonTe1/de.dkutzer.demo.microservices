@@ -5,6 +5,7 @@ import de.dkutzer.buggy.developer.entity.Developer
 import mu.KotlinLogging
 import org.hamcrest.Matchers.`is`
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.context.SpringBootTest
@@ -35,6 +36,7 @@ private val logger = KotlinLogging.logger {}
 @ExtendWith(RestDocumentationExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@Disabled
 class DeveloperControllerRestDocsTest() {
 
     var mockMvc: MockMvc? = null
