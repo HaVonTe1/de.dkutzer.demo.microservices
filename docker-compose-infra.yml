@@ -13,7 +13,7 @@ volumes:
 services:
 
   buggy-mongo:
-    image: mongo:4.0.4
+    image: mongo:4.2.15
     container_name: buggy-mongo
     hostname: buggy-mongo
     ports:
@@ -218,7 +218,7 @@ services:
       - buggy-networks
 
   buggy-pact-broker:
-    image: pactfoundation/pact-broker:2.68.1.0
+    image: pactfoundation/pact-broker:2.83.0.3
     container_name: buggy-pact-broker
     hostname: buggy-pact-broker
     ports:

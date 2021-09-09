@@ -4,8 +4,8 @@ package de.dkutzer.buggy.developer.boundary
 import de.dkutzer.buggy.developer.entity.Developer
 import mu.KotlinLogging
 import org.hamcrest.Matchers.`is`
+import org.junit.ClassRule
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.context.SpringBootTest
@@ -21,7 +21,10 @@ import org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPri
 import org.springframework.restdocs.payload.FieldDescriptor
 import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.restdocs.snippet.Attributes.key
+import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.DynamicPropertyRegistry
+import org.springframework.test.context.DynamicPropertySource
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers.print
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
@@ -30,14 +33,45 @@ import org.springframework.test.web.servlet.setup.DefaultMockMvcBuilder
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.util.StringUtils
 import org.springframework.web.context.WebApplicationContext
+import org.testcontainers.containers.KafkaContainer
+import org.testcontainers.containers.MongoDBContainer
+import org.testcontainers.junit.jupiter.Container
+import org.testcontainers.junit.jupiter.Testcontainers
+import org.testcontainers.utility.DockerImageName
+
 
 private val logger = KotlinLogging.logger {}
 
 @ExtendWith(RestDocumentationExtension::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@Disabled
+@Testcontainers
+@DirtiesContext
 class DeveloperControllerRestDocsTest() {
+
+    companion object {
+        var mongodbImage = DockerImageName
+            .parse("mongo:4.2.15")
+            .asCompatibleSubstituteFor("mongo")
+
+        @Container
+        private val mongoContainer = MongoDBContainer(mongodbImage)
+
+        @Container
+        private val kafkaContainer = KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:5.4.3"))
+
+
+        @DynamicPropertySource
+        @JvmStatic
+        fun registerDynamicProperties(registry: DynamicPropertyRegistry) {
+
+            registry.add("spring.data,mongodb.uri", mongoContainer::getReplicaSetUrl)
+            registry.add("spring.cloud.stream.kafka.binder.brokers", kafkaContainer::getHost)
+            registry.add("spring.kafka.bootstrap-servers", kafkaContainer::getBootstrapServers)
+        }
+    }
+
+
 
     var mockMvc: MockMvc? = null
 
@@ -46,6 +80,7 @@ class DeveloperControllerRestDocsTest() {
             fieldWithPath("lastName").description("Nachname").type("String"),
             subsectionWithPath("_links").description("<<resources-note-links,Links>> to other resources")
     )
+
 
 
     @BeforeEach

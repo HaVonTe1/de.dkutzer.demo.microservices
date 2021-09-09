@@ -31,7 +31,6 @@ private val logger = KotlinLogging.logger {}
 @Provider("dkutzer-msdemo-buggy-developers-messaging")
 @PactFolder("../pacts")
 @ExtendWith(MockKExtension::class)
-@Disabled
 class DeveloperMessagingProviderPactTest {
 // end::PACT[]
 

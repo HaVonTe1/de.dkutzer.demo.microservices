@@ -18,7 +18,13 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
+import org.springframework.test.context.DynamicPropertyRegistry
+import org.springframework.test.context.DynamicPropertySource
+import org.testcontainers.containers.KafkaContainer
+import org.testcontainers.containers.MongoDBContainer
+import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
+import org.testcontainers.utility.DockerImageName
 import java.net.URL
 
 
@@ -29,14 +35,32 @@ import java.net.URL
 @IgnoreNoPactsToVerify
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@Disabled
 class DeveloperControllerTest {
 
     companion object {
 
         private const val DEV_TEST_ID = "cd3535b8-7781-4755-a58b-05c10354ea99"
-    }
 
+        var mongodbImage = DockerImageName
+            .parse("mongo:4.2.15")
+            .asCompatibleSubstituteFor("mongo")
+
+        @Container
+        private val mongoContainer = MongoDBContainer(mongodbImage)
+
+        @Container
+        private val kafkaContainer = KafkaContainer(DockerImageName.parse("confluentinc/cp-kafka:5.4.3"))
+
+
+        @DynamicPropertySource
+        @JvmStatic
+        fun registerDynamicProperties(registry: DynamicPropertyRegistry) {
+
+            registry.add("spring.data,mongodb.uri", mongoContainer::getReplicaSetUrl)
+            registry.add("spring.cloud.stream.kafka.binder.brokers", kafkaContainer::getHost)
+            registry.add("spring.kafka.bootstrap-servers", kafkaContainer::getBootstrapServers)
+        }
+    }
 
 
     @LocalServerPort
@@ -71,6 +95,3 @@ class DeveloperControllerTest {
     }
 
 }
-
-
-
