@@ -15,7 +15,7 @@ jobs:
         with:
           build-root-directory: planning-spring
           wrapper-directory: planning-spring
-          gradle-version: 6.3
+          gradle-version: 7.2
           arguments: build
       - name: build planning-quarkus
         uses: actions/setup-java@v1
@@ -25,7 +25,7 @@ jobs:
         with:
           build-root-directory: planning-quarkus
           wrapper-directory: planning-quarkus
-          gradle-version: 6.3
+          gradle-version: 7.2
           arguments: build
       - name: build developer-spring
         uses: actions/setup-java@v1
@@ -35,7 +35,7 @@ jobs:
         with:
           build-root-directory: developer-spring
           wrapper-directory: developer-spring
-          gradle-version: 6.3
+          gradle-version: 7.2
           arguments: build
       - name: build developer-quarkus
         uses: actions/setup-java@v1
@@ -45,7 +45,7 @@ jobs:
         with:
           build-root-directory: developer-quarkus
           wrapper-directory: developer-quarkus
-          gradle-version: 6.0.1
+          gradle-version: 7.2
           arguments: build
       - name: build issues-spring
         uses: actions/setup-java@v1
@@ -55,5 +55,5 @@ jobs:
         with:
           build-root-directory: issues-spring
           wrapper-directory: issues-spring
-          gradle-version: 5.6.2
+          gradle-version: 7.2
           arguments: build
