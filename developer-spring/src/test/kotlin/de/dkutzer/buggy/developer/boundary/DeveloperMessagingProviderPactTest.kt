@@ -2,7 +2,6 @@ package de.dkutzer.buggy.developer.boundary
 
 
 import au.com.dius.pact.provider.PactVerifyProvider
-import au.com.dius.pact.provider.junit5.AmpqTestTarget
 import au.com.dius.pact.provider.junit5.MessageTestTarget
 import au.com.dius.pact.provider.junit5.PactVerificationContext
 import au.com.dius.pact.provider.junit5.PactVerificationInvocationContextProvider
