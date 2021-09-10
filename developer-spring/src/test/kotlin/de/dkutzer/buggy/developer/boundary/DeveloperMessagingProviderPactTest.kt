@@ -1,12 +1,16 @@
 package de.dkutzer.buggy.developer.boundary
 
+
 import au.com.dius.pact.provider.PactVerifyProvider
-import au.com.dius.pact.provider.junit.Provider
-import au.com.dius.pact.provider.junit.State
-import au.com.dius.pact.provider.junit.loader.PactFolder
 import au.com.dius.pact.provider.junit5.AmpqTestTarget
+import au.com.dius.pact.provider.junit5.MessageTestTarget
 import au.com.dius.pact.provider.junit5.PactVerificationContext
 import au.com.dius.pact.provider.junit5.PactVerificationInvocationContextProvider
+import au.com.dius.pact.provider.junitsupport.IgnoreNoPactsToVerify
+import au.com.dius.pact.provider.junitsupport.Provider
+import au.com.dius.pact.provider.junitsupport.State
+import au.com.dius.pact.provider.junitsupport.loader.PactBroker
+import au.com.dius.pact.provider.junitsupport.loader.PactFolder
 import com.fasterxml.jackson.databind.MapperFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import de.dkutzer.buggy.developer.control.DeveloperEventHandler
@@ -30,6 +34,8 @@ private val logger = KotlinLogging.logger {}
 // tag::PACT[]
 @Provider("dkutzer-msdemo-buggy-developers-messaging")
 @PactFolder("../pacts")
+//@PactBroker(host = "localhost",port="9292", scheme = "http" )
+@IgnoreNoPactsToVerify
 @ExtendWith(MockKExtension::class)
 class DeveloperMessagingProviderPactTest {
 // end::PACT[]
@@ -45,15 +51,17 @@ class DeveloperMessagingProviderPactTest {
 
     @TestTemplate
     @ExtendWith(PactVerificationInvocationContextProvider::class)
-    fun pactVerificationTestTemplate(context  : PactVerificationContext){
+    fun pactVerificationTestTemplate(context  : PactVerificationContext?){
 
-        context.verifyInteraction()
+        context?.verifyInteraction()
 
     }
 
     @BeforeEach
-    fun before(context: PactVerificationContext) {
-        context.target = AmpqTestTarget()
+    fun before(context: PactVerificationContext?) {
+        if(context!=null){
+            context.target = MessageTestTarget()
+        }
         every { channel.output() } returns messageChannel
     }
 

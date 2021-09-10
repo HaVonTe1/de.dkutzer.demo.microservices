@@ -65,7 +65,7 @@ class DeveloperControllerRestDocsTest() {
         @JvmStatic
         fun registerDynamicProperties(registry: DynamicPropertyRegistry) {
 
-            registry.add("spring.data,mongodb.uri", mongoContainer::getReplicaSetUrl)
+            registry.add("spring.data.mongodb.uri", mongoContainer::getReplicaSetUrl)
             registry.add("spring.cloud.stream.kafka.binder.brokers", kafkaContainer::getHost)
             registry.add("spring.kafka.bootstrap-servers", kafkaContainer::getBootstrapServers)
         }

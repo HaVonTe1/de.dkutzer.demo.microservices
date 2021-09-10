@@ -1,16 +1,17 @@
 package de.dkutzer.buggy.developer.boundary
 
-import au.com.dius.pact.provider.junit.IgnoreNoPactsToVerify
-import au.com.dius.pact.provider.junit.Provider
-import au.com.dius.pact.provider.junit.State
-import au.com.dius.pact.provider.junit.loader.PactBroker
+
 import au.com.dius.pact.provider.junit5.HttpTestTarget
 import au.com.dius.pact.provider.junit5.PactVerificationContext
 import au.com.dius.pact.provider.junit5.PactVerificationInvocationContextProvider
+import au.com.dius.pact.provider.junitsupport.IgnoreNoPactsToVerify
+import au.com.dius.pact.provider.junitsupport.Provider
+import au.com.dius.pact.provider.junitsupport.State
+import au.com.dius.pact.provider.junitsupport.loader.PactBroker
+import au.com.dius.pact.provider.junitsupport.loader.PactFolder
 import de.dkutzer.buggy.developer.control.DeveloperRepository
 import de.dkutzer.buggy.developer.entity.Developer
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.TestTemplate
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -31,11 +32,12 @@ import java.net.URL
 @Testcontainers
 @DirtiesContext
 @Provider("dkutzer-msdemo-buggy-developers-rest")
-@PactBroker(host = "localhost",port="9292", scheme = "http" )
+//@PactBroker(host = "localhost",port="9292", scheme = "http" )
+@PactFolder("../pacts")
 @IgnoreNoPactsToVerify
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-class DeveloperControllerTest {
+class DeveloperRestPactProviderTest {
 
     companion object {
 
@@ -56,7 +58,7 @@ class DeveloperControllerTest {
         @JvmStatic
         fun registerDynamicProperties(registry: DynamicPropertyRegistry) {
 
-            registry.add("spring.data,mongodb.uri", mongoContainer::getReplicaSetUrl)
+            registry.add("spring.data.mongodb.uri", mongoContainer::getReplicaSetUrl)
             registry.add("spring.cloud.stream.kafka.binder.brokers", kafkaContainer::getHost)
             registry.add("spring.kafka.bootstrap-servers", kafkaContainer::getBootstrapServers)
         }

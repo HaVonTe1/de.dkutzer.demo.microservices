@@ -34,7 +34,7 @@ repositories {
 }
 
 
-extra["pactVersion"] = "4.0.10"
+extra["pactVersion"] = "4.2.11"
 extra["snippetsDir"] = file("build/generated-snippets")
 extra["springBootAdminVersion"] = "2.4.3"
 extra["springCloudVersion"] = "2020.0.3"
@@ -78,10 +78,13 @@ dependencies {
     testImplementation("org.testcontainers:kafka")
     testImplementation("org.testcontainers:mongodb")
 
+// https://mvnrepository.com/artifact/au.com.dius.pact.provider/junit5spring
+    testImplementation("au.com.dius.pact.provider:junit5spring:${property("pactVersion")}")
+    testImplementation("au.com.dius.pact.provider:junit5:${property("pactVersion")}")
 
 
-    testImplementation("au.com.dius:pact-jvm-provider-junit5:${property("pactVersion")}")
-    testImplementation("au.com.dius:pact-jvm-provider-junit5-spring:${property("pactVersion")}")
+   // testImplementation("au.com.dius:pact-jvm-provider-junit5:${property("pactVersion")}")
+    //testImplementation("au.com.dius:pact-jvm-provider-junit5-spring:${property("pactVersion")}")
     testImplementation("com.ninja-squad:springmockk:3.0.1")
 
 }
@@ -121,6 +124,12 @@ tasks.test {
         showCauses = true
         showStandardStreams = true
     }
+
+    // Fail the 'test' task on the first test failure
+    failFast = true
+
+
+
 }
 springBoot {
     buildInfo()
