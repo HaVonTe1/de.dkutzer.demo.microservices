@@ -117,7 +117,7 @@ tasks.test {
     systemProperty("pact.provider.tag", "dev")
     systemProperty("pact.provider.version", "${project.version}")
     testLogging {
-        events = setOf(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
+       // events = setOf(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED)
         exceptionFormat = TestExceptionFormat.FULL
         showStackTraces = true
         showExceptions = true

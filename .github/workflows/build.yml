@@ -36,7 +36,7 @@ jobs:
           build-root-directory: developer-spring
           wrapper-directory: developer-spring
           gradle-version: 7.2
-          arguments: --debug build
+          arguments: --info build
           java-version: 16
       - name: build developer-quarkus
         uses: actions/setup-java@v1
