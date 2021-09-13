@@ -60,3 +60,14 @@ management:
     http:
       include: REQUEST_HEADERS,RESPONSE_HEADERS,TIME_TAKEN,PRINCIPAL
 
+keycloak:
+  auth-server-url: http://localhost:8080/auth
+  allow-any-hostname: true
+  cors: false
+  realm: buggy
+  resource: buggyui
+  verify-token-audience: false
+  bearer-only: true
+  use-resource-role-mappings: false
+  principal-attribute: preferred_username
+  public-client: true

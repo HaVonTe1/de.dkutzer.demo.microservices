@@ -51,6 +51,4 @@ keycloak:
   bearer-only: true
   use-resource-role-mappings: false
   principal-attribute: preferred_username
-#  security-constraints[0].authRoles[0]: user
-#  security-constraints[0].securityCollections[0].patterns[0]: /developers/*
   public-client: true
