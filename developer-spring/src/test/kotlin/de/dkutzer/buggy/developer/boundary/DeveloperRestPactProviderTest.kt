@@ -1,22 +1,40 @@
 package de.dkutzer.buggy.developer.boundary
 
 
+import au.com.dius.pact.core.model.HttpRequest
 import au.com.dius.pact.provider.junit5.HttpTestTarget
 import au.com.dius.pact.provider.junit5.PactVerificationContext
 import au.com.dius.pact.provider.junit5.PactVerificationInvocationContextProvider
 import au.com.dius.pact.provider.junitsupport.IgnoreNoPactsToVerify
 import au.com.dius.pact.provider.junitsupport.Provider
 import au.com.dius.pact.provider.junitsupport.State
-import au.com.dius.pact.provider.junitsupport.loader.PactBroker
 import au.com.dius.pact.provider.junitsupport.loader.PactFolder
 import de.dkutzer.buggy.developer.control.DeveloperRepository
 import de.dkutzer.buggy.developer.entity.Developer
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestTemplate
 import org.junit.jupiter.api.extension.ExtendWith
+import org.keycloak.adapters.KeycloakConfigResolver
+import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver
+import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider
+import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Import
+import org.springframework.context.annotation.Primary
+import org.springframework.context.annotation.Profile
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
+import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper
+import org.springframework.security.core.session.SessionRegistryImpl
+import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
@@ -29,6 +47,41 @@ import org.testcontainers.utility.DockerImageName
 import java.net.URL
 
 
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(jsr250Enabled = true)
+@Profile(value = ["test"])
+@TestConfiguration
+class KeyCloakTestSecurityConfig: KeycloakWebSecurityConfigurerAdapter() {
+
+
+    @Bean
+    @Primary
+    override fun sessionAuthenticationStrategy(): SessionAuthenticationStrategy {
+        return RegisterSessionAuthenticationStrategy(SessionRegistryImpl())
+    }
+
+    override fun configure(http: HttpSecurity?) {
+        super.configure(http)
+        http!!.authorizeRequests().anyRequest()!!.permitAll()
+        http.csrf().disable()
+    }
+
+    @Autowired
+    fun configureGlobal(auth: AuthenticationManagerBuilder?) {
+        //super.configure(auth)
+        val keyCloakAuthenticationProvider = KeycloakAuthenticationProvider()
+        keyCloakAuthenticationProvider.setGrantedAuthoritiesMapper(SimpleAuthorityMapper())
+        auth!!.authenticationProvider(keyCloakAuthenticationProvider)
+    }
+
+    @Bean
+    @Primary
+    fun keycloakConfigResolver(): KeycloakConfigResolver? {
+        return KeycloakSpringBootConfigResolver()
+    }
+
+
+}
 @Testcontainers
 @DirtiesContext
 @Provider("dkutzer-msdemo-buggy-developers-rest")
@@ -37,6 +90,7 @@ import java.net.URL
 @IgnoreNoPactsToVerify
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@Import(KeyCloakTestSecurityConfig::class)
 class DeveloperRestPactProviderTest {
 
     companion object {
@@ -81,6 +135,7 @@ class DeveloperRestPactProviderTest {
     fun before(pactVerificationContext: PactVerificationContext? = null) {
 
         val fromUrl = HttpTestTarget.fromUrl(URL("http://localhost:"+port))
+
         pactVerificationContext?.target = fromUrl
 
 

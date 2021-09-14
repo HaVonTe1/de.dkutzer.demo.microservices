@@ -4,7 +4,6 @@ package de.dkutzer.buggy.developer.boundary
 import de.dkutzer.buggy.developer.entity.Developer
 import mu.KotlinLogging
 import org.hamcrest.Matchers.`is`
-import org.junit.ClassRule
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -21,6 +20,8 @@ import org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPri
 import org.springframework.restdocs.payload.FieldDescriptor
 import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.restdocs.snippet.Attributes.key
+import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.DynamicPropertyRegistry
@@ -90,10 +91,12 @@ class DeveloperControllerRestDocsTest() {
                         .withHost("buggy.io").withPort(443).and()
                         .operationPreprocessors().withRequestDefaults(prettyPrint())
                         .withResponseDefaults(prettyPrint()))
+                .apply<DefaultMockMvcBuilder>(SecurityMockMvcConfigurers.springSecurity())
                 .build()
     }
 
     @Test
+    @WithMockUser(username = "test", password = "test", roles = ["USER"])
     fun `Testing The Creating of a new Developer (RestDocs)`() {
 
         val operationName = "developer-create"
