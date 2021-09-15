@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.restdocs.RestDocumentationContextProvider
 import org.springframework.restdocs.RestDocumentationExtension
@@ -48,6 +49,7 @@ private val logger = KotlinLogging.logger {}
 @ActiveProfiles("test")
 @Testcontainers
 @DirtiesContext
+@Import(KeyCloakTestSecurityConfig::class)
 class DeveloperControllerRestDocsTest() {
 
     companion object {

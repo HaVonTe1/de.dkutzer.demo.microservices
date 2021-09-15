@@ -46,42 +46,6 @@ import org.testcontainers.junit.jupiter.Testcontainers
 import org.testcontainers.utility.DockerImageName
 import java.net.URL
 
-
-@EnableWebSecurity
-@EnableGlobalMethodSecurity(jsr250Enabled = true)
-@Profile(value = ["test"])
-@TestConfiguration
-class KeyCloakTestSecurityConfig: KeycloakWebSecurityConfigurerAdapter() {
-
-
-    @Bean
-    @Primary
-    override fun sessionAuthenticationStrategy(): SessionAuthenticationStrategy {
-        return RegisterSessionAuthenticationStrategy(SessionRegistryImpl())
-    }
-
-    override fun configure(http: HttpSecurity?) {
-        super.configure(http)
-        http!!.authorizeRequests().anyRequest()!!.permitAll()
-        http.csrf().disable()
-    }
-
-    @Autowired
-    fun configureGlobal(auth: AuthenticationManagerBuilder?) {
-        //super.configure(auth)
-        val keyCloakAuthenticationProvider = KeycloakAuthenticationProvider()
-        keyCloakAuthenticationProvider.setGrantedAuthoritiesMapper(SimpleAuthorityMapper())
-        auth!!.authenticationProvider(keyCloakAuthenticationProvider)
-    }
-
-    @Bean
-    @Primary
-    fun keycloakConfigResolver(): KeycloakConfigResolver? {
-        return KeycloakSpringBootConfigResolver()
-    }
-
-
-}
 @Testcontainers
 @DirtiesContext
 @Provider("dkutzer-msdemo-buggy-developers-rest")
