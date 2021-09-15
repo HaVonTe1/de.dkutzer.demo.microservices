@@ -12,32 +12,12 @@ jobs:
           distribution: 'adopt-openj9'
           java-version: '16'
           cache: 'gradle'
-      - name: build developer-spring
+      - name: build planning-spring
         working-directory: ./developer-spring
-        run: ./gradlew --info build --no-daemon
-      - uses: eskatos/gradle-command-action@v1
-        with:
-          build-root-directory: planning-spring
-          wrapper-directory: planning-spring
-          gradle-version: 7.2
-          arguments: --info build
-          java-version: 16
-      - uses: eskatos/gradle-command-action@v1
-        with:
-          build-root-directory: planning-quarkus
-          wrapper-directory: planning-quarkus
-          gradle-version: 7.2
-          arguments: build
-
-      - uses: eskatos/gradle-command-action@v1
-        with:
-          build-root-directory: developer-quarkus
-          wrapper-directory: developer-quarkus
-          gradle-version: 7.2
-          arguments: build
-      - uses: eskatos/gradle-command-action@v1
-        with:
-          build-root-directory: issues-spring
-          wrapper-directory: issues-spring
-          gradle-version: 7.2
-          arguments: build
+        run: ./gradlew --info build
+      - name: build developer-spring
+        working-directory: ./planning-spring
+        run: ./gradlew --info build
+      - name: build issues-spring
+        working-directory: ./issues-spring
+        run: ./gradlew --info build
