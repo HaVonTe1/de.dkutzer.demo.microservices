@@ -12,8 +12,6 @@ jobs:
           distribution: 'adopt-openj9'
           java-version: '16'
           cache: 'gradle'
-      - name: build planning-spring
-
       - uses: eskatos/gradle-command-action@v1
         with:
           build-root-directory: planning-spring
@@ -21,8 +19,6 @@ jobs:
           gradle-version: 7.2
           arguments: --info build
           java-version: 16
-      - name: build planning-quarkus
-
       - uses: eskatos/gradle-command-action@v1
         with:
           build-root-directory: planning-quarkus
@@ -32,14 +28,12 @@ jobs:
       - name: build developer-spring
         working-directory: ./developer-spring
         run: gradlew --info build --no-daemon
-      - name: build developer-quarkus
       - uses: eskatos/gradle-command-action@v1
         with:
           build-root-directory: developer-quarkus
           wrapper-directory: developer-quarkus
           gradle-version: 7.2
           arguments: build
-      - name: build issues-spring
       - uses: eskatos/gradle-command-action@v1
         with:
           build-root-directory: issues-spring
