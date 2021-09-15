@@ -29,12 +29,14 @@ jobs:
           gradle-version: 7.2
           arguments: build
       - name: build developer-spring
-      - uses: actions/checkout@v2
       - uses: actions/setup-java@v2
         with:
           distribution: 'adopt-openj9'
           java-version: '16'
           cache: 'gradle'
+          build-root-directory: developer-spring
+          wrapper-directory: developer-spring
+
       - run: ./gradlew --info build --no-daemon
       - name: build developer-quarkus
         uses: actions/setup-java@v1
